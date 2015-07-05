@@ -6,8 +6,13 @@
 #include <cstdlib>
 #include <vector>
 #include "hour.h"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include <highgui.h>
+#include "cv.h"
 
 using namespace std;
+using namespace cv;
 
 class day{
 public:
@@ -17,6 +22,9 @@ public:
 	int this_date;
 
 	bool IsHoliday;
+
+	Mat river_table_current;
+	Mat river_table_next;
 };
 
 #endif

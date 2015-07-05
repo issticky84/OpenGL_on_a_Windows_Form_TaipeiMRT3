@@ -41,6 +41,30 @@ Preprocessing_Data::Preprocessing_Data()
 	comboBox_indx = 0;
 	view_select_left_index = 0;
 	view_select_right_index = 1;
+
+	data_color.resize(50);
+	for(int i=0;i<50;i++) data_color[i].resize(3);
+
+	vector<float> red(3),yellow(3),blue(3),violet(3),indigo(3),green(3),color2(3);
+	red[0] = 1.0;		red[1] = 0.0;		red[2] = 0.0;
+	yellow[0] = 1.0;	yellow[1] = 1.0;	yellow[2] = 0.0;
+	blue[0] = 0.0;		blue[1] = 0.0;		blue[2] = 1.0;
+	violet[0] = 1.0;	violet[1] = 0.0;	violet[2] = 1.0;
+	indigo[0] = 0.0;	indigo[1] = 1.0;	indigo[2] = 1.0;
+	green[0] = 0.0;		green[1] = 1.0;		green[2] = 0.0;
+	color2[0] = 0.5;		color2[1] = 1.0;		color2[2] = 0.5;
+	
+	vector<float> color_list[] = {red,yellow,blue,violet,indigo,green,color2};
+	int t = 0;
+	for(int i=0; i<7; i++)
+	{
+		//vector<float> color(3);
+		//color[0] = rand()%100 / 100.0;
+		//color[1] = rand()%100 / 100.0;
+		//color[2] = rand()%100 / 100.0;
+		//data_color[i] = color;
+		data_color[i] = color_list[i];
+	}
 }
 
 void Preprocessing_Data::Initial_selection_flag(bool f1, bool f2, bool f3, bool f4, bool f5, bool f6)
@@ -68,37 +92,65 @@ void Preprocessing_Data::Initial_selection_flag(bool f1, bool f2, bool f3, bool 
 	if(f5==true) data_dim++;
 	if(f6==true) data_dim++;
 
-	data_color.resize(data_dim);
-	for(int i=0;i<data_dim;i++) data_color[i].resize(3);
+	//data_color.resize(50);
+	//for(int i=0;i<data_dim;i++) data_color[i].resize(3);
 
-	vector<float> red(3),yellow(3),blue(3),violet(3),indigo(3),green(3);
-	red[0] = 1.0;		red[1] = 0.0;		red[2] = 0.0;
-	yellow[0] = 1.0;	yellow[1] = 1.0;	yellow[2] = 0.0;
-	blue[0] = 0.0;		blue[1] = 0.0;		blue[2] = 1.0;
-	violet[0] = 1.0;	violet[1] = 0.0;	violet[2] = 1.0;
-	indigo[0] = 0.0;	indigo[1] = 1.0;	indigo[2] = 1.0;
-	green[0] = 0.0;		green[1] = 1.0;		green[2] = 0.0;
-	
-	vector<float> color_list[] = {red,yellow,blue,violet,indigo,green};
-	int t = 0;
-	for(int i=0; i<6; i++)
-	{
-		if(data_dim_flag[i])
-		{
-			data_color[t] = color_list[i];
-			t++;
-		}
-	}
+	//vector<float> red(3),yellow(3),blue(3),violet(3),indigo(3),green(3),color2(3);
+	//red[0] = 1.0;		red[1] = 0.0;		red[2] = 0.0;
+	//yellow[0] = 1.0;	yellow[1] = 1.0;	yellow[2] = 0.0;
+	//blue[0] = 0.0;		blue[1] = 0.0;		blue[2] = 1.0;
+	//violet[0] = 1.0;	violet[1] = 0.0;	violet[2] = 1.0;
+	//indigo[0] = 0.0;	indigo[1] = 1.0;	indigo[2] = 1.0;
+	//green[0] = 0.0;		green[1] = 1.0;		green[2] = 0.0;
+	//color2[0] = 0.5;		color2[1] = 1.0;		color2[2] = 0.5;
+	//
+	//vector<float> color_list[] = {red,yellow,blue,violet,indigo,green,color2};
+	//int t = 0;
+	//for(int i=0; i<7; i++)
+	//{
+	//	//vector<float> color(3);
+	//	//color[0] = rand()%100 / 100.0;
+	//	//color[1] = rand()%100 / 100.0;
+	//	//color[2] = rand()%100 / 100.0;
+	//	//data_color[i] = color;
+	//	data_color[i] = color_list[i];
+	//}
 
 }
 
-void Preprocessing_Data::start3(vector<month> month_vec_read,int day_amount_read, int hour_amount_read, int k)
+void Preprocessing_Data::circle_MRT_station()
 {
-	month_vec = month_vec_read;
+	Mat image;
+    image = imread("MRT_Map.jpg", CV_LOAD_IMAGE_COLOR); 
+	if(! image.data )                              // Check for invalid input
+	{
+		cout <<  "Could not open or find the image" << std::endl ;
+		exit(1);
+	}
+
+	for(int i=0;i<select_station.size();i++)
+	//for(int i=select_station.size()-1;i>=0;i--)
+	{
+		int x = MRT_position[ select_station[i] ][0];
+		int y = MRT_position[ select_station[i] ][1];
+		int r = data_color[i][0]*255;
+		int g = data_color[i][1]*255;
+		int b = data_color[i][2]*255;
+		//System::Windows::Forms::MessageBox::Show( select_station[0] + " " + data_color[i][0] + " " + data_color[i][1] + " " + data_color[i][2]);	
+		circle(image, Point(x,y),6, Scalar( b, g, r ),2, 8, 0);
+	}
+	//System::Windows::Forms::MessageBox::Show( select_station[0] + " " + select_station[1] + " " + select_station[2]);	
+	
+	imwrite( "MRT_Map2.jpg", image );
+}
+
+void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k)
+{
+	//month_vec = month_vec_read;
 	day_amount = day_amount_read;
 	hour_amount = hour_amount_read;
 
-	start_on_2D(hour_amount,day_amount);
+	//start_on_2D(hour_amount,day_amount);
 
 	find_month_and_day = new Mat[day_amount];
 	int c = 0;
@@ -122,7 +174,47 @@ void Preprocessing_Data::start3(vector<month> month_vec_read,int day_amount_read
 	int tour[] = {22,7,19};
 	int tour_num = sizeof(tour)/sizeof(tour[0]);
 
+	Mat dim_data_enter_avg = Mat::zeros(day_amount,24,CV_32F);
+	Mat dim_data_out_avg = Mat::zeros(day_amount,24,CV_32F);
+	Mat enter_total = Mat::zeros(day_amount,1,CV_32F);
+	Mat out_total = Mat::zeros(day_amount,1,CV_32F);
+	int day = 0;
+	for(int i=0;i<month_vec.size();i++)
+	{
+		for(int j=0;j<month_vec[i].day_vec.size();j++)
+		{
+			for(int u=0;u<24;u++)
+			{
+				for(int s=0;s<select_station.size();s++)
+				{
+					int dim_num = select_station[s];
+					dim_data_enter_avg.at<float>(day,u) += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
+					dim_data_out_avg.at<float>(day,u) += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ];
 
+					enter_total.at<float>(day,0) += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
+					out_total.at<float>(day,0) += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ];
+				}
+			}
+
+			day++;
+		}
+	}
+
+	output_mat_as_csv_file_float("dim_data_enter.csv",dim_data_enter_avg);
+	output_mat_as_csv_file_float("dim_data_out.csv",dim_data_out_avg);
+
+	for(int d=0;d<day_amount;d++)
+	{
+		for(int u=0;u<24;u++)
+		{
+			dim_data_enter_avg.at<float>(d,u) /= enter_total.at<float>(d,0);
+			dim_data_out_avg.at<float>(d,u) /= out_total.at<float>(d,0);
+		}
+	}
+
+	output_mat_as_csv_file_float("dim_data_enter2.csv",dim_data_enter_avg);
+	output_mat_as_csv_file_float("dim_data_out2.csv",dim_data_out_avg);
+	/*
 	Mat model = Mat::zeros(hour_amount,data_dim,CV_32F);
 	int t = 0;
 	for(int i=0;i<month_vec.size();i++)
@@ -173,15 +265,70 @@ void Preprocessing_Data::start3(vector<month> month_vec_read,int day_amount_read
 			}
 		}
 	}
+	*/
+
+	Mat model = Mat::zeros(day_amount*24,2,CV_32F);
+	int t = 0;
+	for(int d=0;d<day_amount;d++)
+	{
+		for(int u=0;u<24;u++)
+		{
+			model.at<float>(t,0) = dim_data_enter_avg.at<float>(d,u);
+			model.at<float>(t,1) = dim_data_out_avg.at<float>(d,u);
+			t++;
+		}
+	}
 
 	output_mat_as_csv_file_float("model_original.csv",model);
-
-	//for(int i=0;i<model.cols;i++)
-	//{
-	//	normalize(model.col(i),model.col(i),0,1,NORM_MINMAX);
-	//}
 	normalize(model,model,0,1,NORM_MINMAX);
-	//model.col(0) = model.col(0).mul(3);
+
+	data_dim = select_station.size();
+
+	//for(int i=0;i<month_vec.size();i++)
+	//{
+	//	for(int j=0;j<month_vec[i].day_vec.size();j++)
+	//	{
+	//		for(int u=0;u<24;u++)
+	//		{
+	//			float total_enter = 0.0;
+	//			for(int s=0;s<select_station.size();s++)
+	//			{
+	//				total_enter += month_vec[i].day_vec[j].hour_vec[u].enter[ select_station[s] ];
+	//			}
+	//		}
+	//	}
+	//}
+
+	
+	for(int i=0;i<month_vec.size();i++)
+	{
+		for(int j=0;j<month_vec[i].day_vec.size();j++)
+		{
+			month_vec[i].day_vec[j].river_table_current = Mat::zeros(23,select_station.size(),CV_32F);
+			month_vec[i].day_vec[j].river_table_next = Mat::zeros(23,select_station.size(),CV_32F);
+			for(int u=0;u<24;u++)
+			{
+				t = 0;
+				float accum_current = 0.0;
+				float accum_next = 0.0;
+				for(int s=0;s<select_station.size();s++)
+				{
+					//month_vec[i].day_vec[j].hour_vec[u].data[t++] = month_vec[i].day_vec[j].hour_vec[u].enter[ select_station[s] ];
+					//month_vec[i].day_vec[j].hour_vec[u].data[t++] = month_vec[i].day_vec[j].hour_vec[u].out[ select_station[s] ];			
+
+					accum_current += month_vec[i].day_vec[j].hour_vec[u].enter[ select_station[s] ];
+					accum_next += month_vec[i].day_vec[j].hour_vec[u+1].enter[ select_station[s] ];
+
+					if(u!=23)
+					{
+						month_vec[i].day_vec[j].river_table_current.at<float>(u,s) = accum_current;
+						month_vec[i].day_vec[j].river_table_next.at<float>(u,s) = accum_next;
+					}
+				}
+			}
+		}
+	}
+
 
 	output_mat_as_csv_file_float("model.csv",model);
 
@@ -319,8 +466,12 @@ void Preprocessing_Data::start3(vector<month> month_vec_read,int day_amount_read
 	raw_data_3D.release();
 }
 
-void Preprocessing_Data::start_on_2D(int hour_amount,int day_amount)
+void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 {
+	day_amount = day_amount_read;
+	hour_amount = hour_amount_read;
+	
+
 	int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 					   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
 					   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};
@@ -338,7 +489,7 @@ void Preprocessing_Data::start_on_2D(int hour_amount,int day_amount)
 			for(int j=0;j<month_vec[i].day_vec.size();j++)
 			{
 				for(int u=0;u<24;u++)
-				{
+				{		
 					int dim_num = dim_index[s];
 					dim_data_enter_avg.at<float>(s,u) += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
 					dim_data_out_avg.at<float>(s,u) += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ];
@@ -350,7 +501,10 @@ void Preprocessing_Data::start_on_2D(int hour_amount,int day_amount)
 			}
 		}
 	}
-	
+
+	output_mat_as_csv_file_float("dim_data_enter_avg.csv",dim_data_enter_avg);
+	output_mat_as_csv_file_float("dim_data_out_avg.csv",dim_data_out_avg);	
+
 	for(int s=0;s<dim;s++)
 	{
 		for(int u=0;u<24;u++)
@@ -360,10 +514,11 @@ void Preprocessing_Data::start_on_2D(int hour_amount,int day_amount)
 		}
 	}
 
-	dim_data_enter_avg = dim_data_enter_avg.mul(1.0/day_amount);
-	dim_data_out_avg = dim_data_out_avg.mul(1.0/day_amount);
+	//dim_data_enter_avg = dim_data_enter_avg.mul(1.0/day_amount);
+	//dim_data_out_avg = dim_data_out_avg.mul(1.0/day_amount);
 
-	output_mat_as_csv_file_float("dim_data_enter_avg.csv",dim_data_enter_avg);
+	output_mat_as_csv_file_float("dim_data_enter_avg2.csv",dim_data_enter_avg);
+	output_mat_as_csv_file_float("dim_data_out_avg2.csv",dim_data_out_avg);
 
 	Mat model = Mat::zeros(dim*24,2,CV_32F);
 	int t = 0;

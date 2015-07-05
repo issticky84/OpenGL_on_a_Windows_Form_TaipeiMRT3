@@ -30,6 +30,9 @@ public:
 	void read_file_list(char*);
 	void read_holiday_event(char*);
 
+	void read_MRT_position(char*);
+	vector< vector<float> > MRT_position;
+
 	int hour_amount,day_amount;
 	void read_file_all();
 	void read_single_file2(char*);

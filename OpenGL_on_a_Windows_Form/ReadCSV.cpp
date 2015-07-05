@@ -16,6 +16,36 @@ void ReadCSV::clear()
 	attribute_index.clear();
 }
 
+void ReadCSV::read_MRT_position(char* file_name)
+{
+	FILE* file = NULL;
+	file = fopen("MRT_position.txt","r");
+	if(!file)
+	{
+		cout << "can't open config file!";
+		exit(1);
+	}
+
+	char line[1024];
+	char *token;
+	fgets(line,1024,file);
+
+	MRT_position.resize(199);
+	for(int i=0;i<MRT_position.size();i++) MRT_position[i].resize(2);
+
+	int code, position_x, position_y;
+	char name[100];
+	while( !feof(file) )
+	{
+		fscanf(file, "%d %s %d %d\n",&code,name,&position_x,&position_y);
+
+		//cout << code << " " << position_x << " " << position_y << endl;
+		//circle(image, Point(position_x, position_y),4, Scalar(0,255,255),2, 8,0);
+		MRT_position[code][0] = position_x;
+		MRT_position[code][1] = position_y;
+	}
+}
+
 void ReadCSV::test_image()
 {
 	Mat image;

@@ -23,5 +23,10 @@ namespace OpenGLForm{
 
 			System::Void themeriverView();
 			System::Void stationView();
+			int drag, rect_x, rect_y;
+			RECTANGLE* ROI;
+			bool draw_roi;
+
+			int* dim_label;
 	};
 }

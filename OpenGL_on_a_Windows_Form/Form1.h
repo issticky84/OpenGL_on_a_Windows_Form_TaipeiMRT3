@@ -28,6 +28,7 @@ namespace OpenGL_on_a_Windows_Form
 			//read_csv.read_file_list(file_name);;
 			//read_csv.read_holiday_event("holiday_event.txt");
 			read_csv.read_file_all();
+			read_csv.read_MRT_position("MRT_position.txt");
 
 			Preprocessing_Data preprocessing_data;
 
@@ -38,12 +39,15 @@ namespace OpenGL_on_a_Windows_Form
 													  this->tourism_in->Checked,
 													  this->tourism_out->Checked);
 
-			preprocessing_data.start3(read_csv.month_vec,read_csv.day_amount,read_csv.hour_amount,trackBar1->Value);
+			preprocessing_data.MRT_position = read_csv.MRT_position;
+			preprocessing_data.month_vec = read_csv.month_vec;
+			preprocessing_data.start_on_2D(read_csv.hour_amount,read_csv.day_amount);
+			//preprocessing_data.start3(read_csv.day_amount,read_csv.hour_amount,trackBar1->Value);
 
 
 			histogram = gcnew HistogramVisualization(this,this->panel3,panel3->Width,panel3->Height,read_csv,preprocessing_data);
 			rawData = gcnew RawDataVisualization(this,this->panel1,panel1->Width,panel1->Height,read_csv,preprocessing_data);
-			detail = gcnew DetailVisualization(this,this->panel2,panel2->Width,panel2->Height,read_csv,preprocessing_data);
+			//detail = gcnew DetailVisualization(this,this->panel2,panel2->Width,panel2->Height,read_csv,preprocessing_data);
 
 		}
 	protected:
@@ -154,7 +158,7 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			this->panel1->Location = System::Drawing::Point(718, 36);
 			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(841, 1006);
+			this->panel1->Size = System::Drawing::Size(780, 1006);
 			this->panel1->TabIndex = 0;
 			this->panel1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::panel1_Paint);
 			this->panel1->MouseEnter += gcnew System::EventHandler(this, &Form1::panel1_MouseEnter);
@@ -162,9 +166,9 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// panel2
 			// 
-			this->panel2->Location = System::Drawing::Point(1578, 253);
+			this->panel2->Location = System::Drawing::Point(1526, 253);
 			this->panel2->Name = L"panel2";
-			this->panel2->Size = System::Drawing::Size(326, 228);
+			this->panel2->Size = System::Drawing::Size(378, 149);
 			this->panel2->TabIndex = 1;
 			this->panel2->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::panel2_Paint);
 			this->panel2->MouseEnter += gcnew System::EventHandler(this, &Form1::panel2_MouseEnter);
@@ -208,7 +212,7 @@ namespace OpenGL_on_a_Windows_Form
 			this->trackBar1->Name = L"trackBar1";
 			this->trackBar1->Size = System::Drawing::Size(196, 45);
 			this->trackBar1->TabIndex = 6;
-			this->trackBar1->Value = 5;
+			this->trackBar1->Value = 3;
 			this->trackBar1->Scroll += gcnew System::EventHandler(this, &Form1::trackBar1_Scroll);
 			// 
 			// textBox1
@@ -217,7 +221,7 @@ namespace OpenGL_on_a_Windows_Form
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(24, 22);
 			this->textBox1->TabIndex = 8;
-			this->textBox1->Text = L"5";
+			this->textBox1->Text = L"3";
 			// 
 			// feature_selection_label
 			// 
@@ -398,9 +402,9 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// pictureBox1
 			// 
-			this->pictureBox1->Location = System::Drawing::Point(1578, 494);
+			this->pictureBox1->Location = System::Drawing::Point(1504, 408);
 			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(326, 548);
+			this->pictureBox1->Size = System::Drawing::Size(400, 634);
 			this->pictureBox1->TabIndex = 0;
 			this->pictureBox1->TabStop = false;
 			this->pictureBox1->Click += gcnew System::EventHandler(this, &Form1::pictureBox1_Click);
@@ -476,7 +480,7 @@ namespace OpenGL_on_a_Windows_Form
 				 rawData->clear();
 				 detail->clear();
 
-				 read_csv.test_image();///////////////////////////////////
+				 //read_csv.test_image();///////////////////////////////////
 
 				preprocessing_data.Initial_selection_flag(this->residential_in->Checked,
 														  this->residential_out->Checked,
@@ -485,9 +489,13 @@ namespace OpenGL_on_a_Windows_Form
 														  this->tourism_in->Checked,
 														  this->tourism_out->Checked);
 				 
-				 preprocessing_data.start3(read_csv.month_vec,read_csv.day_amount,read_csv.hour_amount,trackBar1->Value);
+				//preprocessing_data.select_station.clear();
+				preprocessing_data.circle_MRT_station();
+				this->pictureBox1->Image = Image::FromFile("MRT_map2.jpg");
 
+				preprocessing_data.start3(read_csv.day_amount,read_csv.hour_amount,trackBar1->Value);
 
+				 
 			 }
 
     private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) 
@@ -783,9 +791,7 @@ private: System::Void view_select_right_SelectedIndexChanged(System::Object^  se
 				 preprocessing_data.view_select_right_index = selectedIndex;
 		 }
 private: System::Void pictureBox1_Click(System::Object^  sender, System::EventArgs^  e) {
-				this->pictureBox1->Image = Image::FromFile("MRT_map2.jpg");
-				
-
+				//this->pictureBox1->Image = Image::FromFile("MRT_map2.jpg");
 		 }
 };
 }

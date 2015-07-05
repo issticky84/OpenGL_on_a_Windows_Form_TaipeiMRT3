@@ -85,7 +85,7 @@ private:
 public:
 	Preprocessing_Data();
 	void start2(vector<month>,vector<holiday>,int);
-	void start3(vector<month>,int,int,int);
+	void start3(int,int,int);
 	void Initial_selection_flag(bool, bool, bool, bool, bool, bool);
 
 	int num_of_five_minutes;
@@ -126,6 +126,12 @@ public:
 	void voting_for_data_on_2D(int,int,Mat);
 
 	int view_select_left_index, view_select_right_index;
+
+	vector<int> select_station;
+	//Mat river_table_current;
+	//Mat river_table_next;
+	vector< vector<float> > MRT_position;
+	void circle_MRT_station();
 };
 
 
