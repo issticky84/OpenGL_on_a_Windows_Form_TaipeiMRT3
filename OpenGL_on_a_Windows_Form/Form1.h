@@ -477,7 +477,8 @@ namespace OpenGL_on_a_Windows_Form
 				 backgroundWorker1->RunWorkerAsync();
 
 				 histogram->clear();
-				 rawData->clear();
+				 //rawData->clear();
+				 histogram_index.clear();
 				 detail->clear();
 
 				 //read_csv.test_image();///////////////////////////////////
@@ -495,7 +496,7 @@ namespace OpenGL_on_a_Windows_Form
 
 				preprocessing_data.start3(read_csv.day_amount,read_csv.hour_amount,trackBar1->Value);
 
-				 
+				preprocessing_data.start_flag = true;
 			 }
 
     private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) 

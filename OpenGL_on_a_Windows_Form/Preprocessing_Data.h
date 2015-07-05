@@ -132,6 +132,8 @@ public:
 	//Mat river_table_next;
 	vector< vector<float> > MRT_position;
 	void circle_MRT_station();
+
+	bool start_flag;
 };
 
 

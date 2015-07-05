@@ -47,7 +47,7 @@ namespace OpenGLForm{
 
 	System::Void RawDataVisualization::themeriverView()
 	{
-			glTranslatef(120.0+move_x[1],150.0+move_y[1],0.0+move_z[1]);
+			glTranslatef(40.0+move_x[1],100.0+move_y[1],0.0+move_z[1]);
 			glScalef(scale_factor[1]+scale_x[1]+0.6, scale_factor[1]+scale_y[1]-0.480, scale_factor[1]+scale_z[1]);
 			glGetDoublev(GL_MODELVIEW_MATRIX, ModelViewMatrix2);//////////////
 
@@ -61,8 +61,8 @@ namespace OpenGLForm{
 					int this_month = preprocessing_data.find_month_and_day[idx].at<int>(0,0);
 					int this_day = preprocessing_data.find_month_and_day[idx].at<int>(0,1);
 
-					DrawText_FTGL(this_month+1,-50,y_position_text,16.0);
-					DrawText_FTGL(this_day+1,-35,y_position_text,16.0);
+					DrawText_FTGL(this_month+1,-30,y_position_text,16.0);
+					DrawText_FTGL(this_day+1,-15,y_position_text,16.0);
 					y_position_text+=10000;
 
 					
@@ -72,11 +72,22 @@ namespace OpenGLForm{
 						DrawText_FTGL(i,i*15-5,y_position+750,12.0);
 
 						for(int j=preprocessing_data.select_station.size()-1;j>=0;j--)
-						//for(int j=0;j<preprocessing_data.select_station.size();j++)
 						{
-							int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_current.at<float>(i,j);
-							int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_next.at<float>(i,j);
+							//int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_current.at<float>(i,j);
+							//int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_next.at<float>(i,j);
+							int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].enter[ preprocessing_data.select_station[j] ];
+							int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i+1].enter[ preprocessing_data.select_station[j] ];
 
+							glLineWidth(3.0); 
+
+							glPushMatrix(); 
+							glBegin(GL_LINES); 
+							glColor3f(preprocessing_data.data_color[color_index][0],preprocessing_data.data_color[color_index][1],preprocessing_data.data_color[color_index][2]);  
+								glVertex3f((i+1)*15,y_position-hour_data_next,0); 
+								glVertex3f(i*15,y_position-hour_data_current,0);						
+							glEnd();
+							glPopMatrix();
+							/*
 							glPushMatrix(); 
 							glBegin(GL_QUADS); 
 							glColor3f(preprocessing_data.data_color[color_index][0],preprocessing_data.data_color[color_index][1],preprocessing_data.data_color[color_index][2]);  
@@ -84,6 +95,29 @@ namespace OpenGLForm{
 								glVertex3f((i+1)*15,y_position,0);
 								glVertex3f((i+1)*15,y_position-hour_data_next,0); 
 								glVertex3f(i*15,y_position-hour_data_current,0);						
+							glEnd();
+							glPopMatrix();
+							*/
+							color_index++;
+						}
+
+						//out
+						color_index = 0;
+						DrawText_FTGL(i,300+i*15-5,y_position+750,12.0);
+						for(int j=preprocessing_data.select_station.size()-1;j>=0;j--)
+						{
+							//int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_current.at<float>(i,j);
+							//int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_next.at<float>(i,j);
+							int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].out[ preprocessing_data.select_station[j] ];
+							int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i+1].out[ preprocessing_data.select_station[j] ];
+
+							glLineWidth(3.0); 
+
+							glPushMatrix(); 
+							glBegin(GL_LINES); 
+							glColor3f(preprocessing_data.data_color[color_index][0],preprocessing_data.data_color[color_index][1],preprocessing_data.data_color[color_index][2]);  
+								glVertex3f(300+(i+1)*15,y_position-hour_data_next,0); 
+								glVertex3f(300+i*15,y_position-hour_data_current,0);						
 							glEnd();
 							glPopMatrix();
 
@@ -130,7 +164,7 @@ namespace OpenGLForm{
 
 	System::Void RawDataVisualization::stationView()
 	{
-			glTranslatef(30.0+move_x[1],30.0+move_y[1],0.0+move_z[1]);
+			glTranslatef(70.0+move_x[1],50.0+move_y[1],0.0+move_z[1]);
 			glScalef(1.0+scale_factor[1]+scale_x[1], 1.0+scale_factor[1]+scale_y[1], 1.0+scale_factor[1]+scale_z[1]);
 			glGetDoublev(GL_MODELVIEW_MATRIX, ModelViewMatrix2);
 
@@ -140,7 +174,7 @@ namespace OpenGLForm{
 				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
 								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};					
-				int home[] = {29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77};//43
+				//int home[] = {29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77};//43
 				//int home_num = sizeof(home)/sizeof(home[0]);
 				//int work_school[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88};//20
 				//int work_school_num = sizeof(work_school)/sizeof(work_school[0]);
@@ -496,6 +530,22 @@ namespace OpenGLForm{
 		histogram_index.clear();
 
 		raw_data_position_table.clear();
+
+		preprocessing_data.select_station.clear();
+
+		preprocessing_data.start_flag = false;
+
+		int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
+							35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
+							24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};			
+		int station_num = sizeof(dim_index)/sizeof(dim_index[0]);
+		int home[] = {29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77};//43
+		int home_num = sizeof(home)/sizeof(home[0]);
+		int work_school[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88};//20
+		int work_school_num = sizeof(work_school)/sizeof(work_school[0]);
+		for(int i=0;i<station_num;i++) dim_label[ dim_index[i] ] = 1;
+		for(int i=0;i<home_num;i++)  dim_label[ home[i] ] = 2;
+		for(int i=0;i<work_school_num;i++)  dim_label[ work_school[i] ] = 3;
 		//raw_data_position_table.resize(100);
 		//for(int i=0;i<100;i++) raw_data_position_table[i].resize(31);
 	}

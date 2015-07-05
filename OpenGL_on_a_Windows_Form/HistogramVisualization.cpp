@@ -291,7 +291,7 @@ namespace OpenGLForm{
 			glLoadIdentity();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear the screen and depth buffer
 
-			if(preprocessing_data.view_select_left_index==0) TimeView();
+			if(preprocessing_data.view_select_left_index==0 && preprocessing_data.start_flag ) TimeView();
 			//================================Time Line====================================//
 			/*
 			glPushMatrix();

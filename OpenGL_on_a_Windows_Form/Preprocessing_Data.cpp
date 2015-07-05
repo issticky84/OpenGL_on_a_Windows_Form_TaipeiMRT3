@@ -65,6 +65,8 @@ Preprocessing_Data::Preprocessing_Data()
 		//data_color[i] = color;
 		data_color[i] = color_list[i];
 	}
+
+	start_flag = false;
 }
 
 void Preprocessing_Data::Initial_selection_flag(bool f1, bool f2, bool f3, bool f4, bool f5, bool f6)
