@@ -44,6 +44,8 @@ namespace OpenGLForm{
 			for(int i=0;i<station_num;i++) dim_label[ dim_index[i] ] = 1;
 			for(int i=0;i<home_num;i++)  dim_label[ home[i] ] = 2;
 			for(int i=0;i<work_school_num;i++)  dim_label[ work_school[i] ] = 3;
+
+			temp_line = new Line;
 	}
 
 	System::Void RawDataVisualization::themeriverView()
@@ -180,11 +182,10 @@ namespace OpenGLForm{
 
 	System::Void RawDataVisualization::stationView()
 	{
-			glTranslatef(80.0+move_x[1],70.0+move_y[1],0.0+move_z[1]);
-			glScalef(1.0+scale_factor[1]+scale_x[1], 1.0+scale_factor[1]+scale_y[1], 1.0+scale_factor[1]+scale_z[1]);
-			glGetDoublev(GL_MODELVIEW_MATRIX, ModelViewMatrix2);
+			glTranslatef(0.0+move_x[1],0.0+move_y[1],0.0+move_z[1]);
+			glScalef(0.5+scale_factor[1]+scale_x[1], 0.5+scale_factor[1]+scale_y[1], 1.0+scale_factor[1]+scale_z[1]);
+			glGetDoublev(GL_MODELVIEW_MATRIX, ModelViewMatrix2);		
 
-			
 			for(int day=0; day<preprocessing_data.dim ;day++)
 			{
 				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
@@ -211,25 +212,13 @@ namespace OpenGLForm{
 					glColor3f( 0.0f, 0.0, 1.0f );
 				else
 					glColor3f( 1.0f, 1.0, 1.0f );
-				glVertex2f( preprocessing_data.position_on_2D.at<double>(day,0), preprocessing_data.position_on_2D.at<double>(day,1) );
+				glVertex2f(80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0), 70 + 1.5*preprocessing_data.position_on_2D.at<double>(day,1) );
 				glEnd();
 				glPopMatrix();
 					
 				//DrawCircle(preprocessing_data.position_on_2D.at<double>(day,0),preprocessing_data.position_on_2D.at<double>(day,1), 2.0, 1, 0, 0);
 				//DrawCircle(preprocessing_data.position_on_2D.at<double>(day,0),preprocessing_data.position_on_2D.at<double>(day,1), 2.0, (rand() % 11)/10.0, (rand() % 11)/10.0, (rand() % 11)/10.0);
 			}	
-			
-			/*
-			if(draw_roi==true)
-			{
-				vector<float> draw_color(3);
-				draw_color[0] = 1.0;
-				draw_color[0] = 1.0;
-				draw_color[0] = 0.0;
-				DrawRectWithOpenGL(ROI,draw_color);
-				//DrawRectWithOpenGL(test,draw_color);
-			}
-			*/
 	}
 
 	System::Void RawDataVisualization::Render(int rawdata_width,int rawdata_height){
@@ -256,12 +245,73 @@ namespace OpenGLForm{
 			else if(preprocessing_data.view_select_right_index==1)
 			{
 				stationView();
+
+				//if( line_draw )
+				//{
+
+					glPushMatrix();
+
+					glBegin(GL_LINES);
+					glVertex2d(temp_line->x1,temp_line->y1 ); 
+					glVertex2d(temp_line->x2,temp_line->y1 ); 
+					glEnd();
+
+					glBegin(GL_LINES);
+					glVertex2d(temp_line->x1,temp_line->y1 ); 
+					glVertex2d(temp_line->x1,temp_line->y2 ); 
+					glEnd();
+
+					glBegin(GL_LINES);
+					glVertex2d(temp_line->x1,temp_line->y2 ); 
+					glVertex2d(temp_line->x2,temp_line->y2 ); 
+					glEnd();
+
+					glBegin(GL_LINES);
+					glVertex2d(temp_line->x2,temp_line->y1 ); 
+					glVertex2d(temp_line->x2,temp_line->y2 ); 
+					glEnd();
+
+					glPopMatrix();
+				//}
 			}
 
 			SwapOpenGLBuffers();
 			
 	}
 		 
+	System::Void RawDataVisualization::FindPointInRect()
+	{
+		vector2 pos1(temp_line->x1,temp_line->y1);
+		//pos1.x *= (scale_factor[1] + scale_x[1]);
+		//pos1.y *= (scale_factor[1] + scale_y[1]);
+		pos1.x += move_x[1];
+		pos1.y += move_y[1];	
+		vector2 pos2(temp_line->x2,temp_line->y2);
+		//pos2.x *= (scale_factor[1] + scale_x[1]);
+		//pos2.y *= (scale_factor[1] + scale_y[1]);
+		pos2.x += move_x[1];
+		pos2.y += move_y[1];	
+
+		for(int day=0; day<preprocessing_data.dim ;day++)
+		{
+			int x = 80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0);
+			int y = 70 + 1.5*preprocessing_data.position_on_2D.at<double>(day,1);
+			if(x >= pos1.x && x <= pos2.x && y >= pos1.y && y <= pos2.y)
+			{
+				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
+								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
+								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};
+
+				//System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
+
+				dim_label[ dim_index[day] ] = 4;
+
+				if ( !preprocessing_data.check_duplicated_station( dim_index[day]) )
+					preprocessing_data.select_station.push_back( dim_index[day] );				
+			}
+		}
+	}
+
 	System::Void RawDataVisualization::FindPatternByTable2(int x,int y){
 		vector2 pos_2D(x,y);
 		vector3 pos_3D = Unprojection(pos_2D);//screen to 3D coordinate
@@ -493,6 +543,12 @@ namespace OpenGLForm{
 			if (e->Button == System::Windows::Forms::MouseButtons::Right)
 			{
 				FindPatternByTable2(e->X,e->Y);
+				/////////////////////////////////////
+				temp_line->x1 = e->X; // Line
+				temp_line->y1 = e->Y;
+				temp_line->x2 = e->X; // Line
+				temp_line->y2 = e->Y;
+				line_draw = 1; // start drawing drag line
 			}
 
 			if (e->Button == System::Windows::Forms::MouseButtons::Middle && !drag)
@@ -506,6 +562,7 @@ namespace OpenGLForm{
 	}
 	System::Void RawDataVisualization::RawDataMouseWheel( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e ){
 			
+		/*
 			if (e->Delta < 0){
 				scale_x[1]+=scale_size[1];
 				scale_y[1]+=scale_size[1];
@@ -516,40 +573,61 @@ namespace OpenGLForm{
 				scale_y[1]-=scale_size[1];
 				scale_z[1]-=scale_size[1];		
 			}
-			
+		*/	
 			
 	}
 	System::Void RawDataVisualization::RawDataMouseMove( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e ){
 			if (e->Button == System::Windows::Forms::MouseButtons::Left)
 			{
+				/*
 					vector2 Move(e->X - last_X[1] , e->Y - last_Y[1]);
 					if (Move.length() < 500.0f)
 					{
 						move_x[1] = Move.x;
 						move_y[1] = Move.y;
 					}
-			}		
+				*/
+			}	
+
+			else if (e->Button == System::Windows::Forms::MouseButtons::Right)
+			{
+				if(line_draw)
+				{
+					temp_line->x2 = e->X;
+					temp_line->y2 = e->Y;		
+				}				
+			}
 	}
+
 	System::Void RawDataVisualization::RawDataMouseUp( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e ){
 			last_X[1] = e->X;
 			last_Y[1] = e->Y;
 
-			if (e->Button == System::Windows::Forms::MouseButtons::Middle && drag)
+			if (e->Button == System::Windows::Forms::MouseButtons::Right)
 			{
-				drag = 0;
-				ROI->h = e->X - rect_x;
-				ROI->w = e->X - rect_y;
-				ROI->x = rect_x;
-				ROI->y = rect_y;
-				System::Windows::Forms::MessageBox::Show(ROI->x + " " + ROI->y + " " + e->X + " " +  e->Y );
-				draw_roi = true;
+				temp_line->x2 = e->X;
+				temp_line->y2 = e->Y;
+				//line_draw = 0; // stop drawing drag line
+
+				FindPointInRect();
 			}
+
+			//if (e->Button == System::Windows::Forms::MouseButtons::Middle && drag)
+			//{
+			//	drag = 0;
+			//	ROI->h = e->X - rect_x;
+			//	ROI->w = e->X - rect_y;
+			//	ROI->x = rect_x;
+			//	ROI->y = rect_y;
+			//	System::Windows::Forms::MessageBox::Show(ROI->x + " " + ROI->y + " " + e->X + " " +  e->Y );
+			//	draw_roi = true;
+			//}
 	}
 
 	System::Void RawDataVisualization::RawDataMouseDoubleClick( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e ){
 			if (e->Button == System::Windows::Forms::MouseButtons::Left)
 			{			
-				FindHistogram(e->X,e->Y);
+				//FindHistogram(e->X,e->Y);
 				//System::Windows::Forms::MessageBox::Show("ha");	
 			}
 	}

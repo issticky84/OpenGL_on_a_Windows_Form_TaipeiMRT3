@@ -5,6 +5,7 @@
 #include <GL/glu.h>
 #include "ReadCSV.h"
 #include "RECTANGLE.h"
+#include "line.h"
 #include "mtxlib.h"
 #include <sstream>
 #include "Preprocessing_Data.h"

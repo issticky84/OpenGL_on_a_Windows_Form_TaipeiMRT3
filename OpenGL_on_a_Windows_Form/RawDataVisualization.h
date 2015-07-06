@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include "VisualizationPanel.h"
 namespace OpenGLForm{
 	public ref class RawDataVisualization: public OpenGLForm::VisualizationPanel{
@@ -13,6 +14,7 @@ namespace OpenGLForm{
 			void  RawDataMouseDoubleClick( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e);
 			System::Void clear();
 			System::Void clear_view();
+
 	private:
 			System::Void FindPatternByTable2(int x,int y);
 			vector3 Unprojection(vector2 _2Dpos);
@@ -28,6 +30,11 @@ namespace OpenGLForm{
 			int drag, rect_x, rect_y;
 			RECTANGLE* ROI;
 			bool draw_roi;
+			
+			Line* temp_line;
+			int line_draw; 
+			int line_idx;
+			System::Void FindPointInRect();
 
 			int* dim_label;
 	};

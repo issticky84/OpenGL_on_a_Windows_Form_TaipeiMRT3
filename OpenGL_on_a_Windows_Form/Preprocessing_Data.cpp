@@ -100,31 +100,6 @@ void Preprocessing_Data::Initial_selection_flag(bool f1, bool f2, bool f3, bool 
 	if(f4==true) data_dim++;
 	if(f5==true) data_dim++;
 	if(f6==true) data_dim++;
-
-	//data_color.resize(50);
-	//for(int i=0;i<data_dim;i++) data_color[i].resize(3);
-
-	//vector<float> red(3),yellow(3),blue(3),violet(3),indigo(3),green(3),color2(3);
-	//red[0] = 1.0;		red[1] = 0.0;		red[2] = 0.0;
-	//yellow[0] = 1.0;	yellow[1] = 1.0;	yellow[2] = 0.0;
-	//blue[0] = 0.0;		blue[1] = 0.0;		blue[2] = 1.0;
-	//violet[0] = 1.0;	violet[1] = 0.0;	violet[2] = 1.0;
-	//indigo[0] = 0.0;	indigo[1] = 1.0;	indigo[2] = 1.0;
-	//green[0] = 0.0;		green[1] = 1.0;		green[2] = 0.0;
-	//color2[0] = 0.5;		color2[1] = 1.0;		color2[2] = 0.5;
-	//
-	//vector<float> color_list[] = {red,yellow,blue,violet,indigo,green,color2};
-	//int t = 0;
-	//for(int i=0; i<7; i++)
-	//{
-	//	//vector<float> color(3);
-	//	//color[0] = rand()%100 / 100.0;
-	//	//color[1] = rand()%100 / 100.0;
-	//	//color[2] = rand()%100 / 100.0;
-	//	//data_color[i] = color;
-	//	data_color[i] = color_list[i];
-	//}
-
 }
 
 void Preprocessing_Data::circle_MRT_station()
