@@ -45,18 +45,25 @@ Preprocessing_Data::Preprocessing_Data()
 	data_color.resize(50);
 	for(int i=0;i<50;i++) data_color[i].resize(3);
 
-	vector<float> red(3),yellow(3),blue(3),violet(3),indigo(3),green(3),color2(3);
+	vector<float> red(3),yellow(3),blue(3),violet(3),indigo(3),green(3),color2(3),color3(3),orange(3),color4(3),color5(3),gray(3);
 	red[0] = 1.0;		red[1] = 0.0;		red[2] = 0.0;
 	yellow[0] = 1.0;	yellow[1] = 1.0;	yellow[2] = 0.0;
 	blue[0] = 0.0;		blue[1] = 0.0;		blue[2] = 1.0;
 	violet[0] = 1.0;	violet[1] = 0.0;	violet[2] = 1.0;
 	indigo[0] = 0.0;	indigo[1] = 1.0;	indigo[2] = 1.0;
 	green[0] = 0.0;		green[1] = 1.0;		green[2] = 0.0;
-	color2[0] = 0.5;		color2[1] = 1.0;		color2[2] = 0.5;
+	color2[0] = 0.6;		color2[1] = 0.4;		color2[2] = 0.4;
+	color3[0] = 0.6;		color3[1] = 0.8;		color3[2] = 0.6;
+	orange[0] = 0.9;		orange[1] = 0.8;		orange[2] = 0.5;
+	color4[0] = 0.9;		color4[1] = 0.37;		color4[2] = 0.5;
+	color5[0] = 0.33;		color5[1] = 0.73;		color5[2] = 0.78;
+	gray[0] = 0.6;		gray[1] = 0.6;		gray[2] = 0.6;
+
 	
-	vector<float> color_list[] = {red,yellow,blue,violet,indigo,green,color2};
+	vector<float> color_list[] = {red,yellow,blue,violet,indigo,green,color2,color3,orange,color4,color5,gray};
+	int color_num = sizeof(color_list)/sizeof(color_list[0]);
 	int t = 0;
-	for(int i=0; i<7; i++)
+	for(int i=0; i<color_num ; i++)
 	{
 		//vector<float> color(3);
 		//color[0] = rand()%100 / 100.0;
@@ -130,14 +137,16 @@ void Preprocessing_Data::circle_MRT_station()
 		exit(1);
 	}
 
-	for(int i=0;i<select_station.size();i++)
-	//for(int i=select_station.size()-1;i>=0;i--)
+	//for(int i=0;i<select_station.size();i++)
+	int t = 0;
+	for(int i=select_station.size()-1;i>=0;i--)
 	{
 		int x = MRT_position[ select_station[i] ][0];
 		int y = MRT_position[ select_station[i] ][1];
-		int r = data_color[i][0]*255;
-		int g = data_color[i][1]*255;
-		int b = data_color[i][2]*255;
+		int r = data_color[t][0]*255;
+		int g = data_color[t][1]*255;
+		int b = data_color[t][2]*255;
+		t++;
 		//System::Windows::Forms::MessageBox::Show( select_station[0] + " " + data_color[i][0] + " " + data_color[i][1] + " " + data_color[i][2]);	
 		circle(image, Point(x,y),6, Scalar( b, g, r ),2, 8, 0);
 	}
@@ -406,21 +415,21 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	tree_group.clear();
 	//sort_histogram_by_Ev_by_TSP_coarse_to_fine(cluster_centers,histo_sort_index);
 	//sort_histogram_by_Ev_by_TSP_coarse_to_fine2(cluster_centers,histo_sort_index);
-	output_mat_as_csv_file_int("histo_sort_index.csv",histo_sort_index);
-	ofstream ftree("histo_tree.txt");
-	for(int i=0;i<tree_group.size();i++)
-	{
-		for(int j=0;j<tree_group[i].index2.size();j++)
-		{
-			ftree << tree_group[i].index2[j] << " ";
-		}
-		ftree << endl;
-	}
-	ftree.close();
+	//output_mat_as_csv_file_int("histo_sort_index.csv",histo_sort_index);
+	//ofstream ftree("histo_tree.txt");
+	//for(int i=0;i<tree_group.size();i++)
+	//{
+	//	for(int j=0;j<tree_group[i].index2.size();j++)
+	//	{
+	//		ftree << tree_group[i].index2[j] << " ";
+	//	}
+	//	ftree << endl;
+	//}
+	//ftree.close();
 	
 	//==============MDS by GMM=====================//
 	//position = Position_by_MDS(cluster_centers,k,1.0).clone(); //Type:double
-
+	//normalize(position,position,0,5000,NORM_MINMAX);
 	//=============Compute Neighbor Distance===============//
 	Mat histo_position = Mat::zeros(histogram.rows,1,CV_64F);
 	Position_by_histogram_sort_index(histo_position,histo_sort_index);
@@ -452,6 +461,8 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 		{
 			for(int u=0;u<month_vec[i].day_vec[j].hour_vec.size();u++)
 			{
+				month_vec[i].day_vec[j].hour_vec[u].cluster_tag = cluster_tag.at<int>(t,0);
+
 				for(int v=0;v<3;v++)
 				{
 					raw_data_3D_array[d].at<float>(u,v) = raw_data_3D.at<float>(t,v); 	
@@ -622,6 +633,18 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 	position_on_2D = position_mat.clone();
 
 	output_mat_as_csv_file_double("position_on_2D.csv",position_on_2D);
+}
+
+bool Preprocessing_Data::check_duplicated_station(int index)
+{
+	for(int i=0;i<select_station.size();i++)
+	{
+		if( select_station[i] == index)
+			return true;
+	}
+
+	return false;
+
 }
 
 void Preprocessing_Data::start2(vector<month> month_vec_read, vector<holiday> holiday_vec, int k)
@@ -853,6 +876,7 @@ void Preprocessing_Data::start2(vector<month> month_vec_read, vector<holiday> ho
 void Preprocessing_Data::voting_for_data(int day_amount,int k,Mat cluster_tag)
 {
 	histogram = Mat::zeros(day_amount,k,CV_32S);
+	histogram_draw = Mat::zeros(day_amount,k,CV_32S);
 
 	int t = 0;
 	int d = 0;
@@ -864,6 +888,7 @@ void Preprocessing_Data::voting_for_data(int day_amount,int k,Mat cluster_tag)
 			{
 				int tag = cluster_tag.at<int>(t++,0);
 				histogram.at<int>(d,tag)++;
+				if(u>=5) histogram_draw.at<int>(d,tag)++;
 			}
 			d++;
 		}
@@ -3984,7 +4009,7 @@ void Preprocessing_Data::TSP_boost_for_histogram_coarse_to_fine_multi(Mat Ev, Ma
 	int five_minutes = Ev.rows; 
 	int dim = Ev.cols;
 		
-	int group_num = 6;
+	int group_num = 4;
 
 	Mat cluster_tag = Mat::zeros(five_minutes,1,CV_32S);
 	Mat group_cluster_centers = Mat::zeros(group_num,dim,CV_32F);

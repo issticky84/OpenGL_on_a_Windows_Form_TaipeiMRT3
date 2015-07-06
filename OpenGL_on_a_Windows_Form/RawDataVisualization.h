@@ -12,12 +12,14 @@ namespace OpenGLForm{
 			void  RawDataMouseUp( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e);
 			void  RawDataMouseDoubleClick( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e);
 			System::Void clear();
+			System::Void clear_view();
 	private:
 			System::Void FindPatternByTable2(int x,int y);
 			vector3 Unprojection(vector2 _2Dpos);
 			System::Void FindHistogram(int x,int y);
 			System::Void DrawTime_FTGL(int index,int x, int y);
 			System::Void DrawText_FTGL(int,int,int,float);
+			System::Void DrawText_FTGL_withColor(int,int,int,float, float,float,float);
 			System::Void DrawCircle(int,int,float,float,float,float);
 			System::Void time_string();
 

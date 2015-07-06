@@ -105,6 +105,7 @@ namespace OpenGL_on_a_Windows_Form
 	private: System::Windows::Forms::Label^  view_right_label;
 	private: System::Windows::Forms::ComboBox^  view_select_right;
 	private: System::Windows::Forms::PictureBox^  pictureBox1;
+	private: System::Windows::Forms::Button^  RightViewClear;
 
 
 
@@ -144,6 +145,7 @@ namespace OpenGL_on_a_Windows_Form
 			this->view_right_label = (gcnew System::Windows::Forms::Label());
 			this->view_select_right = (gcnew System::Windows::Forms::ComboBox());
 			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
+			this->RightViewClear = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->trackBar1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
@@ -166,9 +168,9 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// panel2
 			// 
-			this->panel2->Location = System::Drawing::Point(1526, 253);
+			this->panel2->Location = System::Drawing::Point(1595, 253);
 			this->panel2->Name = L"panel2";
-			this->panel2->Size = System::Drawing::Size(378, 149);
+			this->panel2->Size = System::Drawing::Size(309, 149);
 			this->panel2->TabIndex = 1;
 			this->panel2->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::panel2_Paint);
 			this->panel2->MouseEnter += gcnew System::EventHandler(this, &Form1::panel2_MouseEnter);
@@ -196,11 +198,11 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// button2
 			// 
-			this->button2->Location = System::Drawing::Point(1496, 3);
+			this->button2->Location = System::Drawing::Point(1504, 38);
 			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(63, 32);
+			this->button2->Size = System::Drawing::Size(71, 38);
 			this->button2->TabIndex = 5;
-			this->button2->Text = L"Clear";
+			this->button2->Text = L"Station Clear";
 			this->button2->UseVisualStyleBackColor = true;
 			this->button2->Click += gcnew System::EventHandler(this, &Form1::button2_Click);
 			// 
@@ -359,7 +361,7 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			this->view_select_left->Cursor = System::Windows::Forms::Cursors::Default;
 			this->view_select_left->FormattingEnabled = true;
-			this->view_select_left->Items->AddRange(gcnew cli::array< System::Object^  >(4) {L"Time", L"Station", L"ThemeRiver", L"Map"});
+			this->view_select_left->Items->AddRange(gcnew cli::array< System::Object^  >(1) {L"Time"});
 			this->view_select_left->Location = System::Drawing::Point(240, 10);
 			this->view_select_left->Name = L"view_select_left";
 			this->view_select_left->Size = System::Drawing::Size(121, 20);
@@ -392,7 +394,7 @@ namespace OpenGL_on_a_Windows_Form
 			// view_select_right
 			// 
 			this->view_select_right->FormattingEnabled = true;
-			this->view_select_right->Items->AddRange(gcnew cli::array< System::Object^  >(4) {L"Time", L"Station", L"ThemeRiver", L"Map"});
+			this->view_select_right->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"Time", L"Station", L"LineChart"});
 			this->view_select_right->Location = System::Drawing::Point(1056, 10);
 			this->view_select_right->Name = L"view_select_right";
 			this->view_select_right->Size = System::Drawing::Size(121, 20);
@@ -409,11 +411,22 @@ namespace OpenGL_on_a_Windows_Form
 			this->pictureBox1->TabStop = false;
 			this->pictureBox1->Click += gcnew System::EventHandler(this, &Form1::pictureBox1_Click);
 			// 
+			// RightViewClear
+			// 
+			this->RightViewClear->Location = System::Drawing::Point(1304, 8);
+			this->RightViewClear->Name = L"RightViewClear";
+			this->RightViewClear->Size = System::Drawing::Size(75, 23);
+			this->RightViewClear->TabIndex = 25;
+			this->RightViewClear->Text = L"View Clear";
+			this->RightViewClear->UseVisualStyleBackColor = true;
+			this->RightViewClear->Click += gcnew System::EventHandler(this, &Form1::RightViewClear_Click);
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1916, 1054);
+			this->Controls->Add(this->RightViewClear);
 			this->Controls->Add(this->pictureBox1);
 			this->Controls->Add(this->view_select_right);
 			this->Controls->Add(this->view_right_label);
@@ -491,17 +504,39 @@ namespace OpenGL_on_a_Windows_Form
 														  this->tourism_out->Checked);
 				 
 				//preprocessing_data.select_station.clear();
+
+				delete this->pictureBox1->Image;
+				if( remove( "MRT_Map2.jpg" ) != 0 )
+					System::Windows::Forms::MessageBox::Show("Error deleting file");
+					//perror( "Error deleting file" );
+				//else
+				//	System::Windows::Forms::MessageBox::Show("File successfully deleted");
+
 				preprocessing_data.circle_MRT_station();
+
 				this->pictureBox1->Image = Image::FromFile("MRT_map2.jpg");
+				
 
 				preprocessing_data.start3(read_csv.day_amount,read_csv.hour_amount,trackBar1->Value);
 
 				preprocessing_data.start_flag = true;
+
+				view_select_right->SelectedIndex = 2;
+				preprocessing_data.view_select_right_index = 2;
 			 }
 
     private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) 
 			 {
 				 rawData->clear();
+				 rawData->clear_view();
+
+				 view_select_right->SelectedIndex = 1;
+				 preprocessing_data.view_select_right_index = 1;
+			 }
+
+	private: System::Void RightViewClear_Click(System::Object^  sender, System::EventArgs^  e) 
+			 {
+				 rawData->clear_view();
 			 }
 
 	private: System::Void Detail_Clear_Click(System::Object^  sender, System::EventArgs^  e)
@@ -794,6 +829,7 @@ private: System::Void view_select_right_SelectedIndexChanged(System::Object^  se
 private: System::Void pictureBox1_Click(System::Object^  sender, System::EventArgs^  e) {
 				//this->pictureBox1->Image = Image::FromFile("MRT_map2.jpg");
 		 }
+
 };
 }
 

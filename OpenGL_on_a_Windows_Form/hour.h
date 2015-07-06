@@ -15,6 +15,7 @@ public:
 	int avg_out[200];
 	int data[100];
 	int dim;
+	int cluster_tag;
 
 };
 

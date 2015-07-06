@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "RawDataVisualization.h"
 #include <fstream>
+#include <cstdio>
 
 namespace OpenGLForm{
 
@@ -69,7 +70,11 @@ namespace OpenGLForm{
 					for(int i=5;i<23;i++)
 					{
 						int color_index = 0;
-						DrawText_FTGL(i,i*15-5,y_position+750,12.0);
+						//DrawText_FTGL(i,i*15-5,y_position+750,12.0);
+						int tag = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].cluster_tag;
+						DrawText_FTGL_withColor(i,i*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
+																			  preprocessing_data.rgb_mat3.at<float>(tag,1),
+																			  preprocessing_data.rgb_mat3.at<float>(tag,2));
 
 						for(int j=preprocessing_data.select_station.size()-1;j>=0;j--)
 						{
@@ -103,7 +108,10 @@ namespace OpenGLForm{
 
 						//out
 						color_index = 0;
-						DrawText_FTGL(i,300+i*15-5,y_position+750,12.0);
+						//DrawText_FTGL(i,300+i*15-5,y_position+750,12.0);
+						DrawText_FTGL_withColor(i,300+i*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
+																				  preprocessing_data.rgb_mat3.at<float>(tag,1),
+																			      preprocessing_data.rgb_mat3.at<float>(tag,2));
 						for(int j=preprocessing_data.select_station.size()-1;j>=0;j--)
 						{
 							//int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_current.at<float>(i,j);
@@ -155,7 +163,15 @@ namespace OpenGLForm{
 						}
 					}
 					*/
-					DrawText_FTGL(23,23*15-5,y_position+750,12.0);
+					int tag = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[23].cluster_tag;
+					DrawText_FTGL_withColor(23,23*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
+																			preprocessing_data.rgb_mat3.at<float>(tag,1),
+																			preprocessing_data.rgb_mat3.at<float>(tag,2));
+					DrawText_FTGL_withColor(23,300+23*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
+																				preprocessing_data.rgb_mat3.at<float>(tag,1),
+																				preprocessing_data.rgb_mat3.at<float>(tag,2));
+					//DrawText_FTGL(23,23*15-5,y_position+750,12.0);
+					//DrawText_FTGL(23,300+23*15-5,y_position+750,12.0);
 
 					y_position+= 10000;
 				}
@@ -164,7 +180,7 @@ namespace OpenGLForm{
 
 	System::Void RawDataVisualization::stationView()
 	{
-			glTranslatef(70.0+move_x[1],50.0+move_y[1],0.0+move_z[1]);
+			glTranslatef(80.0+move_x[1],70.0+move_y[1],0.0+move_z[1]);
 			glScalef(1.0+scale_factor[1]+scale_x[1], 1.0+scale_factor[1]+scale_y[1], 1.0+scale_factor[1]+scale_z[1]);
 			glGetDoublev(GL_MODELVIEW_MATRIX, ModelViewMatrix2);
 
@@ -183,7 +199,7 @@ namespace OpenGLForm{
 				//for(int i=0;i<work_school_num;i++)  dim_label[ work_school[i] ] = 3;
 
 				int dim_num = dim_index[day];
-				glPointSize( 10.0 );
+				glPointSize( 8.0 );
 
 				glPushMatrix();
 				glBegin( GL_POINTS );
@@ -263,23 +279,22 @@ namespace OpenGLForm{
 			y *= (scale_factor[1] + scale_y[1]);
 			x += move_x[1];
 			y += move_y[1];
-			//if(day==15)
-			//{
-			//	System::Windows::Forms::MessageBox::Show( x.ToString() + " " + y.ToString());	
-			//}
-			if( abs(pos_3D.x-x) <= 1.5 && abs(pos_3D.y-y) <= 1.5 )
+
+			//if( abs(pos_3D.x-x) <= 1.0 && abs(pos_3D.y-y) <= 1.0 )
+			if( (pos_3D.x-x) <= 2.3 && (pos_3D.x-x) >=0 &&  (pos_3D.y-y) <= 2.3 && (pos_3D.y-y) >=0 )
 			{
 				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
 								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};
 
-				System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
+				//System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
 
 				dim_label[ dim_index[day] ] = 4;
 				//if(dim_label[ dim_index[day] ] != 4) dim_label[ dim_index[day] ] = 4;
 				//else if(dim_label[ dim_index[day] ] == 4) dim_label[ dim_index[day] ] = 1;
 
-				preprocessing_data.select_station.push_back( dim_index[day] );
+				if ( !preprocessing_data.check_duplicated_station( dim_index[day]) )
+					preprocessing_data.select_station.push_back( dim_index[day] );
 			}
 		}
 		/*
@@ -340,6 +355,36 @@ namespace OpenGLForm{
 		//float font_size = 10*(scale_factor[2]+0.4+scale_x[2]);	
 		font.FaceSize(scale);
 		glColor3f(1.0, 1.0, 1.0);
+		glRasterPos2f(0 , 0 + font.LineHeight());
+		stringstream ss;
+		ss << n;
+		string str = ss.str();
+		char zero[] = "0";
+		if(n<10)
+		{
+			strcat(zero,str.c_str());
+			font.Render(zero);
+		}
+		else
+		{
+			char* text = (char*)str.c_str();
+			font.Render(text);
+		}
+
+		glPopMatrix();
+		
+	}
+
+	System::Void RawDataVisualization::DrawText_FTGL_withColor(int n,int x, int y, float scale, float r, float g, float b)
+	{
+		glPushMatrix();
+
+		glTranslatef(x, y-30, 0);
+		glScalef(1.0+scale_x[1],1.0+scale_y[1],1.0+scale_z[1]);	
+	
+		//float font_size = 10*(scale_factor[2]+0.4+scale_x[2]);	
+		font.FaceSize(scale);
+		glColor3f(r, g, b);
 		glRasterPos2f(0 , 0 + font.LineHeight());
 		stringstream ss;
 		ss << n;
@@ -527,7 +572,7 @@ namespace OpenGLForm{
 
 	System::Void RawDataVisualization::clear()
 	{
-		histogram_index.clear();
+		//histogram_index.clear();
 
 		raw_data_position_table.clear();
 
@@ -548,5 +593,11 @@ namespace OpenGLForm{
 		for(int i=0;i<work_school_num;i++)  dim_label[ work_school[i] ] = 3;
 		//raw_data_position_table.resize(100);
 		//for(int i=0;i<100;i++) raw_data_position_table[i].resize(31);
+
+	}
+
+	System::Void RawDataVisualization::clear_view()
+	{
+		histogram_index.clear();
 	}
 }

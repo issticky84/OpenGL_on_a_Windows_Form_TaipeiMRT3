@@ -92,6 +92,8 @@ public:
 	//int raw_data_size;
 	vector <int> hour_data;
 	Mat histogram;//int
+	Mat histogram_draw;//int
+
 	Mat rgb_mat;//float
 	Mat rgb_mat3;//float
 	Mat position;//double
@@ -134,6 +136,7 @@ public:
 	void circle_MRT_station();
 
 	bool start_flag;
+	bool check_duplicated_station(int);
 };
 
 

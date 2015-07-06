@@ -126,7 +126,8 @@ namespace OpenGLForm{
 				if(preprocessing_data.histogram.at<int>(day,k)!=0)
 				{
 					vector<float>  draw_color(3);
-					int pixels = preprocessing_data.histogram.at<int>(day,k);
+					//int pixels = preprocessing_data.histogram.at<int>(day,k);
+					int pixels = preprocessing_data.histogram_draw.at<int>(day,k);
 					draw_color[0] = preprocessing_data.rgb_mat3.at<float>(k,0); 
 					draw_color[1] = preprocessing_data.rgb_mat3.at<float>(k,1); 
 					draw_color[2] = preprocessing_data.rgb_mat3.at<float>(k,2);
