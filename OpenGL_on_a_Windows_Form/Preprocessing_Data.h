@@ -137,6 +137,8 @@ public:
 
 	bool start_flag;
 	bool check_duplicated_station(int);
+
+	Mat station_rgb;
 };
 
 

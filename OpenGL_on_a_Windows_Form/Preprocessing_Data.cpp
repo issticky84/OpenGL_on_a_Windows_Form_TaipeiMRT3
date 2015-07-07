@@ -354,13 +354,13 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	//TSP_boost_for_lab_color_coarse_to_fine(lab,lab_color_sort_index);
 	//TSP_boost_for_lab_color_coarse_to_fine3(lab,lab_color_sort_index);
 	//sort_pattern_by_color_by_TSP_coarse_to_fine2(lab,lab_color_sort_index);
-	if(k>9)
+	//if(k>9)
 		sort_pattern_by_color_by_TSP_coarse_to_fine2(lab,lab_color_sort_index);
-	else
-	{
-		tsp_brute tsp;
-		tsp.tsp_path(lab,lab_color_sort_index);
-	}
+	//else
+	//{
+	//	tsp_brute tsp;
+	//	tsp.tsp_path(lab,lab_color_sort_index);
+	//}
 	output_mat_as_csv_file_int("lab_color_sort_index.csv",lab_color_sort_index);
 
 	rearrange_mat_by_sort_color_index(lab_color_sort_index,cluster_centers,cluster_tag,rgb_mat3);
@@ -386,7 +386,7 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	Mat group_index = Mat::zeros(histogram.rows,1,CV_32S); 
 	for(int i=0;i<histogram.rows;i++)
 		group_index.at<int>(i,0) = i;
-	TSP_boost_for_histogram_coarse_to_fine_multi(Ev_global, group_index, 5);
+	TSP_boost_for_histogram_coarse_to_fine_multi(Ev_global, group_index, 3);
 	TSP_group_connect(tree_group, histo_sort_index);
 	tree_group.clear();
 	//sort_histogram_by_Ev_by_TSP_coarse_to_fine(cluster_centers,histo_sort_index);
@@ -407,11 +407,13 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	//position = Position_by_MDS(cluster_centers,k,1.0).clone(); //Type:double
 	//normalize(position,position,0,5000,NORM_MINMAX);
 	//=============Compute Neighbor Distance===============//
+	
 	Mat histo_position = Mat::zeros(histogram.rows,1,CV_64F);
 	Position_by_histogram_sort_index(histo_position,histo_sort_index);
 	position = histo_position.clone();
 	
 	output_mat_as_csv_file_double("position.csv",position);
+	
 	//======================raw data 3D color by lab alignment===================//
 	
 	clock_t begin10 = clock();
@@ -542,7 +544,8 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 	else if(cluster_centers.cols==1) rgb_mat2_on_2D = lab_alignment_dim1(cluster_centers,30).clone();
 	else if(cluster_centers.cols==2) rgb_mat2_on_2D = lab_alignment_dim2 (cluster_centers,30).clone();
 
-	//output_mat_as_csv_file("rgb_mat2_on_2D_old.csv",rgb_mat2_on_2D);
+	output_mat_as_csv_file_float("rgb_mat2_on_2D_old.csv",rgb_mat2_on_2D);
+
 
 	Mat lab_color_sort_index = Mat::zeros(k,1,CV_32S);
 	sort_pattern_by_color_by_TSP_coarse_to_fine(lab,lab_color_sort_index);
@@ -609,6 +612,17 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 	position_on_2D = position_mat.clone();
 
 	output_mat_as_csv_file_double("position_on_2D.csv",position_on_2D);
+
+	Mat mds_mat_1D = MDS(avg_dist,1).clone();
+	Mat mds_mat_1D_float = Mat::zeros(mds_mat_1D.rows,mds_mat_1D.cols,CV_32F);
+	for(int i=0;i<mds_mat_1D_float.rows;i++)
+	{
+		for(int j=0;j<mds_mat_1D_float.cols;j++)
+			mds_mat_1D_float.at<float>(i,j) = mds_mat_1D.at<double>(i,j);
+	}
+	station_rgb = lab_alignment_dim1(mds_mat_1D_float,30).clone();
+
+	output_mat_as_csv_file_float("station_rgb.csv",station_rgb);
 }
 
 bool Preprocessing_Data::check_duplicated_station(int index)
@@ -1320,6 +1334,8 @@ void Preprocessing_Data::distance_by_GMM(Mat& histo_coeff, Mat& Ev, Mat cluster_
 				}
 				//histo_coeff.at<double>(i,j) = sqrt( 1.0 - histo_coeff.at<double>(i,j) );
 			}
+
+			histo_coeff.at<double>(i,j) = pow( histo_coeff.at<double>(i,j) , 2);
 		}
 	}
 }
@@ -3985,7 +4001,7 @@ void Preprocessing_Data::TSP_boost_for_histogram_coarse_to_fine_multi(Mat Ev, Ma
 	int five_minutes = Ev.rows; 
 	int dim = Ev.cols;
 		
-	int group_num = 4;
+	int group_num = 2;
 
 	Mat cluster_tag = Mat::zeros(five_minutes,1,CV_32S);
 	Mat group_cluster_centers = Mat::zeros(group_num,dim,CV_32F);
@@ -4000,6 +4016,25 @@ void Preprocessing_Data::TSP_boost_for_histogram_coarse_to_fine_multi(Mat Ev, Ma
 		int tag = cluster_tag.at<int>(i,0);
 		groups_index[tag].push_back(index);
 	}
+
+	///////////////////////////////////////////////////////////////
+	Mat mean;
+	Mat mixture_scatter_matrix;
+	calcCovMat(Ev, mean, mixture_scatter_matrix);
+
+	Mat between_class_scatter_matrix = Mat::zeros(Ev.cols,Ev.cols,CV_32F);
+	for(int i=0;i<group_num;i++)
+	{
+		between_class_scatter_matrix += ((float)groups_index[i].rows / Ev.rows) * ( group_cluster_centers.row(i) - mean ).t() * ( group_cluster_centers.row(i) - mean );
+		
+	}
+
+	Scalar trace_Sb = trace(between_class_scatter_matrix);
+
+	Scalar trace_Sm = trace(mixture_scatter_matrix);
+
+	float variance = trace_Sb.val[0,0] / trace_Sm.val[0,0];
+	//////////////////////////////////////////////////////////////
 	
 	Mat group_sort_index = Mat::zeros(group_num,1,CV_32S);
 	tsp_brute tsp;
@@ -4021,7 +4056,8 @@ void Preprocessing_Data::TSP_boost_for_histogram_coarse_to_fine_multi(Mat Ev, Ma
 		Mat histo_sort_index_sub = Mat::zeros(groups_index2[i].rows, 1, CV_32S);
 
 		//繼續分群
-		if ( 50 < groups_index2[i].rows && level > 0 ) {
+		if(variance >= 0.99 && level > 0){
+		//if ( 150 < groups_index2[i].rows && level > 0 ) {
 			/////////////////bug: Ev_sub empty XD
 			for(int i=0;i<groups_index2[i].rows;i++)
 			{

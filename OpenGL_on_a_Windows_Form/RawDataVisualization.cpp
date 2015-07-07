@@ -206,14 +206,24 @@ namespace OpenGLForm{
 
 				glPushMatrix();
 				glBegin( GL_POINTS );
-				if(dim_label[dim_num] == 2)
-					glColor3f( 1.0f, 0.0, 0.0f );
-				else if(dim_label[dim_num] == 3)
-					glColor3f( 0.0f, 1.0, 0.0f );
-				else if(dim_label[dim_num] == 4)
-					glColor3f( 0.0f, 0.0, 1.0f );
+				
+				if(dim_label[dim_num]==4)
+					glColor3f( 0.8f, 0.0, 0.0f );
 				else
-					glColor3f( 1.0f, 1.0, 1.0f );
+				{
+					glColor3f(preprocessing_data.station_rgb.at<float>(day,0), 
+					          preprocessing_data.station_rgb.at<float>(day,1),
+							  preprocessing_data.station_rgb.at<float>(day,2));
+				}
+				
+				//if(dim_label[dim_num] == 2)
+				//	glColor3f( 1.0f, 0.0, 0.0f );
+				//else if(dim_label[dim_num] == 3)
+				//	glColor3f( 0.0f, 1.0, 0.0f );
+				//else if(dim_label[dim_num] == 4)
+				//	glColor3f( 0.0f, 0.0, 1.0f );
+				//else
+				//	glColor3f( 1.0f, 1.0, 1.0f );
 				glVertex2f(80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0), 70 + 1.5*preprocessing_data.position_on_2D.at<double>(day,1) );
 				glEnd();
 				glPopMatrix();
@@ -266,6 +276,8 @@ namespace OpenGLForm{
 				//{
 
 					glPushMatrix();
+
+					glColor3f( 1.0f, 1.0, 1.0f );
 
 					glBegin(GL_LINES);
 					glVertex2d(temp_line->x1,temp_line->y1 ); 
@@ -328,7 +340,7 @@ namespace OpenGLForm{
 		}
 	}
 
-	System::Void RawDataVisualization::FindPatternByTable2(int x,int y){
+	System::Void RawDataVisualization::FindStation(int x,int y){
 		vector2 pos_2D(x,y);
 		vector3 pos_3D = Unprojection(pos_2D);//screen to 3D coordinate
 		///////////bug///////////
@@ -339,8 +351,8 @@ namespace OpenGLForm{
 		//System::Windows::Forms::MessageBox::Show( pos_3D.x.ToString() + " " + pos_3D.y.ToString());	
 		for(int day=0; day<preprocessing_data.dim ;day++)
 		{
-			int x = preprocessing_data.position_on_2D.at<double>(day,0);
-			int y = preprocessing_data.position_on_2D.at<double>(day,1);
+			int x = 80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0);
+			int y = 70 + 1.5*preprocessing_data.position_on_2D.at<double>(day,1);
 			x *= (scale_factor[1] + scale_x[1]);
 			y *= (scale_factor[1] + scale_y[1]);
 			x += move_x[1];
@@ -353,6 +365,74 @@ namespace OpenGLForm{
 								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
 								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};
 
+				char* station_name[] = {"","","","","","","","松山機場","中山國中","","忠孝復興",
+										   "大安","科技大樓","六張犁","麟光","辛亥","萬芳醫院","萬芳社區","木柵","動物園","",
+				                           "大直","劍南路","西湖","港墘","文德","內湖","大湖公園","葫洲","東湖","南港軟體園區",
+				                           "南港展覽館(文湖線)","小碧潭","新店","新店區公所","七張","大坪林","景美","萬隆","公館","台電大樓",
+				                           "古亭","中正紀念堂","小南門","","頂溪","永安市場","景安","南勢角","","臺大醫院",
+				                           "台北車站(板南線)","台北車站(淡水線)","中山","雙連","民權西路(淡水線)","圓山","劍潭","士林","芝山","明德",
+										   "石牌","唭哩岸","奇岩","北投","新北投","復興崗","忠義","關渡","竹圍","紅樹林",
+										   "淡水","","","","","","永寧","土城","海山","亞東醫院",
+										   "府中","板橋","新埔","江子翠","龍山寺","西門","","善導寺","忠孝新生(板南線)","忠孝復興",
+										   "忠孝敦化","國父紀念館","市政府","永春","後山埤","昆陽","南港","南港展覽館(板南線)","","",
+										   "","","","","","","","","","",
+										   "","","","","","","","","","",
+										   "","","","","","","","大橋頭","民權西路(蘆洲線)","中山國小",
+										   "行天宮","松江南京","忠孝新生(蘆洲線)","","","","","","","",
+										   "","","","","","","","","","",
+										   "","","","","","","","","","",
+										   "","","","","","","","","","",
+										   "","","","蘆洲","三民高中","徐匯中學","三和國中","三重國小","",""};
+				
+
+				System::String^ name= gcnew System::String( station_name[ dim_index[day] ]);
+				System::Windows::Forms::MessageBox::Show( name + " " );
+				
+
+				System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
+
+				//dim_label[ dim_index[day] ] = 4;
+				//if(dim_label[ dim_index[day] ] != 4) dim_label[ dim_index[day] ] = 4;
+				//else if(dim_label[ dim_index[day] ] == 4) dim_label[ dim_index[day] ] = 1;
+
+				//if ( !preprocessing_data.check_duplicated_station( dim_index[day]) )
+				//	preprocessing_data.select_station.push_back( dim_index[day] );
+			}
+		}	
+	
+	}
+
+	System::Void RawDataVisualization::FindPatternByTable2(int x,int y){
+		vector2 pos_2D(x,y);
+		vector3 pos_3D = Unprojection(pos_2D);//screen to 3D coordinate
+		///////////bug///////////
+		pos_3D.x *= (scale_factor[1] + scale_x[1]);
+		pos_3D.y *= (scale_factor[1] + scale_y[1]);
+		pos_3D.x += move_x[1];
+		pos_3D.y += move_y[1];	
+		//System::Windows::Forms::MessageBox::Show( pos_3D.x.ToString() + " " + pos_3D.y.ToString());	
+		for(int day=0; day<preprocessing_data.dim ;day++)
+		{
+			int x = 80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0);
+			int y = 70 + 1.5*preprocessing_data.position_on_2D.at<double>(day,1);
+			x *= (scale_factor[1] + scale_x[1]);
+			y *= (scale_factor[1] + scale_y[1]);
+			x += move_x[1];
+			y += move_y[1];
+
+			//if( abs(pos_3D.x-x) <= 1.0 && abs(pos_3D.y-y) <= 1.0 )
+			if( (pos_3D.x-x) <= 2.3 && (pos_3D.x-x) >=0 &&  (pos_3D.y-y) <= 2.3 && (pos_3D.y-y) >=0 )
+			{
+				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
+								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
+								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};
+				
+				//if(dim_index[day]>=7 && dim_index[day] <= 180) 
+				//{
+					//System::String^ name= gcnew System::String( station_name[ dim_index[day] ]);
+					//System::Windows::Forms::MessageBox::Show( name + " " );
+				//}
+
 				//System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
 
 				dim_label[ dim_index[day] ] = 4;
@@ -363,28 +443,7 @@ namespace OpenGLForm{
 					preprocessing_data.select_station.push_back( dim_index[day] );
 			}
 		}
-		/*
-		for(int i=0;i<raw_data_position_table.size();i++)
-		{
-			//if(histogram_index[i] > preprocessing_data.month_vec.size() || histogram_index[i] < 0) break; 
-			//if(histogram_index[i] > read_csv.raw_data_size-1) break; ////////bug//////(index out of scrope)
-			for(int j=0;j<raw_data_position_table[i].size();j++)
-			{
-				//if(histogram_index[i] > preprocessing_data.month_vec.size() || histogram_index[i] < 0) break; 
-				//if(histogram_index[i]+j > read_csv.raw_data_size-1) break;
-				if(pos_3D.x >= raw_data_position_table[i][j].x && pos_3D.x <= raw_data_position_table[i][j].z && pos_3D.y >= raw_data_position_table[i][j].y && pos_3D.y <= raw_data_position_table[i][j].w)
-				{
-					System::Windows::Forms::MessageBox::Show( (histogram_index[i]).ToString() + " " + (j+1).ToString());			
-					//System::Windows::Forms::MessageBox::Show(histogram_index[i] + " " + j + " " + 
-					//read_csv.raw_data[ histogram_index[i]+j][1].ToString() + " " + read_csv.raw_data[ histogram_index[i]+j][2].ToString() + " " + read_csv.raw_data[ histogram_index[i]+j][3].ToString());
-					//raw_data_index.push_back(histogram_index[i]+j);
-					vector<int> temp;
-					temp.push_back(histogram_index[i]);
-					temp.push_back(j);
-					raw_data_index_2D.push_back(temp);
-				}
-			}
-		}*/
+
 	}
 
 	System::Void RawDataVisualization::FindHistogram(int x,int y)
@@ -565,6 +624,12 @@ namespace OpenGLForm{
 				temp_line->x2 = e->X; // Line
 				temp_line->y2 = e->Y;
 				line_draw = 1; // start drawing drag line
+			}
+
+			else if(e->Button == System::Windows::Forms::MouseButtons::Middle)
+			{
+				//FindPatternByTable2(e->X,e->Y);
+				FindStation(e->X,e->Y);
 			}
 
 			if (e->Button == System::Windows::Forms::MouseButtons::Middle && !drag)

@@ -35,6 +35,7 @@ namespace OpenGLForm{
 			int line_draw; 
 			int line_idx;
 			System::Void FindPointInRect();
+			System::Void FindStation(int x,int y);
 
 			int* dim_label;
 	};

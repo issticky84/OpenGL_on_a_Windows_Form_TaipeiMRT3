@@ -164,6 +164,7 @@ namespace OpenGL_on_a_Windows_Form
 			this->panel1->TabIndex = 0;
 			this->panel1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::panel1_Paint);
 			this->panel1->MouseEnter += gcnew System::EventHandler(this, &Form1::panel1_MouseEnter);
+			this->panel1->MouseHover += gcnew System::EventHandler(this, &Form1::panel1_MouseHover);
 			this->panel1->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::panel1_MouseMove);
 			// 
 			// panel2
@@ -214,7 +215,7 @@ namespace OpenGL_on_a_Windows_Form
 			this->trackBar1->Name = L"trackBar1";
 			this->trackBar1->Size = System::Drawing::Size(196, 45);
 			this->trackBar1->TabIndex = 6;
-			this->trackBar1->Value = 3;
+			this->trackBar1->Value = 5;
 			this->trackBar1->Scroll += gcnew System::EventHandler(this, &Form1::trackBar1_Scroll);
 			// 
 			// textBox1
@@ -223,7 +224,7 @@ namespace OpenGL_on_a_Windows_Form
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(24, 22);
 			this->textBox1->TabIndex = 8;
-			this->textBox1->Text = L"3";
+			this->textBox1->Text = L"5";
 			// 
 			// feature_selection_label
 			// 
@@ -805,6 +806,7 @@ namespace OpenGL_on_a_Windows_Form
 			 }
 	private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e) {
 				 this->pictureBox1->Image = Image::FromFile("MRT_map.jpg");
+
 			 }
 
 	private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
@@ -828,8 +830,16 @@ private: System::Void view_select_right_SelectedIndexChanged(System::Object^  se
 		 }
 private: System::Void pictureBox1_Click(System::Object^  sender, System::EventArgs^  e) {
 				//this->pictureBox1->Image = Image::FromFile("MRT_map2.jpg");
+					//ToolTip^ TP = gcnew ToolTip();
+					//TP->ShowAlways = true;
+					//TP->SetToolTip(textBox1, "Please input your name.");
 		 }
 
+private: System::Void panel1_MouseHover(System::Object^  sender, System::EventArgs^  e) {
+					//ToolTip^ TP = gcnew ToolTip();
+					//TP->ShowAlways = true;
+					//TP->SetToolTip(panel1, "Please input your name.");
+		 }
 };
 }
 
