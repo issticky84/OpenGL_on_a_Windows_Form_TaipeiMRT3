@@ -182,8 +182,10 @@ namespace OpenGLForm{
 
 	System::Void RawDataVisualization::stationView()
 	{
-			glTranslatef(0.0+move_x[1],0.0+move_y[1],0.0+move_z[1]);
-			glScalef(0.5+scale_factor[1]+scale_x[1], 0.5+scale_factor[1]+scale_y[1], 1.0+scale_factor[1]+scale_z[1]);
+			scale_x[1] = 0.5; scale_y[1] = 0.5; scale_z[1] = 0.0;
+			move_x[1] = 0.0; move_y[1] = 0.0; move_z[1] = 0.0;
+			//glTranslatef(0.0+move_x[1],0.0+move_y[1],0.0+move_z[1]);
+			//glScalef(0.5+scale_factor[1]+scale_x[1], 0.5+scale_factor[1]+scale_y[1], 1.0+scale_factor[1]+scale_z[1]);
 			glGetDoublev(GL_MODELVIEW_MATRIX, ModelViewMatrix2);		
 
 			for(int day=0; day<preprocessing_data.dim ;day++)
@@ -226,7 +228,21 @@ namespace OpenGLForm{
 				
 			windowWidth[1] = rawdata_width;
 			windowHeight[1] = rawdata_height;
+		   //////////////////////////
+		   GLfloat values[2];
+		   glGetFloatv (GL_LINE_WIDTH_GRANULARITY, values);
+		   printf ("GL_LINE_WIDTH_GRANULARITY value is %3.1f\n",
+			  values[0]);
+		   glGetFloatv (GL_LINE_WIDTH_RANGE, values);
+		   printf ("GL_LINE_WIDTH_RANGE values are %3.1f %3.1f\n",
+			  values[0], values[1]);
 
+		   glEnable (GL_LINE_SMOOTH);
+		   glEnable (GL_BLEND);
+		   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		   glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+		   glLineWidth (1.5);
+		   /////////////////////////
 			glClearColor(0.0, 0.0, 0.0, 0.0);  //Set the cleared screen colour to black
 			glViewport(0, 0, windowWidth[1], windowHeight[1]);   //This sets up the viewport so that the coordinates (0, 0) are at the top left of the window		
 			glMatrixMode(GL_PROJECTION);
@@ -562,7 +578,7 @@ namespace OpenGLForm{
 	}
 	System::Void RawDataVisualization::RawDataMouseWheel( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e ){
 			
-		/*
+		
 			if (e->Delta < 0){
 				scale_x[1]+=scale_size[1];
 				scale_y[1]+=scale_size[1];
@@ -573,20 +589,19 @@ namespace OpenGLForm{
 				scale_y[1]-=scale_size[1];
 				scale_z[1]-=scale_size[1];		
 			}
-		*/	
+		
 			
 	}
 	System::Void RawDataVisualization::RawDataMouseMove( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e ){
 			if (e->Button == System::Windows::Forms::MouseButtons::Left)
-			{
-				/*
+			{		
 					vector2 Move(e->X - last_X[1] , e->Y - last_Y[1]);
 					if (Move.length() < 500.0f)
 					{
 						move_x[1] = Move.x;
 						move_y[1] = Move.y;
 					}
-				*/
+					
 			}	
 
 			else if (e->Button == System::Windows::Forms::MouseButtons::Right)

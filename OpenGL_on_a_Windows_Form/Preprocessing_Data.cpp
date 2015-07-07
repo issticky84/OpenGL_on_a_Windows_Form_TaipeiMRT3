@@ -45,22 +45,23 @@ Preprocessing_Data::Preprocessing_Data()
 	data_color.resize(50);
 	for(int i=0;i<50;i++) data_color[i].resize(3);
 
-	vector<float> red(3),yellow(3),blue(3),violet(3),indigo(3),green(3),color2(3),color3(3),orange(3),color4(3),color5(3),gray(3);
-	red[0] = 1.0;		red[1] = 0.0;		red[2] = 0.0;
-	yellow[0] = 1.0;	yellow[1] = 1.0;	yellow[2] = 0.0;
-	blue[0] = 0.0;		blue[1] = 0.0;		blue[2] = 1.0;
-	violet[0] = 1.0;	violet[1] = 0.0;	violet[2] = 1.0;
-	indigo[0] = 0.0;	indigo[1] = 1.0;	indigo[2] = 1.0;
-	green[0] = 0.0;		green[1] = 1.0;		green[2] = 0.0;
-	color2[0] = 0.6;		color2[1] = 0.4;		color2[2] = 0.4;
-	color3[0] = 0.6;		color3[1] = 0.8;		color3[2] = 0.6;
-	orange[0] = 0.9;		orange[1] = 0.8;		orange[2] = 0.5;
-	color4[0] = 0.9;		color4[1] = 0.37;		color4[2] = 0.5;
-	color5[0] = 0.33;		color5[1] = 0.73;		color5[2] = 0.78;
+	vector<float> red(3),yellow(3),blue(3),violet(3),indigo(3),green(3),color2(3),color3(3),orange(3),color4(3),color5(3),gray(3),color6(3),color7(3);
+	red[0] = 0.9;		red[1] = 0.4;		red[2] = 0.4; //紅
+	yellow[0] = 1.0;	yellow[1] = 1.0;	yellow[2] = 0.1; //黃
+	blue[0] = 1.0;		blue[1] = 0.6;		blue[2] = 1.0; //紫
+	violet[0] = 0.6;	violet[1] = 0.6;	violet[2] = 0.0; //墨綠
+	indigo[0] = 1.0;	indigo[1] = 0.6;	indigo[2] = 0.0; //橘
+	green[0] = 0.2;		green[1] = 0.6;		green[2] = 1.0;  //藍
+	color2[0] = 0.6;		color2[1] = 0.6;		color2[2] = 1.0; //灰藍
+	color3[0] = 0.0;		color3[1] = 0.2;		color3[2] = 0.6; //深藍
+	orange[0] = 0.6;		orange[1] = 0.0;		orange[2] = 0.6; //深紫
+	color4[0] = 0.2;		color4[1] = 0.6;		color4[2] = 0.2; //深綠
+	color5[0] = 0.4;		color5[1] = 1.0;		color5[2] = 0.8; //藍綠
 	gray[0] = 0.6;		gray[1] = 0.6;		gray[2] = 0.6;
-
+	color6[0] = 1.0;		color6[1] = 0.0;		color6[2] = 0.8;//紫紅
+	color7[0] = 0.4;		color7[1] = 1.0;		color7[2] = 0.0;//綠
 	
-	vector<float> color_list[] = {red,yellow,blue,violet,indigo,green,color2,color3,orange,color4,color5,gray};
+	vector<float> color_list[] = {red,yellow,blue,violet,indigo,green,color2,color3,orange,color4,color5,gray,color6,color7};
 	int color_num = sizeof(color_list)/sizeof(color_list[0]);
 	int t = 0;
 	for(int i=0; i<color_num ; i++)
