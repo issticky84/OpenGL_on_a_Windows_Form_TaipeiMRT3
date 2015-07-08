@@ -71,6 +71,7 @@ private:
 	void sort_histogram_by_Ev_by_TSP_coarse_to_fine(Mat, Mat&);
 	void sort_histogram_by_Ev_by_TSP_coarse_to_fine2(Mat, Mat&);
 	void Position_by_histogram_sort_index(Mat&, Mat);
+	void Position_by_histogram(Mat&, Mat);
 	void voting_for_data(int,int,Mat);
 	int count_digit(float);
 
@@ -139,6 +140,7 @@ public:
 	bool check_duplicated_station(int);
 
 	Mat station_rgb;
+	Mat station_color_mat;
 };
 
 

@@ -35,7 +35,7 @@ namespace OpenGLForm{
 
 			int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 								35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-								24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};			
+								24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};			
 			int station_num = sizeof(dim_index)/sizeof(dim_index[0]);
 			int home[] = {29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77};//43
 			int home_num = sizeof(home)/sizeof(home[0]);
@@ -69,19 +69,31 @@ namespace OpenGLForm{
 					y_position_text+=10000;
 
 					
-					for(int i=5;i<23;i++)
+					for(int i=5;i<=23;i++)
 					{
 						int color_index = 0;
 						//DrawText_FTGL(i,i*15-5,y_position+750,12.0);
 						int tag = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].cluster_tag;
-						DrawText_FTGL_withColor(i,i*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
-																			  preprocessing_data.rgb_mat3.at<float>(tag,1),
-																			  preprocessing_data.rgb_mat3.at<float>(tag,2));
 
-						for(int j=preprocessing_data.select_station.size()-1;j>=0;j--)
+						vector<float> draw_color(3);
+						draw_color[0] = preprocessing_data.rgb_mat3.at<float>(tag,0);
+						draw_color[1] = preprocessing_data.rgb_mat3.at<float>(tag,1);
+						draw_color[2] = preprocessing_data.rgb_mat3.at<float>(tag,2);
+						RECTANGLE *rect;
+						rect = new RECTANGLE();
+						rect->h = 650.0;
+						rect->w = 15.0;
+						rect->x = i*15-5;
+						rect->y = y_position+1350;
+						DrawRectWithOpenGL(rect,draw_color);
+						delete rect;
+						DrawText_FTGL_withColor(i,i*15-5,y_position+1000,12.0, 1.0, 1.0, 1.0);
+						//DrawText_FTGL_withColor(i,i*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
+						//													  preprocessing_data.rgb_mat3.at<float>(tag,1),
+						//													  preprocessing_data.rgb_mat3.at<float>(tag,2));
+
+						for(int j=preprocessing_data.select_station.size()-1; j>=0 && i!=23 ;j--)
 						{
-							//int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_current.at<float>(i,j);
-							//int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_next.at<float>(i,j);
 							int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].enter[ preprocessing_data.select_station[j] ];
 							int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i+1].enter[ preprocessing_data.select_station[j] ];
 
@@ -94,27 +106,29 @@ namespace OpenGLForm{
 								glVertex3f(i*15,y_position-hour_data_current,0);						
 							glEnd();
 							glPopMatrix();
-							/*
-							glPushMatrix(); 
-							glBegin(GL_QUADS); 
-							glColor3f(preprocessing_data.data_color[color_index][0],preprocessing_data.data_color[color_index][1],preprocessing_data.data_color[color_index][2]);  
-								glVertex3f(i*15,y_position,0);
-								glVertex3f((i+1)*15,y_position,0);
-								glVertex3f((i+1)*15,y_position-hour_data_next,0); 
-								glVertex3f(i*15,y_position-hour_data_current,0);						
-							glEnd();
-							glPopMatrix();
-							*/
+
 							color_index++;
 						}
 
 						//out
 						color_index = 0;
-						//DrawText_FTGL(i,300+i*15-5,y_position+750,12.0);
-						DrawText_FTGL_withColor(i,300+i*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
-																				  preprocessing_data.rgb_mat3.at<float>(tag,1),
-																			      preprocessing_data.rgb_mat3.at<float>(tag,2));
-						for(int j=preprocessing_data.select_station.size()-1;j>=0;j--)
+
+						draw_color[0] = preprocessing_data.rgb_mat3.at<float>(tag,0);
+						draw_color[1] = preprocessing_data.rgb_mat3.at<float>(tag,1);
+						draw_color[2] = preprocessing_data.rgb_mat3.at<float>(tag,2);
+						RECTANGLE *rect2;
+						rect2 = new RECTANGLE();
+						rect2->h = 650.0;
+						rect2->w = 15.0;
+						rect2->x = 300+i*15-5;
+						rect2->y = y_position+1350;
+						DrawRectWithOpenGL(rect2,draw_color);
+						delete rect2;
+						DrawText_FTGL_withColor(i,300+i*15-5,y_position+1000,12.0, 1.0, 1.0, 1.0);
+						//DrawText_FTGL_withColor(i,300+i*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
+						//														  preprocessing_data.rgb_mat3.at<float>(tag,1),
+						//													      preprocessing_data.rgb_mat3.at<float>(tag,2));
+						for(int j=preprocessing_data.select_station.size()-1 ; j>=0 && i!=23 ;j--)
 						{
 							//int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_current.at<float>(i,j);
 							//int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_next.at<float>(i,j);
@@ -135,43 +149,27 @@ namespace OpenGLForm{
 						}
 					}
 					/*
-					for(int i=0;i<23;i++)
-					{
-						if(preprocessing_data.data_dim>=6)
-						{
-							int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_current.at<float>(i,5);
-							int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_next.at<float>(i,5);
-							//int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].data[0]
-							//					  + preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].data[1]
-							//					  + preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].data[2]
-							//					  + preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].data[3]
-							//					  + preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].data[4]
-							//					  + preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].data[5];
-							//int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i+1].data[0]
-							//				   + preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i+1].data[1]
-							//				   + preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i+1].data[2]
-							//				   + preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i+1].data[3]
-							//				   + preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i+1].data[4]
-							//				   + preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i+1].data[5];
-							glPushMatrix(); 
-							glBegin(GL_QUADS); 
-							glColor3f(preprocessing_data.data_color[5][0],preprocessing_data.data_color[5][1],preprocessing_data.data_color[5][2]);  
-								glVertex3f(i*15,y_position,0);
-								glVertex3f((i+1)*15,y_position,0);
-								glVertex3f((i+1)*15,y_position-hour_data_next,0); 
-								glVertex3f(i*15,y_position-hour_data_current,0);						
-							glEnd();
-							glPopMatrix();
-						}
-					}
-					*/
 					int tag = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[23].cluster_tag;
-					DrawText_FTGL_withColor(23,23*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
-																			preprocessing_data.rgb_mat3.at<float>(tag,1),
-																			preprocessing_data.rgb_mat3.at<float>(tag,2));
+					vector<float> draw_color(3);
+					draw_color[0] = preprocessing_data.rgb_mat3.at<float>(tag,0);
+					draw_color[1] = preprocessing_data.rgb_mat3.at<float>(tag,1);
+					draw_color[2] = preprocessing_data.rgb_mat3.at<float>(tag,2);
+					RECTANGLE *rect3;
+					rect3 = new RECTANGLE();
+					rect3->h = 650.0;
+					rect3->w = 15.0;
+					rect3->x = 23*15-5;
+					rect3->y = y_position+1350;
+					DrawRectWithOpenGL(rect3,draw_color);
+					delete rect3;
+					DrawText_FTGL_withColor(23,23*15-5,y_position+750,12.0, 1.0, 1.0, 1.0);
+					//DrawText_FTGL_withColor(23,23*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
+					//														preprocessing_data.rgb_mat3.at<float>(tag,1),
+					//														preprocessing_data.rgb_mat3.at<float>(tag,2));
 					DrawText_FTGL_withColor(23,300+23*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
 																				preprocessing_data.rgb_mat3.at<float>(tag,1),
 																				preprocessing_data.rgb_mat3.at<float>(tag,2));
+																				*/
 					//DrawText_FTGL(23,23*15-5,y_position+750,12.0);
 					//DrawText_FTGL(23,300+23*15-5,y_position+750,12.0);
 
@@ -188,11 +186,11 @@ namespace OpenGLForm{
 			//glScalef(0.5+scale_factor[1]+scale_x[1], 0.5+scale_factor[1]+scale_y[1], 1.0+scale_factor[1]+scale_z[1]);
 			glGetDoublev(GL_MODELVIEW_MATRIX, ModelViewMatrix2);		
 
-			for(int day=0; day<preprocessing_data.dim ;day++)
+			for(int i=0; i<preprocessing_data.dim ;i++)
 			{
 				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};					
+								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};					
 				//int home[] = {29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77};//43
 				//int home_num = sizeof(home)/sizeof(home[0]);
 				//int work_school[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88};//20
@@ -201,7 +199,7 @@ namespace OpenGLForm{
 				//for(int i=0;i<home_num;i++)  dim_label[ home[i] ] = 2;
 				//for(int i=0;i<work_school_num;i++)  dim_label[ work_school[i] ] = 3;
 
-				int dim_num = dim_index[day];
+				int dim_num = dim_index[i];
 				glPointSize( 8.0 );
 
 				glPushMatrix();
@@ -211,9 +209,9 @@ namespace OpenGLForm{
 					glColor3f( 0.8f, 0.0, 0.0f );
 				else
 				{
-					glColor3f(preprocessing_data.station_rgb.at<float>(day,0), 
-					          preprocessing_data.station_rgb.at<float>(day,1),
-							  preprocessing_data.station_rgb.at<float>(day,2));
+					glColor3f(preprocessing_data.station_color_mat.at<float>(i,0), 
+					          preprocessing_data.station_color_mat.at<float>(i,1),
+							  preprocessing_data.station_color_mat.at<float>(i,2));
 				}
 				
 				//if(dim_label[dim_num] == 2)
@@ -224,7 +222,7 @@ namespace OpenGLForm{
 				//	glColor3f( 0.0f, 0.0, 1.0f );
 				//else
 				//	glColor3f( 1.0f, 1.0, 1.0f );
-				glVertex2f(80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0), 70 + 1.5*preprocessing_data.position_on_2D.at<double>(day,1) );
+				glVertex2f(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 70 + 1.5*preprocessing_data.position_on_2D.at<double>(i,1) );
 				glEnd();
 				glPopMatrix();
 					
@@ -272,35 +270,32 @@ namespace OpenGLForm{
 			{
 				stationView();
 
-				//if( line_draw )
-				//{
+				glPushMatrix();
 
-					glPushMatrix();
+				glColor3f( 1.0f, 1.0, 1.0f );
 
-					glColor3f( 1.0f, 1.0, 1.0f );
+				glBegin(GL_LINES);
+				glVertex2d(temp_line->x1,temp_line->y1 ); 
+				glVertex2d(temp_line->x2,temp_line->y1 ); 
+				glEnd();
 
-					glBegin(GL_LINES);
-					glVertex2d(temp_line->x1,temp_line->y1 ); 
-					glVertex2d(temp_line->x2,temp_line->y1 ); 
-					glEnd();
+				glBegin(GL_LINES);
+				glVertex2d(temp_line->x1,temp_line->y1 ); 
+				glVertex2d(temp_line->x1,temp_line->y2 ); 
+				glEnd();
 
-					glBegin(GL_LINES);
-					glVertex2d(temp_line->x1,temp_line->y1 ); 
-					glVertex2d(temp_line->x1,temp_line->y2 ); 
-					glEnd();
+				glBegin(GL_LINES);
+				glVertex2d(temp_line->x1,temp_line->y2 ); 
+				glVertex2d(temp_line->x2,temp_line->y2 ); 
+				glEnd();
 
-					glBegin(GL_LINES);
-					glVertex2d(temp_line->x1,temp_line->y2 ); 
-					glVertex2d(temp_line->x2,temp_line->y2 ); 
-					glEnd();
+				glBegin(GL_LINES);
+				glVertex2d(temp_line->x2,temp_line->y1 ); 
+				glVertex2d(temp_line->x2,temp_line->y2 ); 
+				glEnd();
 
-					glBegin(GL_LINES);
-					glVertex2d(temp_line->x2,temp_line->y1 ); 
-					glVertex2d(temp_line->x2,temp_line->y2 ); 
-					glEnd();
-
-					glPopMatrix();
-				//}
+				glPopMatrix();
+	
 			}
 
 			SwapOpenGLBuffers();
@@ -328,7 +323,7 @@ namespace OpenGLForm{
 			{
 				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};
+								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};
 
 				//System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
 
@@ -363,7 +358,7 @@ namespace OpenGLForm{
 			{
 				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};
+								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};
 
 				char* station_name[] = {"","","","","","","","松山機場","中山國中","","忠孝復興",
 										   "大安","科技大樓","六張犁","麟光","辛亥","萬芳醫院","萬芳社區","木柵","動物園","",
@@ -389,7 +384,7 @@ namespace OpenGLForm{
 				System::Windows::Forms::MessageBox::Show( name + " " );
 				
 
-				System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
+				//System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
 
 				//dim_label[ dim_index[day] ] = 4;
 				//if(dim_label[ dim_index[day] ] != 4) dim_label[ dim_index[day] ] = 4;
@@ -425,7 +420,7 @@ namespace OpenGLForm{
 			{
 				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};
+								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};
 				
 				//if(dim_index[day]>=7 && dim_index[day] <= 180) 
 				//{
@@ -740,7 +735,7 @@ namespace OpenGLForm{
 
 		int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 							35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-							24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};			
+							24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};			
 		int station_num = sizeof(dim_index)/sizeof(dim_index[0]);
 		int home[] = {29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77};//43
 		int home_num = sizeof(home)/sizeof(home[0]);

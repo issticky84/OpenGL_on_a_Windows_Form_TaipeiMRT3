@@ -482,8 +482,8 @@ namespace OpenGLForm{
 				 vector2 Move(e->X - last_X[0] , e->Y - last_Y[0]);
 				//move_x[0] = Move.x * (1 + scale_x[0]);
 				//move_y[0] = Move.y * (1 + scale_y[0]);
-				move_x[0] = Move.x;
-				move_y[0] = Move.y;
+				move_x[0] += 0.3*Move.x;
+				move_y[0] += 0.3*Move.y;
 
 			}
 			

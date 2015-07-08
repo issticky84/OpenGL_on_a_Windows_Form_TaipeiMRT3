@@ -124,7 +124,7 @@ void Preprocessing_Data::circle_MRT_station()
 		int b = data_color[t][2]*255;
 		t++;
 		//System::Windows::Forms::MessageBox::Show( select_station[0] + " " + data_color[i][0] + " " + data_color[i][1] + " " + data_color[i][2]);	
-		circle(image, Point(x,y),6, Scalar( b, g, r ),2, 8, 0);
+		circle(image, Point(x,y),6, Scalar( b, g, r ),CV_FILLED, 8, 0);
 	}
 	//System::Windows::Forms::MessageBox::Show( select_station[0] + " " + select_station[1] + " " + select_station[2]);	
 	
@@ -160,7 +160,7 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	int work_school_num = sizeof(work_school)/sizeof(work_school[0]);
 	int tour[] = {22,7,19};
 	int tour_num = sizeof(tour)/sizeof(tour[0]);
-
+	
 	Mat dim_data_enter_avg = Mat::zeros(day_amount,24,CV_32F);
 	Mat dim_data_out_avg = Mat::zeros(day_amount,24,CV_32F);
 	Mat enter_total = Mat::zeros(day_amount,1,CV_32F);
@@ -186,7 +186,35 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 			day++;
 		}
 	}
+	
+	/*
+	for(int i=0;i<month_vec.size();i++)
+	{
+		for(int j=0;j<month_vec[i].day_vec.size();j++)
+		{
+			for(int s=0;s<select_station.size();s++)
+			{
+				int dim_num = select_station[s];
+				float total_enter = 0.0;
+				float total_out = 0.0;
+				for(int u=0;u<24;u++)
+				{
+					month_vec[i].day_vec[j].hour_vec[u].avg_enter[ dim_num ] = month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
+					month_vec[i].day_vec[j].hour_vec[u].avg_out[ dim_num ] = month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ];
+					total_enter += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
+					total_out += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ];
+				}
 
+				for(int u=0;u<24;u++)
+				{
+					month_vec[i].day_vec[j].hour_vec[u].avg_enter[ dim_num ] /= total_enter;
+					month_vec[i].day_vec[j].hour_vec[u].avg_out[ dim_num ] /= total_out;
+				}
+			}
+		}
+	}
+	*/
+	
 	output_mat_as_csv_file_float("dim_data_enter.csv",dim_data_enter_avg);
 	output_mat_as_csv_file_float("dim_data_out.csv",dim_data_out_avg);
 
@@ -201,6 +229,7 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 
 	output_mat_as_csv_file_float("dim_data_enter2.csv",dim_data_enter_avg);
 	output_mat_as_csv_file_float("dim_data_out2.csv",dim_data_out_avg);
+	
 	/*
 	Mat model = Mat::zeros(hour_amount,data_dim,CV_32F);
 	int t = 0;
@@ -253,7 +282,7 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 		}
 	}
 	*/
-
+	
 	Mat model = Mat::zeros(day_amount*24,2,CV_32F);
 	int t = 0;
 	for(int d=0;d<day_amount;d++)
@@ -265,7 +294,26 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 			t++;
 		}
 	}
-
+	/*
+	Mat model = Mat::zeros(day_amount*24,2*select_station.size(),CV_32F);
+	int t = 0;
+	for(int i=0;i<month_vec.size();i++)
+	{
+		for(int j=0;j<month_vec[i].day_vec.size();j++)
+		{
+			for(int u=0;u<24;u++)
+			{
+				for(int s=0;s<select_station.size();s++)
+				{
+					int dim_num = select_station[s];
+					model.at<float>(t,s*2) = month_vec[i].day_vec[j].hour_vec[u].avg_enter[ dim_num ];
+					model.at<float>(t,s*2+1) = month_vec[i].day_vec[j].hour_vec[u].avg_enter[ dim_num ];
+				}
+				t++;
+			}
+		}
+	}
+	*/
 	output_mat_as_csv_file_float("model_original.csv",model);
 	normalize(model,model,0,1,NORM_MINMAX);
 
@@ -328,7 +376,7 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	//==============K means clustering with no speed up==================//
 	
     Mat cluster_tag; //Tag:0~k-1
-    int attempts = 1;//應該是執行次數
+    int attempts = 5;//應該是執行次數
 	Mat cluster_centers;
 	//使用k means分群
 	kmeans(model, k, cluster_tag,TermCriteria(CV_TERMCRIT_ITER|CV_TERMCRIT_EPS, 100, 0.0001), attempts,KMEANS_PP_CENTERS,cluster_centers);
@@ -414,6 +462,9 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	
 	output_mat_as_csv_file_double("position.csv",position);
 	
+
+	Position_by_histogram(histo_position, cluster_centers);
+	position = histo_position.clone();
 	//======================raw data 3D color by lab alignment===================//
 	
 	clock_t begin10 = clock();
@@ -465,7 +516,7 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 
 	int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 					   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-					   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68};
+					   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};
 	dim = sizeof(dim_index)/sizeof(dim_index[0]);
 
 	
@@ -623,6 +674,39 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 	station_rgb = lab_alignment_dim1(mds_mat_1D_float,30).clone();
 
 	output_mat_as_csv_file_float("station_rgb.csv",station_rgb);
+	
+	//station color by covariance
+	Mat station_cov = Mat::zeros(dim,1,CV_32F);
+	for(int s=0;s<dim;s++)
+	{
+		Mat station_data = Mat::zeros(day_amount,24*2,CV_32F);
+		int dim_num = dim_index[s];
+		int d = 0;
+		for(int i=0;i<month_vec.size();i++)
+		{
+			for(int j=0;j<month_vec[i].day_vec.size();j++)
+			{
+				for(int u=0;u<24;u++)
+				{				
+					station_data.at<float>(d,u*2) = month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ] ;
+					station_data.at<float>(d,u*2+1) = month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ] ;
+				}
+				d++;
+			}
+		}
+
+		Mat mean, cov;
+		calcCovMat(station_data, mean, cov);
+		Mat eigenVal, eigenVec;
+		eigen(cov, eigenVal, eigenVec);
+		station_cov.at<float>(s,0) = eigenVal.at<float>(0,0);
+	}
+
+	normalize(station_cov.col(0),station_cov.col(0),0,10,NORM_MINMAX); 
+	station_color_mat = lab_alignment_dim1(station_cov,30).clone();
+	
+	output_mat_as_csv_file_float("station_cov.csv",station_cov);
+	output_mat_as_csv_file_float("station_color_mat.csv",station_color_mat);
 }
 
 bool Preprocessing_Data::check_duplicated_station(int index)
@@ -4705,6 +4789,102 @@ void Preprocessing_Data::sort_histogram_by_Ev_by_TSP_coarse_to_fine2(Mat cluster
 	}
 
 	fout.close();	
+}
+
+void Preprocessing_Data::Position_by_histogram(Mat& histo_position, Mat cluster_center)//histo_position:double
+{
+	int k = histogram.cols;
+	int five_minutes = histogram.rows;
+	//Mat histogram_copy = histogram.clone();
+	Mat histogram_sort = histogram.clone();
+	
+	Mat Ev = Mat::zeros(five_minutes,cluster_center.cols,CV_32F);
+	for(int i=0;i<five_minutes;i++)
+	{
+		float base = 0;
+		for(int j=0;j<k;j++)
+		{
+			Ev.row(i) += (histogram.at<int>(i,j)/24.0)*cluster_center.row(j);
+		}
+	}
+	//output_mat_as_csv_file("Ev.csv",Ev);	
+
+	Mat components, coeff;
+	int rDim = 1;
+	reduceDimPCA(Ev, rDim, components, coeff);
+	Mat Ev_PCA1D = coeff * components;
+
+	class histo_info{
+	public:
+		int* vote;
+		int cols;
+		int key;
+		Mat histo;
+		Mat Ev_PCA1D;
+	};
+	vector< histo_info > histo_vec(five_minutes);
+	for(int i=0;i<five_minutes;i++)
+	{
+		Ev_PCA1D.row(i).copyTo(histo_vec[i].Ev_PCA1D);
+		histogram.row(i).copyTo(histo_vec[i].histo);
+		histo_vec[i].key = i;
+		histo_vec[i].cols = k;
+		histo_vec[i].vote = new int[k];
+		for(int j=0;j<k;j++)
+		{
+			histo_vec[i].vote[j] = histogram.at<int>(i,j);
+		}
+	}
+	
+	class sort_by_votes{
+	public:
+		inline bool operator() (histo_info& h1, histo_info& h2)
+		{
+			return h1.Ev_PCA1D.at<float>(0,0) < h2.Ev_PCA1D.at<float>(0,0);
+		}
+	};
+
+	sort(histo_vec.begin(), histo_vec.end(), sort_by_votes() );
+	
+
+	//for(int i=0;i<five_minutes;i++)
+	//	cout << histo_vec[i].key << " " ;
+	//cout << endl;
+
+	Mat dist = Mat::zeros(1,five_minutes-1,CV_64F);
+
+	for(int i=0;i<five_minutes-1;i++)
+	{
+		double vote_dist = 0.0;
+		for(int j=0;j<k;j++)
+		{
+			vote_dist += abs( histo_vec[i].histo.at<int>(0,j) - histo_vec[i+1].histo.at<int>(0,j) );
+			//vote_dist += sqrt( histo_vec[i].histo.at<int>(0,j)/600.0 * histo_vec[i+1].histo.at<int>(0,j)/600.0 );
+		}
+		//vote_dist = -log( MAX(vote_dist,0.0000001) );
+		dist.at<double>(0,i) = pow(vote_dist,2);
+	}
+	//output_mat_as_csv_file_double("vote_dist.csv",dist.t());
+	
+	Mat histo_position_sort = Mat::zeros(five_minutes,1,CV_64F);
+	histo_position_sort.at<double>(0,0) = 0.0;
+	double accumulate_dist = 0.0;
+	for(int i=0;i<five_minutes-1;i++)
+	{
+		accumulate_dist += dist.at<double>(0,i);
+		histo_position_sort.at<double>(i+1,0) = accumulate_dist;
+	}
+
+	normalize(histo_position_sort.col(0),histo_position_sort.col(0),1,5000,NORM_MINMAX); 
+	//cout << endl << dist << endl << endl;
+	//cout << endl << histo_position << endl;
+
+	for(int i=0;i<five_minutes;i++)
+	{
+		int key = histo_vec[i].key;
+		histo_position.at<double>(key,0) = histo_position_sort.at<double>(i,0);
+	}
+
 }
 
 void Preprocessing_Data::Position_by_histogram_sort_index(Mat& histo_position,Mat histo_sort_index)
