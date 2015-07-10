@@ -140,7 +140,11 @@ public:
 	bool check_duplicated_station(int);
 
 	Mat station_rgb;
-	Mat station_color_mat;
+	Mat station_color_mat_weekday;
+	Mat station_color_mat_weekend;
+
+	int weekday_amount;
+	int weekend_amount;
 };
 
 

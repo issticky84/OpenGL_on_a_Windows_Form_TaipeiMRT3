@@ -222,8 +222,11 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	{
 		for(int u=0;u<24;u++)
 		{
-			dim_data_enter_avg.at<float>(d,u) /= enter_total.at<float>(d,0);
-			dim_data_out_avg.at<float>(d,u) /= out_total.at<float>(d,0);
+			if(enter_total.at<float>(d,0)!=0 && out_total.at<float>(d,0)!=0)
+			{
+				dim_data_enter_avg.at<float>(d,u) /= enter_total.at<float>(d,0);
+				dim_data_out_avg.at<float>(d,u) /= out_total.at<float>(d,0);
+			}
 		}
 	}
 
@@ -516,7 +519,7 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 
 	int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 					   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-					   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};
+					   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94,9};
 	dim = sizeof(dim_index)/sizeof(dim_index[0]);
 
 	
@@ -524,12 +527,16 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 	Mat dim_data_out_avg = Mat::zeros(dim,24,CV_32F);
 	Mat enter_total = Mat::zeros(dim,1,CV_32F);
 	Mat out_total = Mat::zeros(dim,1,CV_32F);
+	weekday_amount = 0;
+	weekend_amount = 0;
 	for(int s=0;s<dim;s++)
 	{
 		for(int i=0;i<month_vec.size();i++)
 		{
 			for(int j=0;j<month_vec[i].day_vec.size();j++)
 			{
+				if(zellers_congruence_for_week(2011, i+1, j+1)>=1 && zellers_congruence_for_week(2011, i+1, j+1) <=5) weekday_amount++;
+				else if( zellers_congruence_for_week(2011, i+1, j+1)==6 || zellers_congruence_for_week(2011, i+1, j+1)==7 ) weekend_amount++;
 				for(int u=0;u<24;u++)
 				{		
 					int dim_num = dim_index[s];
@@ -675,23 +682,33 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 
 	output_mat_as_csv_file_float("station_rgb.csv",station_rgb);
 	
-	//station color by covariance
-	Mat station_cov = Mat::zeros(dim,1,CV_32F);
+	//station color by covariance (weekday)
+	Mat station_weekday_cov = Mat::zeros(dim,1,CV_32F);
 	for(int s=0;s<dim;s++)
 	{
-		Mat station_data = Mat::zeros(day_amount,24*2,CV_32F);
+		Mat station_data = Mat::zeros(weekday_amount,24*2,CV_32F);
 		int dim_num = dim_index[s];
 		int d = 0;
 		for(int i=0;i<month_vec.size();i++)
 		{
 			for(int j=0;j<month_vec[i].day_vec.size();j++)
 			{
-				for(int u=0;u<24;u++)
-				{				
-					station_data.at<float>(d,u*2) = month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ] ;
-					station_data.at<float>(d,u*2+1) = month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ] ;
+				//float enter_total = 0.0;
+				//float out_total = 0.0;
+				if( zellers_congruence_for_week(2011, i+1, j+1)>=1 && zellers_congruence_for_week(2011, i+1, j+1)<=5 ) 
+				{
+					for(int u=0;u<24;u++)
+					{				
+						station_data.at<float>(d,u*2) = month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ] ;
+						station_data.at<float>(d,u*2+1) = month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ] ;
+
+						//enter_total += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ] ;
+						//out_total += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ] ;
+					}
+				
+					normalize(station_data.row(d),station_data.row(d),0,1,NORM_MINMAX); 
+					d++;
 				}
-				d++;
 			}
 		}
 
@@ -699,14 +716,57 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 		calcCovMat(station_data, mean, cov);
 		Mat eigenVal, eigenVec;
 		eigen(cov, eigenVal, eigenVec);
-		station_cov.at<float>(s,0) = eigenVal.at<float>(0,0);
+		station_weekday_cov.at<float>(s,0) = eigenVal.at<float>(0,0);
 	}
 
-	normalize(station_cov.col(0),station_cov.col(0),0,10,NORM_MINMAX); 
-	station_color_mat = lab_alignment_dim1(station_cov,30).clone();
+	normalize(station_weekday_cov.col(0),station_weekday_cov.col(0),0,10,NORM_MINMAX); 
+	station_color_mat_weekday = lab_alignment_dim1(station_weekday_cov,30).clone();
 	
-	output_mat_as_csv_file_float("station_cov.csv",station_cov);
-	output_mat_as_csv_file_float("station_color_mat.csv",station_color_mat);
+	output_mat_as_csv_file_float("station_weekday_cov.csv",station_weekday_cov);
+	output_mat_as_csv_file_float("station_color_mat_weekday.csv",station_color_mat_weekday);
+	///////////////////////////////////////////////////////////////////////////////////////////
+	//station color by covariance (weekend)
+	Mat station_weekend_cov = Mat::zeros(dim,1,CV_32F);
+	for(int s=0;s<dim;s++)
+	{
+		Mat station_data = Mat::zeros(weekend_amount,24*2,CV_32F);
+		int dim_num = dim_index[s];
+		int d = 0;
+		for(int i=0;i<month_vec.size();i++)
+		{
+			for(int j=0;j<month_vec[i].day_vec.size();j++)
+			{
+				//float enter_total = 0.0;
+				//float out_total = 0.0;
+				if( zellers_congruence_for_week(2011, i+1, j+1)==6 || zellers_congruence_for_week(2011, i+1, j+1)==7 ) 
+				{
+					for(int u=0;u<24;u++)
+					{				
+						station_data.at<float>(d,u*2) = month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ] ;
+						station_data.at<float>(d,u*2+1) = month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ] ;
+
+						//enter_total += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ] ;
+						//out_total += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ] ;
+					}
+
+					normalize(station_data.row(d),station_data.row(d),0,1,NORM_MINMAX); 
+					d++;
+				}
+			}
+		}
+
+		Mat mean, cov;
+		calcCovMat(station_data, mean, cov);
+		Mat eigenVal, eigenVec;
+		eigen(cov, eigenVal, eigenVec);
+		station_weekend_cov.at<float>(s,0) = eigenVal.at<float>(0,0);
+	}
+
+	normalize(station_weekend_cov.col(0),station_weekend_cov.col(0),0,10,NORM_MINMAX); 
+	station_color_mat_weekend = lab_alignment_dim1(station_weekend_cov,30).clone();
+	
+	output_mat_as_csv_file_float("station_weekend_cov.csv",station_weekend_cov);
+	output_mat_as_csv_file_float("station_color_mat_weekend.csv",station_color_mat_weekend);
 }
 
 bool Preprocessing_Data::check_duplicated_station(int index)

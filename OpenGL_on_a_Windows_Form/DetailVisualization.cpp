@@ -129,12 +129,12 @@ namespace OpenGLForm{
 			//strcpy(title[3],"辦公/學校 (出站)");
 			//strcpy(title[4],"觀光區 (進站)");
 			//strcpy(title[5],"觀光區 (出站)");
-			strcpy(title[0],"Residential (In)");
-			strcpy(title[1],"Residential (Out)");
-			strcpy(title[2],"Commercial/School (In)");
-			strcpy(title[3],"Commercial/School (Out)");
-			strcpy(title[4],"Tourism (In)");
-			strcpy(title[5],"Tourism (Out)");
+			//strcpy(title[0],"Residential (In)");
+			//strcpy(title[1],"Residential (Out)");
+			//strcpy(title[2],"Commercial/School (In)");
+			//strcpy(title[3],"Commercial/School (Out)");
+			//strcpy(title[4],"Tourism (In)");
+			//strcpy(title[5],"Tourism (Out)");
 		}
 
 		System::Void DetailVisualization::DrawLine(int x1,int y1,int x2,int y2)

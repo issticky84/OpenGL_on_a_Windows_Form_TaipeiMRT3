@@ -24,6 +24,7 @@ namespace OpenGLForm{
 			System::Void DrawText_FTGL_withColor(int,int,int,float, float,float,float);
 			System::Void DrawCircle(int,int,float,float,float,float);
 			System::Void time_string();
+			System::Void DrawTitle_FTGL(int t,int x, int y);
 
 			System::Void themeriverView();
 			System::Void stationView();
@@ -36,6 +37,7 @@ namespace OpenGLForm{
 			int line_idx;
 			System::Void FindPointInRect();
 			System::Void FindStation(int x,int y);
+			System::Void DrawRect(int x, int y, int h, int w, vector<float>);
 
 			int* dim_label;
 	};

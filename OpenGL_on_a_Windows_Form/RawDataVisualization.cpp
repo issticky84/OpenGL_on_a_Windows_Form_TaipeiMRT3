@@ -35,7 +35,7 @@ namespace OpenGLForm{
 
 			int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 								35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-								24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};			
+								24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94,9};			
 			int station_num = sizeof(dim_index)/sizeof(dim_index[0]);
 			int home[] = {29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77};//43
 			int home_num = sizeof(home)/sizeof(home[0]);
@@ -50,7 +50,7 @@ namespace OpenGLForm{
 
 	System::Void RawDataVisualization::themeriverView()
 	{
-			glTranslatef(40.0+move_x[1],100.0+move_y[1],0.0+move_z[1]);
+			glTranslatef(35.0+move_x[1],100.0+move_y[1],0.0+move_z[1]);
 			glScalef(scale_factor[1]+scale_x[1]+0.6, scale_factor[1]+scale_y[1]-0.480, scale_factor[1]+scale_z[1]);
 			glGetDoublev(GL_MODELVIEW_MATRIX, ModelViewMatrix2);//////////////
 
@@ -64,34 +64,45 @@ namespace OpenGLForm{
 					int this_month = preprocessing_data.find_month_and_day[idx].at<int>(0,0);
 					int this_day = preprocessing_data.find_month_and_day[idx].at<int>(0,1);
 
-					DrawText_FTGL(this_month+1,-30,y_position_text,16.0);
-					DrawText_FTGL(this_day+1,-15,y_position_text,16.0);
+					DrawText_FTGL(this_month+1,-20,y_position_text,16.0);
+					DrawText_FTGL(this_day+1,-5,y_position_text,16.0);
 					y_position_text+=10000;
 
-					
+					//畫折線圖的刻度:1000
+					vector<float> draw_color(3);
+					draw_color[0] = 0.8; draw_color[1] = 1.0; draw_color[2] = 1.0;
+					DrawText_FTGL(1000,15,y_position-1000,10.0);
+					DrawRect(40, y_position-1000, 30.0, 630.0, draw_color);
+					//畫折線圖的刻度:2000
+					DrawText_FTGL(2000,15,y_position-2000,10.0);
+					DrawRect(40, y_position-2000, 30.0, 630.0, draw_color);
+					//畫折線圖的刻度:3000
+					DrawText_FTGL(3000,15,y_position-3000,10.0);
+					DrawRect(40, y_position-3000, 30.0, 630.0, draw_color);
+					//畫折線圖的刻度:4000
+					DrawText_FTGL(4000,15,y_position-4000,10.0);
+					DrawRect(40, y_position-4000, 30.0, 630.0, draw_color);
+					//畫折線圖的刻度:5000
+					DrawText_FTGL(5000,15,y_position-5000,10.0);
+					DrawRect(40, y_position-5000, 30.0, 630.0, draw_color);
+
 					for(int i=5;i<=23;i++)
 					{
 						int color_index = 0;
-						//DrawText_FTGL(i,i*15-5,y_position+750,12.0);
+	
 						int tag = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].cluster_tag;
+
 
 						vector<float> draw_color(3);
 						draw_color[0] = preprocessing_data.rgb_mat3.at<float>(tag,0);
 						draw_color[1] = preprocessing_data.rgb_mat3.at<float>(tag,1);
 						draw_color[2] = preprocessing_data.rgb_mat3.at<float>(tag,2);
-						RECTANGLE *rect;
-						rect = new RECTANGLE();
-						rect->h = 650.0;
-						rect->w = 15.0;
-						rect->x = i*15-5;
-						rect->y = y_position+1350;
-						DrawRectWithOpenGL(rect,draw_color);
-						delete rect;
-						DrawText_FTGL_withColor(i,i*15-5,y_position+1000,12.0, 1.0, 1.0, 1.0);
-						//DrawText_FTGL_withColor(i,i*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
-						//													  preprocessing_data.rgb_mat3.at<float>(tag,1),
-						//													  preprocessing_data.rgb_mat3.at<float>(tag,2));
+						//畫數字(小時)
+						DrawRect(i*15-5, y_position+1350, 650.0, 15.0, draw_color);
 
+						DrawText_FTGL_withColor(i,i*15-5,y_position+1000,12.0, 1.0, 1.0, 1.0);
+
+						//畫折線圖
 						for(int j=preprocessing_data.select_station.size()-1; j>=0 && i!=23 ;j--)
 						{
 							int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].enter[ preprocessing_data.select_station[j] ];
@@ -116,22 +127,11 @@ namespace OpenGLForm{
 						draw_color[0] = preprocessing_data.rgb_mat3.at<float>(tag,0);
 						draw_color[1] = preprocessing_data.rgb_mat3.at<float>(tag,1);
 						draw_color[2] = preprocessing_data.rgb_mat3.at<float>(tag,2);
-						RECTANGLE *rect2;
-						rect2 = new RECTANGLE();
-						rect2->h = 650.0;
-						rect2->w = 15.0;
-						rect2->x = 300+i*15-5;
-						rect2->y = y_position+1350;
-						DrawRectWithOpenGL(rect2,draw_color);
-						delete rect2;
+						DrawRect(300+i*15-5, y_position+1350, 650.0, 15.0, draw_color);
 						DrawText_FTGL_withColor(i,300+i*15-5,y_position+1000,12.0, 1.0, 1.0, 1.0);
-						//DrawText_FTGL_withColor(i,300+i*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
-						//														  preprocessing_data.rgb_mat3.at<float>(tag,1),
-						//													      preprocessing_data.rgb_mat3.at<float>(tag,2));
+
 						for(int j=preprocessing_data.select_station.size()-1 ; j>=0 && i!=23 ;j--)
 						{
-							//int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_current.at<float>(i,j);
-							//int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].river_table_next.at<float>(i,j);
 							int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].out[ preprocessing_data.select_station[j] ];
 							int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i+1].out[ preprocessing_data.select_station[j] ];
 
@@ -148,28 +148,7 @@ namespace OpenGLForm{
 							color_index++;
 						}
 					}
-					/*
-					int tag = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[23].cluster_tag;
-					vector<float> draw_color(3);
-					draw_color[0] = preprocessing_data.rgb_mat3.at<float>(tag,0);
-					draw_color[1] = preprocessing_data.rgb_mat3.at<float>(tag,1);
-					draw_color[2] = preprocessing_data.rgb_mat3.at<float>(tag,2);
-					RECTANGLE *rect3;
-					rect3 = new RECTANGLE();
-					rect3->h = 650.0;
-					rect3->w = 15.0;
-					rect3->x = 23*15-5;
-					rect3->y = y_position+1350;
-					DrawRectWithOpenGL(rect3,draw_color);
-					delete rect3;
-					DrawText_FTGL_withColor(23,23*15-5,y_position+750,12.0, 1.0, 1.0, 1.0);
-					//DrawText_FTGL_withColor(23,23*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
-					//														preprocessing_data.rgb_mat3.at<float>(tag,1),
-					//														preprocessing_data.rgb_mat3.at<float>(tag,2));
-					DrawText_FTGL_withColor(23,300+23*15-5,y_position+750,12.0, preprocessing_data.rgb_mat3.at<float>(tag,0),
-																				preprocessing_data.rgb_mat3.at<float>(tag,1),
-																				preprocessing_data.rgb_mat3.at<float>(tag,2));
-																				*/
+
 					//DrawText_FTGL(23,23*15-5,y_position+750,12.0);
 					//DrawText_FTGL(23,300+23*15-5,y_position+750,12.0);
 
@@ -186,19 +165,14 @@ namespace OpenGLForm{
 			//glScalef(0.5+scale_factor[1]+scale_x[1], 0.5+scale_factor[1]+scale_y[1], 1.0+scale_factor[1]+scale_z[1]);
 			glGetDoublev(GL_MODELVIEW_MATRIX, ModelViewMatrix2);		
 
-			for(int i=0; i<preprocessing_data.dim ;i++)
-			{
-				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
-								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};					
-				//int home[] = {29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77};//43
-				//int home_num = sizeof(home)/sizeof(home[0]);
-				//int work_school[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88};//20
-				//int work_school_num = sizeof(work_school)/sizeof(work_school[0]);
-				//for(int i=0;i<preprocessing_data.dim;i++) dim_label[ dim_index[i] ] = 1;
-				//for(int i=0;i<home_num;i++)  dim_label[ home[i] ] = 2;
-				//for(int i=0;i<work_school_num;i++)  dim_label[ work_school[i] ] = 3;
+			int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
+								35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
+								24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94,9};	
 
+			DrawTitle_FTGL(0,50,50); //draw text "weekday"
+			DrawTitle_FTGL(1,50,500);//draw text "weekend"
+			for(int i=0; i<preprocessing_data.dim ;i++)
+			{	
 				int dim_num = dim_index[i];
 				glPointSize( 8.0 );
 
@@ -209,20 +183,42 @@ namespace OpenGLForm{
 					glColor3f( 0.8f, 0.0, 0.0f );
 				else
 				{
-					glColor3f(preprocessing_data.station_color_mat.at<float>(i,0), 
-					          preprocessing_data.station_color_mat.at<float>(i,1),
-							  preprocessing_data.station_color_mat.at<float>(i,2));
+					glColor3f(preprocessing_data.station_color_mat_weekday.at<float>(i,0), 
+					          preprocessing_data.station_color_mat_weekday.at<float>(i,1),
+							  preprocessing_data.station_color_mat_weekday.at<float>(i,2));
 				}
 				
-				//if(dim_label[dim_num] == 2)
-				//	glColor3f( 1.0f, 0.0, 0.0f );
-				//else if(dim_label[dim_num] == 3)
-				//	glColor3f( 0.0f, 1.0, 0.0f );
-				//else if(dim_label[dim_num] == 4)
-				//	glColor3f( 0.0f, 0.0, 1.0f );
-				//else
-				//	glColor3f( 1.0f, 1.0, 1.0f );
-				glVertex2f(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 70 + 1.5*preprocessing_data.position_on_2D.at<double>(i,1) );
+
+				glVertex2f(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 70 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1) );
+				glEnd();
+				glPopMatrix();
+					
+				//DrawCircle(preprocessing_data.position_on_2D.at<double>(day,0),preprocessing_data.position_on_2D.at<double>(day,1), 2.0, 1, 0, 0);
+				//DrawCircle(preprocessing_data.position_on_2D.at<double>(day,0),preprocessing_data.position_on_2D.at<double>(day,1), 2.0, (rand() % 11)/10.0, (rand() % 11)/10.0, (rand() % 11)/10.0);
+				//DrawCircle(preprocessing_data.position_on_2D.at<double>(i,0),preprocessing_data.position_on_2D.at<double>(i,1), 2.0, preprocessing_data.station_color_mat_weekday.at<float>(i,0), 
+				//																													  preprocessing_data.station_color_mat_weekday.at<float>(i,1), 
+				//																													  preprocessing_data.station_color_mat_weekday.at<float>(i,2));
+			}	
+
+			for(int i=0; i<preprocessing_data.dim ;i++)
+			{	
+				int dim_num = dim_index[i];
+				glPointSize( 8.0 );
+
+				glPushMatrix();
+				glBegin( GL_POINTS );
+				
+				if(dim_label[dim_num]==4)
+					glColor3f( 0.8f, 0.0, 0.0f );
+				else
+				{
+					glColor3f(preprocessing_data.station_color_mat_weekend.at<float>(i,0), 
+					          preprocessing_data.station_color_mat_weekend.at<float>(i,1),
+							  preprocessing_data.station_color_mat_weekend.at<float>(i,2));
+				}
+				
+
+				glVertex2f(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 550 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1) );
 				glEnd();
 				glPopMatrix();
 					
@@ -301,6 +297,18 @@ namespace OpenGLForm{
 			SwapOpenGLBuffers();
 			
 	}
+
+	System::Void RawDataVisualization::DrawRect(int x, int y, int h, int w, vector<float> draw_color)
+	{
+		RECTANGLE *rect;
+		rect = new RECTANGLE();
+		rect->h = h;
+		rect->w = w;
+		rect->x = x;
+		rect->y = y;
+		DrawRectWithOpenGL(rect,draw_color);
+		delete rect;		
+	}
 		 
 	System::Void RawDataVisualization::FindPointInRect()
 	{
@@ -318,12 +326,12 @@ namespace OpenGLForm{
 		for(int day=0; day<preprocessing_data.dim ;day++)
 		{
 			int x = 80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0);
-			int y = 70 + 1.5*preprocessing_data.position_on_2D.at<double>(day,1);
+			int y = 70 + 1.2*preprocessing_data.position_on_2D.at<double>(day,1);
 			if(x >= pos1.x && x <= pos2.x && y >= pos1.y && y <= pos2.y)
 			{
 				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};
+								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94,9};
 
 				//System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
 
@@ -347,7 +355,7 @@ namespace OpenGLForm{
 		for(int day=0; day<preprocessing_data.dim ;day++)
 		{
 			int x = 80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0);
-			int y = 70 + 1.5*preprocessing_data.position_on_2D.at<double>(day,1);
+			int y = 70 + 1.2*preprocessing_data.position_on_2D.at<double>(day,1);
 			x *= (scale_factor[1] + scale_x[1]);
 			y *= (scale_factor[1] + scale_y[1]);
 			x += move_x[1];
@@ -356,11 +364,18 @@ namespace OpenGLForm{
 			//if( abs(pos_3D.x-x) <= 1.0 && abs(pos_3D.y-y) <= 1.0 )
 			if( (pos_3D.x-x) <= 2.3 && (pos_3D.x-x) >=0 &&  (pos_3D.y-y) <= 2.3 && (pos_3D.y-y) >=0 )
 			{
-				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
-								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};
+				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,
+					               53,52,51,50,42,132,91,89,133,88,
+								   29,28,26,25,21,13,14,15,17,18,
+								   70,69,66,64,63,62,60,59,43,38,
+								   37,35,34,32,174,175,176,177,178,128,
+								   45,46,47,48,96,95,85,84,83,81,
+								   79,78,77,22,7,19,24,8,11,16,
+								   41,40,39,36,130,97,82,80,42,131,
+								   93,92,86,27,65,61,58,57,56,33,
+								   85,71,68,94,9};
 
-				char* station_name[] = {"","","","","","","","松山機場","中山國中","","忠孝復興",
+				char* station_name[] = {"","","","","","","","松山機場","中山國中","南京東路","忠孝復興",
 										   "大安","科技大樓","六張犁","麟光","辛亥","萬芳醫院","萬芳社區","木柵","動物園","",
 				                           "大直","劍南路","西湖","港墘","文德","內湖","大湖公園","葫洲","東湖","南港軟體園區",
 				                           "南港展覽館(文湖線)","小碧潭","新店","新店區公所","七張","大坪林","景美","萬隆","公館","台電大樓",
@@ -409,7 +424,7 @@ namespace OpenGLForm{
 		for(int day=0; day<preprocessing_data.dim ;day++)
 		{
 			int x = 80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0);
-			int y = 70 + 1.5*preprocessing_data.position_on_2D.at<double>(day,1);
+			int y = 70 + 1.2*preprocessing_data.position_on_2D.at<double>(day,1);
 			x *= (scale_factor[1] + scale_x[1]);
 			y *= (scale_factor[1] + scale_y[1]);
 			x += move_x[1];
@@ -420,7 +435,7 @@ namespace OpenGLForm{
 			{
 				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};
+								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94,9};
 				
 				//if(dim_index[day]>=7 && dim_index[day] <= 180) 
 				//{
@@ -707,6 +722,22 @@ namespace OpenGLForm{
 			}
 	}
 
+	System::Void RawDataVisualization::DrawTitle_FTGL(int t,int x, int y)
+	{
+		strcpy(title[0],"Weekday");
+		strcpy(title[1],"Weekend");
+
+		glPushMatrix();
+
+		float font_size = 40*(scale_factor[2]+0.4+scale_x[2]);
+		font.FaceSize(font_size);
+		glColor3f(1.0, 1.0, 1.0);
+		glRasterPos2f(x , y + font.LineHeight());
+		font.Render(title[t]);
+
+		glPopMatrix();			
+	}
+
 	System::Void RawDataVisualization::time_string()
 	{
 		strcpy(five_minutes[0],":00");
@@ -735,7 +766,7 @@ namespace OpenGLForm{
 
 		int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 							35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-							24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94};			
+							24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94,9};			
 		int station_num = sizeof(dim_index)/sizeof(dim_index[0]);
 		int home[] = {29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77};//43
 		int home_num = sizeof(home)/sizeof(home[0]);
