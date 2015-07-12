@@ -163,8 +163,10 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	
 	Mat dim_data_enter_avg = Mat::zeros(day_amount,24,CV_32F);
 	Mat dim_data_out_avg = Mat::zeros(day_amount,24,CV_32F);
-	Mat enter_total = Mat::zeros(day_amount,1,CV_32F);
-	Mat out_total = Mat::zeros(day_amount,1,CV_32F);
+	//Mat enter_total = Mat::zeros(day_amount,1,CV_32F);
+	//Mat out_total = Mat::zeros(day_amount,1,CV_32F);
+	float enter_total = 0.0;
+	float out_total = 0.0;
 	int day = 0;
 	for(int i=0;i<month_vec.size();i++)
 	{
@@ -178,8 +180,10 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 					dim_data_enter_avg.at<float>(day,u) += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
 					dim_data_out_avg.at<float>(day,u) += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ];
 
-					enter_total.at<float>(day,0) += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
-					out_total.at<float>(day,0) += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ];
+					enter_total += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
+					out_total += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ];
+					//enter_total.at<float>(day,0) += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
+					//out_total.at<float>(day,0) += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ];
 				}
 			}
 
@@ -187,6 +191,8 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 		}
 	}
 	
+	enter_total /= day_amount;
+	out_total /= day_amount;
 	/*
 	for(int i=0;i<month_vec.size();i++)
 	{
@@ -222,11 +228,16 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	{
 		for(int u=0;u<24;u++)
 		{
-			if(enter_total.at<float>(d,0)!=0 && out_total.at<float>(d,0)!=0)
+			if(enter_total!=0 && out_total!=0)
 			{
-				dim_data_enter_avg.at<float>(d,u) /= enter_total.at<float>(d,0);
-				dim_data_out_avg.at<float>(d,u) /= out_total.at<float>(d,0);
+				dim_data_enter_avg.at<float>(d,u) /= enter_total;
+				dim_data_out_avg.at<float>(d,u) /= out_total;
 			}
+			//if(enter_total.at<float>(d,0)!=0 && out_total.at<float>(d,0)!=0)
+			//{
+			//	dim_data_enter_avg.at<float>(d,u) /= enter_total.at<float>(d,0);
+			//	dim_data_out_avg.at<float>(d,u) /= out_total.at<float>(d,0);
+			//}
 		}
 	}
 
@@ -391,7 +402,8 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	//if(cluster_centers.cols>=3) rgb_mat2 = lab_alignment(cluster_centers);
 	if(cluster_centers.cols>=3) rgb_mat3 = lab_alignment_new(cluster_centers,30).clone();
 	else if(cluster_centers.cols==1) rgb_mat3 = lab_alignment_dim1(cluster_centers,30).clone();
-	else if(cluster_centers.cols==2) rgb_mat3 = lab_alignment_dim2 (cluster_centers,30).clone();
+	//else if(cluster_centers.cols==2) rgb_mat3 = lab_alignment_dim2(cluster_centers,30).clone();
+	else if(cluster_centers.cols==2) rgb_mat3 = lab_alignment_new_dim2(cluster_centers).clone();
 	clock_t end5 = clock();
 	printf("\nLAB alignment elapsed time: %f\n",double(end5 - begin5) / CLOCKS_PER_SEC);
 
@@ -671,17 +683,18 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 
 	output_mat_as_csv_file_double("position_on_2D.csv",position_on_2D);
 
-	Mat mds_mat_1D = MDS(avg_dist,1).clone();
-	Mat mds_mat_1D_float = Mat::zeros(mds_mat_1D.rows,mds_mat_1D.cols,CV_32F);
-	for(int i=0;i<mds_mat_1D_float.rows;i++)
-	{
-		for(int j=0;j<mds_mat_1D_float.cols;j++)
-			mds_mat_1D_float.at<float>(i,j) = mds_mat_1D.at<double>(i,j);
-	}
-	station_rgb = lab_alignment_dim1(mds_mat_1D_float,30).clone();
+	//Mat mds_mat_1D = MDS(avg_dist,1).clone();
+	//Mat mds_mat_1D_float = Mat::zeros(mds_mat_1D.rows,mds_mat_1D.cols,CV_32F);
+	//for(int i=0;i<mds_mat_1D_float.rows;i++)
+	//{
+	//	for(int j=0;j<mds_mat_1D_float.cols;j++)
+	//		mds_mat_1D_float.at<float>(i,j) = mds_mat_1D.at<double>(i,j);
+	//}
+	//station_rgb = lab_alignment_dim1(mds_mat_1D_float,30).clone();
 
-	output_mat_as_csv_file_float("station_rgb.csv",station_rgb);
+	//output_mat_as_csv_file_float("station_rgb.csv",station_rgb);
 	
+	/*
 	//station color by covariance (weekday)
 	Mat station_weekday_cov = Mat::zeros(dim,1,CV_32F);
 	for(int s=0;s<dim;s++)
@@ -766,6 +779,16 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 	station_color_mat_weekend = lab_alignment_dim1(station_weekend_cov,30).clone();
 	
 	output_mat_as_csv_file_float("station_weekend_cov.csv",station_weekend_cov);
+	output_mat_as_csv_file_float("station_color_mat_weekend.csv",station_color_mat_weekend);
+	*/
+	Mat station_weekday_cov = read_station_cov("station_weekday_cov.csv");
+	normalize(station_weekday_cov.col(0),station_weekday_cov.col(0),0,10,NORM_MINMAX); 
+	station_color_mat_weekday = lab_alignment_new_dim1(station_weekday_cov).clone();
+	output_mat_as_csv_file_float("station_color_mat_weekday.csv",station_color_mat_weekday);
+
+	Mat station_weekend_cov = read_station_cov("station_weekend_cov.csv");
+	normalize(station_weekend_cov.col(0),station_weekend_cov.col(0),0,10,NORM_MINMAX); 
+	station_color_mat_weekend = lab_alignment_new_dim1(station_weekend_cov).clone();
 	output_mat_as_csv_file_float("station_color_mat_weekend.csv",station_color_mat_weekend);
 }
 
@@ -1998,6 +2021,183 @@ Mat Preprocessing_Data::lab_alignment_new_dim1(Mat cluster_center)
 	cout << "max move z " << max_move_z << endl;
 
 	//output_mat_as_csv_file("lab_raw_data.csv",max_align_mat);
+	//printf("max_move : %f max_scale : %f\n",max_move,max_scale);
+	
+	lab = max_align_mat.clone();
+	Mat rgb_mat = LAB2RGB(max_align_mat).clone();
+
+	return rgb_mat;
+}
+
+Mat Preprocessing_Data::lab_alignment_new_dim2(Mat cluster_center)
+{
+	int vTotal = lab_vertices.size();
+	//Turn LAB vector into LAB mat
+	Mat lab_mat = Mat::zeros(vTotal,3,CV_32F);
+	for(int i=0;i<vTotal;i++)
+	{
+		for(int j=0;j<3;j++)
+		{
+			lab_mat.at<float>(i,j) = lab_vertices[i][j+1];
+		}
+	}
+	//Compute centroid of cluster center
+	Mat cluster_center_centroid = compute_centroid(cluster_center).clone();
+
+	//Align the centroid to the origin by subtract all points to centroid
+	Mat cluster_center_alignment_mat = Mat::zeros(cluster_center.rows,cluster_center.cols,CV_32F);
+	for(int i=0;i<cluster_center.rows;i++)
+	{
+		for(int j=0;j<cluster_center.cols;j++)
+		{
+			cluster_center_alignment_mat.at<float>(i,j) = cluster_center.at<float>(i,j) - cluster_center_centroid.at<float>(0,j);
+		}
+	}
+	Mat component,cluster_center_coeff;
+	Mat cluster_center_component = Mat::zeros(2,3,CV_32F);
+	int rDim = 2;
+	reduceDimPCA(cluster_center_alignment_mat, rDim, component, cluster_center_coeff);//PCA 4dim->3dim (for dimension reduction)
+
+	for(int i=0;i<rDim;i++)
+	{
+		for(int j=0;j<cluster_center.cols;j++)
+		{
+			cluster_center_component.at<float>(i,j) = component.at<float>(i,j);
+		}
+	}
+	cout << "cluster_center_component " << endl << cluster_center_component << endl;
+	//cluster center 3 axis of PCA
+
+
+	//output_mat_as_csv_file_float("cluster_center_coeff.csv",cluster_center_coeff);
+	//compute centroid of LAB
+	Mat lab_centroid = compute_centroid(lab_mat).clone();
+	//Align the centroid to the origin by subtract all points to centroid
+	Mat lab_alignment_mat = Mat::zeros(lab_mat.rows,lab_mat.cols,CV_32F);
+	for(int i=0;i<lab_mat.rows;i++)
+	{
+		for(int j=0;j<lab_mat.cols;j++)
+		{
+			lab_alignment_mat.at<float>(i,j) = lab_mat.at<float>(i,j) - lab_centroid.at<float>(0,j);
+		}
+	}
+	//lab vertices 3 axis of PCA
+	Mat lab_components,lab_coeff;
+	rDim = 2;
+	reduceDimPCA(lab_alignment_mat, rDim, lab_components, lab_coeff); //PCA 3dim->3dim (for principal component)
+	cout << "lab_components " << endl << lab_components << endl;
+
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	vector<float> move_vector;
+	for(float k=-5.0;k<=5.0;k+=1.0)
+		move_vector.push_back(k);
+
+	//vector<float> scale_vector;
+	//for(float k=1.0;k<=100.0;k+=1.0)
+	//	scale_vector.push_back(k);
+
+	Mat align_mat = Mat::zeros(cluster_center.rows,3,CV_32F);
+	Mat max_align_mat = Mat::zeros(cluster_center.rows,3,CV_32F);
+	int start = 1;
+	int luminance_threshold = 30;
+
+	Mat cluster_center_coeff_const = cluster_center_coeff.clone();
+	float scale = 1.0;
+	float max_scale = 1.0;
+	float max_move_x = 0.0;
+	float max_move_y = 0.0;
+	float max_move_z = 0.0;
+	bool flag = true;
+
+	for(int u=0;u<move_vector.size();u++)
+	{
+		for(int v=0;v<move_vector.size();v++)
+		{
+			for(int w=0;w<move_vector.size();w++)
+			{
+				scale = max_scale;
+				flag = true;
+				while(flag)
+				{			
+						cluster_center_coeff = cluster_center_coeff_const.mul(scale);
+						//for(int i=0;i<cluster_center_coeff_const.rows;i++)
+						//{
+						//	cluster_center_coeff.at<float>(i,0) = cluster_center_coeff_const.at<float>(i,0) * scale_vector[u];
+						//	cluster_center_coeff.at<float>(i,1) = cluster_center_coeff_const.at<float>(i,1) * scale_vector[v];
+						//	cluster_center_coeff.at<float>(i,2) = cluster_center_coeff_const.at<float>(i,2) * scale_vector[w];
+						//}
+
+						for(int i=0;i<cluster_center.rows;i++)
+						{
+							for(int j=0;j<3;j++)
+							{
+								Mat result = cluster_center_coeff.row(i)*lab_components.col(j);
+								align_mat.at<float>(i,j) = result.at<float>(0,0);
+							}
+						}
+						add(align_mat.col(0),move_vector[u],align_mat.col(0)); //move
+						add(align_mat.col(1),move_vector[v],align_mat.col(1)); //move
+						add(align_mat.col(2),move_vector[w],align_mat.col(2)); //move
+				
+						//把重心平移回去
+						for(int i=0;i<align_mat.rows;i++)
+						{
+							for(int j=0;j<3;j++)
+							{
+								align_mat.at<float>(i,j) += lab_centroid.at<float>(0,j);
+							}
+						}
+
+						//cout << align_mat << endl;
+						//system("pause");
+
+						for(int i=0;i<align_mat.rows;i++)
+						{
+							if( (align_mat.at<float>(i,0)<luminance_threshold) || (align_mat.at<float>(i,0)>85.0) )
+							{
+								flag = false;
+								break;
+							}
+						}
+
+						if(flag)
+						{
+							for(int i=0;i<align_mat.rows;i++)
+							{
+								if(lab_boundary_test(align_mat.at<float>(i,0),align_mat.at<float>(i,1),align_mat.at<float>(i,2))==false)
+								{
+									flag = false;
+									break;
+								}
+							}	
+						}
+
+						if(flag)
+						{
+							if(scale>max_scale)
+							{
+								max_scale = scale;
+								max_move_x = move_vector[u];
+								max_move_y = move_vector[v];
+								max_move_z = move_vector[w];
+								max_align_mat = align_mat.clone();
+							}	
+						}
+
+						scale+=1.0;
+				}
+			}
+		}
+	}
+
+	move_vector.clear();
+
+	cout << "max scale " << max_scale << endl;
+	cout << "max move x " << max_move_x << endl;
+	cout << "max move y " << max_move_y << endl;
+	cout << "max move z " << max_move_z << endl;
+
+	output_mat_as_csv_file_float("lab_raw_data.csv",max_align_mat);
 	//printf("max_move : %f max_scale : %f\n",max_move,max_scale);
 	
 	lab = max_align_mat.clone();
@@ -4987,3 +5187,28 @@ void Preprocessing_Data::Position_by_histogram_sort_index(Mat& histo_position,Ma
 	}
 }
 
+Mat Preprocessing_Data::read_station_cov(char* file_name)
+{
+	FILE* file = NULL;
+	file = fopen(file_name,"r");
+	if(!file)
+	{
+		cout << "Can't open config file!" << endl;
+		perror(file_name);
+		exit(1);
+	}
+	
+	
+	//char line[LENGTH];
+	//char *token;
+	//fgets(line,LENGTH,file); //ignore title
+
+	float cov;
+	Mat cov_mat;
+	while (!feof(file))
+	{
+		fscanf(file, "%f\n",&cov);
+		cov_mat.push_back( cov );
+	}
+	return cov_mat;
+}

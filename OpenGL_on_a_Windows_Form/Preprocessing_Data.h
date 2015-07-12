@@ -45,6 +45,7 @@ private:
 	Mat lab_alignment_new(Mat,int);
 	Mat lab_alignment_new_fast(Mat,int);
 	Mat lab_alignment_new_dim1(Mat);
+	Mat lab_alignment_new_dim2(Mat);
 
 	void read_lab_csv();
 	bool lab_boundary_test(float,float,float);
@@ -82,6 +83,7 @@ private:
 	Mat Ev_global;
 	void TSP_group_connect(vector<group>,Mat&);
 	vector<group> tree_group;
+	Mat read_station_cov(char*);
 
 public:
 	Preprocessing_Data();
