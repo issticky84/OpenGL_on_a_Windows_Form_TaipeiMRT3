@@ -36,6 +36,43 @@ namespace OpenGLForm{
 			color.resize(3);
 
 
+			vector<float> draw_color(3);
+			draw_color[0] = 0.8; draw_color[1] = 1.0; draw_color[2] = 1.0;
+			DrawRect(20, 370, 2.0, 100.0, draw_color);//橫線
+			DrawTitle_FTGL(0, 130, 365); //enter
+			DrawRect(20, 270, 100.0, 2.0, draw_color);//直線
+			DrawTitle_FTGL(1, 10, 240); //out
+			//=====================畫網格====================//
+			//30格代表1000的值=>值*3/100=格的位置
+			//30格代表500的值=>值*3/50=格的位置
+			float x_position = 120;
+			float y_position = 330;
+			//vector<float> draw_color(3);
+			//draw_color[0] = 0.8; draw_color[1] = 1.0; draw_color[2] = 1.0;
+			float value = 0.0;
+			for(int i=0;i<=300;i+=30)
+			{
+				DrawText_FTGL(value, x_position + i, y_position + 10, 1.0, 1.0, 1.0);
+				value += 0.5;
+				DrawRect(x_position, y_position - i, 2.0, 300.0, draw_color);
+			}
+
+			x_position = 120;
+			y_position = 30;
+			value = 5.0;
+			for(int i=0;i<=300;i+=30)
+			{
+				if(value>0.001) DrawText_FTGL(value, x_position-20, y_position + i, 1.0, 1.0, 1.0);
+				value -= 0.5;
+				DrawRect(x_position + i, y_position, 300.0, 2.0, draw_color);
+			}
+			//=============================================//
+			for(int i=0;i<preprocessing_data.cluster_center_raw.rows;i++)
+			{
+				DrawCircle(120.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*(3.0/50.0), 330.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*(3.0/50.0), 4.0, 
+						   preprocessing_data.rgb_mat3.at<float>(i,0), preprocessing_data.rgb_mat3.at<float>(i,1), preprocessing_data.rgb_mat3.at<float>(i,2));
+			}
+			/*
 			int x_position = 50;
 			int y_position = 50;
 			int t = 0;
@@ -60,8 +97,17 @@ namespace OpenGLForm{
 
 					y_position+=80;
 				}
-			}
-			
+				
+			}*/
+			//Mat cluster_center_raw = preprocessing_data.cluster_centers.clone();
+			//for(int i=0;i<preprocessing_data.cluster_centers.rows;i++)
+			//{
+			//	cluster_center_raw.at<float>(i,0) = preprocessing_data.cluster_centers.at<float>(i,0) * preprocessing_data.enter_total_avg;
+			//	cluster_center_raw.at<float>(i,1) = preprocessing_data.cluster_centers.at<float>(i,1) * preprocessing_data.out_total_avg;
+			//}
+			////DrawText_FTGL();
+			//preprocessing_data.output_mat_as_csv_file_float("cluster_center_raw.csv",cluster_center_raw);
+
 			SwapOpenGLBuffers();
 			
 		}
@@ -70,7 +116,7 @@ namespace OpenGLForm{
 		{
 			glPushMatrix();
 
-			float font_size = 10*(scale_factor[2]+0.6+scale_x[2]);
+			float font_size = 8*(scale_factor[2]+0.6+scale_x[2]);
 			font.FaceSize(font_size);
 			glColor3f(r, g, b);
 			glRasterPos2f(x , y + font.LineHeight());
@@ -110,6 +156,9 @@ namespace OpenGLForm{
 
 		System::Void DetailVisualization::DrawTitle_FTGL(int t,int x, int y)
 		{
+			strcpy(title[0],"Enter (K)");
+			strcpy(title[1],"Out (K)");
+
 			glPushMatrix();
 
 			float font_size = 16*(scale_factor[2]+0.4+scale_x[2]);

@@ -160,6 +160,42 @@ namespace OpenGLForm{
 		glEnd();
 		glPopMatrix();
 	}
+
+	System::Void VisualizationPanel::DrawRect(int x, int y, int h, int w, vector<float> draw_color)
+	{
+		RECTANGLE *rect;
+		rect = new RECTANGLE();
+		rect->h = h;
+		rect->w = w;
+		rect->x = x;
+		rect->y = y;
+		DrawRectWithOpenGL(rect,draw_color);
+		delete rect;		
+	}
+
+	System::Void VisualizationPanel::DrawCircle(int x, int y, float radius, float r, float g, float b)
+	{
+		int i;
+		int triangleAmount = 30; //# of triangles used to draw circle
+	
+		//GLfloat radius = 0.8f; //radius
+		GLfloat twicePi = 2.0f * 3.14;
+	
+		glPushMatrix(); 
+		glBegin(GL_TRIANGLE_FAN);
+			glColor3f(r,g,b);
+			glVertex2f(x, y); // center of circle
+			for(i = 0; i <= triangleAmount;i++)
+			{ 
+				glVertex2f(
+					x + (radius * cos(i *  twicePi / triangleAmount)), 
+					y + (radius * sin(i * twicePi / triangleAmount))
+				);
+			}
+		glEnd();
+		glPopMatrix();
+	}
+
 	System::Void VisualizationPanel::SwapOpenGLBuffers(System::Void){
 		SwapBuffers(m_hDC);		
 	}

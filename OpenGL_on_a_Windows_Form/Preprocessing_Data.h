@@ -123,6 +123,7 @@ public:
 	Mat* find_month_and_day;
 	vector< vector<float> > data_color;
 	int comboBox_indx;
+	int day_select_right_indx;
 	void start_on_2D(int,int);
 	Mat histogram_on_2D;
 	Mat rgb_mat2_on_2D;
@@ -147,6 +148,12 @@ public:
 
 	int weekday_amount;
 	int weekend_amount;
+
+	float enter_total_avg;
+	float out_total_avg;
+
+	Mat cluster_center_raw;
+
 };
 
 

@@ -32,12 +32,12 @@ namespace OpenGL_on_a_Windows_Form
 
 			Preprocessing_Data preprocessing_data;
 
-			preprocessing_data.Initial_selection_flag(this->residential_in->Checked,
-													  this->residential_out->Checked,
-													  this->work_school_in->Checked,
-													  this->work_school_out->Checked,
-													  this->tourism_in->Checked,
-													  this->tourism_out->Checked);
+			//preprocessing_data.Initial_selection_flag(this->residential_in->Checked,
+			//										  this->residential_out->Checked,
+			//										  this->work_school_in->Checked,
+			//										  this->work_school_out->Checked,
+			//										  this->tourism_in->Checked,
+			//										  this->tourism_out->Checked);
 
 			preprocessing_data.MRT_position = read_csv.MRT_position;
 			preprocessing_data.month_vec = read_csv.month_vec;
@@ -47,7 +47,7 @@ namespace OpenGL_on_a_Windows_Form
 
 			histogram = gcnew HistogramVisualization(this,this->panel3,panel3->Width,panel3->Height,read_csv,preprocessing_data);
 			rawData = gcnew RawDataVisualization(this,this->panel1,panel1->Width,panel1->Height,read_csv,preprocessing_data);
-			//detail = gcnew DetailVisualization(this,this->panel2,panel2->Width,panel2->Height,read_csv,preprocessing_data);
+			detail = gcnew DetailVisualization(this,this->panel2,panel2->Width,panel2->Height,read_csv,preprocessing_data);
 
 		}
 	protected:
@@ -89,16 +89,16 @@ namespace OpenGL_on_a_Windows_Form
 	private: System::Windows::Forms::CheckBox^  residential_out;
 
 	private: System::Windows::Forms::Label^  feature_selection_label;
-	private: System::Windows::Forms::CheckBox^  work_school_in;
-	private: System::Windows::Forms::CheckBox^  work_school_out;
+
+
 	private: System::Windows::Forms::Label^  cluster_label;
 	private: System::Boolean start_flag;
 
 	private: System::Windows::Forms::Button^  load_csv;
 	private: System::Windows::Forms::Label^  file_directory;
 	private: System::ComponentModel::BackgroundWorker^  backgroundWorker1;
-	private: System::Windows::Forms::CheckBox^  tourism_in;
-	private: System::Windows::Forms::CheckBox^  tourism_out;
+
+
 	private: System::Windows::Forms::ComboBox^  comboBox1;
 	private: System::Windows::Forms::ComboBox^  view_select_left;
 	private: System::Windows::Forms::Label^  view_left_label;
@@ -106,6 +106,7 @@ namespace OpenGL_on_a_Windows_Form
 	private: System::Windows::Forms::ComboBox^  view_select_right;
 	private: System::Windows::Forms::PictureBox^  pictureBox1;
 	private: System::Windows::Forms::Button^  RightViewClear;
+	private: System::Windows::Forms::ComboBox^  day_select_right;
 
 
 
@@ -131,10 +132,6 @@ namespace OpenGL_on_a_Windows_Form
 			this->feature_selection_label = (gcnew System::Windows::Forms::Label());
 			this->residential_in = (gcnew System::Windows::Forms::CheckBox());
 			this->residential_out = (gcnew System::Windows::Forms::CheckBox());
-			this->work_school_in = (gcnew System::Windows::Forms::CheckBox());
-			this->work_school_out = (gcnew System::Windows::Forms::CheckBox());
-			this->tourism_in = (gcnew System::Windows::Forms::CheckBox());
-			this->tourism_out = (gcnew System::Windows::Forms::CheckBox());
 			this->cluster_label = (gcnew System::Windows::Forms::Label());
 			this->load_csv = (gcnew System::Windows::Forms::Button());
 			this->file_directory = (gcnew System::Windows::Forms::Label());
@@ -146,6 +143,7 @@ namespace OpenGL_on_a_Windows_Form
 			this->view_select_right = (gcnew System::Windows::Forms::ComboBox());
 			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 			this->RightViewClear = (gcnew System::Windows::Forms::Button());
+			this->day_select_right = (gcnew System::Windows::Forms::ComboBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->trackBar1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
@@ -169,9 +167,9 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// panel2
 			// 
-			this->panel2->Location = System::Drawing::Point(1595, 253);
+			this->panel2->Location = System::Drawing::Point(1504, 165);
 			this->panel2->Name = L"panel2";
-			this->panel2->Size = System::Drawing::Size(309, 149);
+			this->panel2->Size = System::Drawing::Size(400, 237);
 			this->panel2->TabIndex = 1;
 			this->panel2->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::panel2_Paint);
 			this->panel2->MouseEnter += gcnew System::EventHandler(this, &Form1::panel2_MouseEnter);
@@ -189,7 +187,7 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// start
 			// 
-			this->start->Location = System::Drawing::Point(1763, 38);
+			this->start->Location = System::Drawing::Point(1770, 14);
 			this->start->Name = L"start";
 			this->start->Size = System::Drawing::Size(134, 67);
 			this->start->TabIndex = 4;
@@ -210,7 +208,7 @@ namespace OpenGL_on_a_Windows_Form
 			// trackBar1
 			// 
 			this->trackBar1->LargeChange = 1;
-			this->trackBar1->Location = System::Drawing::Point(1586, 202);
+			this->trackBar1->Location = System::Drawing::Point(1569, 114);
 			this->trackBar1->Maximum = 50;
 			this->trackBar1->Name = L"trackBar1";
 			this->trackBar1->Size = System::Drawing::Size(196, 45);
@@ -220,7 +218,7 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// textBox1
 			// 
-			this->textBox1->Location = System::Drawing::Point(1777, 202);
+			this->textBox1->Location = System::Drawing::Point(1760, 114);
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(24, 22);
 			this->textBox1->TabIndex = 8;
@@ -261,62 +259,10 @@ namespace OpenGL_on_a_Windows_Form
 			this->residential_out->UseVisualStyleBackColor = true;
 			this->residential_out->CheckedChanged += gcnew System::EventHandler(this, &Form1::residential_out_CheckedChanged);
 			// 
-			// work_school_in
-			// 
-			this->work_school_in->AutoSize = true;
-			this->work_school_in->Checked = true;
-			this->work_school_in->CheckState = System::Windows::Forms::CheckState::Checked;
-			this->work_school_in->Location = System::Drawing::Point(1595, 82);
-			this->work_school_in->Name = L"work_school_in";
-			this->work_school_in->Size = System::Drawing::Size(107, 16);
-			this->work_school_in->TabIndex = 12;
-			this->work_school_in->Text = L"Work/School (In)";
-			this->work_school_in->UseVisualStyleBackColor = true;
-			this->work_school_in->CheckedChanged += gcnew System::EventHandler(this, &Form1::work_school_in_CheckedChanged);
-			// 
-			// work_school_out
-			// 
-			this->work_school_out->AutoSize = true;
-			this->work_school_out->Checked = true;
-			this->work_school_out->CheckState = System::Windows::Forms::CheckState::Checked;
-			this->work_school_out->Location = System::Drawing::Point(1595, 104);
-			this->work_school_out->Name = L"work_school_out";
-			this->work_school_out->Size = System::Drawing::Size(114, 16);
-			this->work_school_out->TabIndex = 13;
-			this->work_school_out->Text = L"Work/School (Out)";
-			this->work_school_out->UseVisualStyleBackColor = true;
-			this->work_school_out->CheckedChanged += gcnew System::EventHandler(this, &Form1::work_school_out_CheckedChanged);
-			// 
-			// tourism_in
-			// 
-			this->tourism_in->AutoSize = true;
-			this->tourism_in->Checked = true;
-			this->tourism_in->CheckState = System::Windows::Forms::CheckState::Checked;
-			this->tourism_in->Location = System::Drawing::Point(1595, 126);
-			this->tourism_in->Name = L"tourism_in";
-			this->tourism_in->Size = System::Drawing::Size(84, 16);
-			this->tourism_in->TabIndex = 18;
-			this->tourism_in->Text = L"Tourism (In)";
-			this->tourism_in->UseVisualStyleBackColor = true;
-			this->tourism_in->CheckedChanged += gcnew System::EventHandler(this, &Form1::tourism_in_CheckedChanged);
-			// 
-			// tourism_out
-			// 
-			this->tourism_out->AutoSize = true;
-			this->tourism_out->Checked = true;
-			this->tourism_out->CheckState = System::Windows::Forms::CheckState::Checked;
-			this->tourism_out->Location = System::Drawing::Point(1595, 148);
-			this->tourism_out->Name = L"tourism_out";
-			this->tourism_out->Size = System::Drawing::Size(91, 16);
-			this->tourism_out->TabIndex = 19;
-			this->tourism_out->Text = L"Tourism (Out)";
-			this->tourism_out->UseVisualStyleBackColor = true;
-			this->tourism_out->CheckedChanged += gcnew System::EventHandler(this, &Form1::tourism_out_CheckedChanged);
-			// 
 			// cluster_label
 			// 
 			this->cluster_label->AutoSize = true;
-			this->cluster_label->Location = System::Drawing::Point(1593, 177);
+			this->cluster_label->Location = System::Drawing::Point(1576, 89);
 			this->cluster_label->Name = L"cluster_label";
 			this->cluster_label->Size = System::Drawing::Size(129, 12);
 			this->cluster_label->TabIndex = 14;
@@ -324,7 +270,7 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// load_csv
 			// 
-			this->load_csv->Location = System::Drawing::Point(1780, 130);
+			this->load_csv->Location = System::Drawing::Point(1802, 104);
 			this->load_csv->Name = L"load_csv";
 			this->load_csv->Size = System::Drawing::Size(102, 32);
 			this->load_csv->TabIndex = 16;
@@ -351,7 +297,7 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			this->comboBox1->FormattingEnabled = true;
 			this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(4) {L"All", L"Weekday", L"Weekend", L"Holiday"});
-			this->comboBox1->Location = System::Drawing::Point(591, 10);
+			this->comboBox1->Location = System::Drawing::Point(540, 10);
 			this->comboBox1->Name = L"comboBox1";
 			this->comboBox1->Size = System::Drawing::Size(121, 20);
 			this->comboBox1->TabIndex = 20;
@@ -386,7 +332,7 @@ namespace OpenGL_on_a_Windows_Form
 			this->view_right_label->AutoSize = true;
 			this->view_right_label->Font = (gcnew System::Drawing::Font(L"·s²Ó©úÅé", 11.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(136)));
-			this->view_right_label->Location = System::Drawing::Point(1016, 11);
+			this->view_right_label->Location = System::Drawing::Point(848, 11);
 			this->view_right_label->Name = L"view_right_label";
 			this->view_right_label->Size = System::Drawing::Size(34, 15);
 			this->view_right_label->TabIndex = 23;
@@ -396,7 +342,7 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			this->view_select_right->FormattingEnabled = true;
 			this->view_select_right->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"Time", L"Station", L"LineChart"});
-			this->view_select_right->Location = System::Drawing::Point(1056, 10);
+			this->view_select_right->Location = System::Drawing::Point(888, 10);
 			this->view_select_right->Name = L"view_select_right";
 			this->view_select_right->Size = System::Drawing::Size(121, 20);
 			this->view_select_right->TabIndex = 24;
@@ -422,11 +368,23 @@ namespace OpenGL_on_a_Windows_Form
 			this->RightViewClear->UseVisualStyleBackColor = true;
 			this->RightViewClear->Click += gcnew System::EventHandler(this, &Form1::RightViewClear_Click);
 			// 
+			// day_select_right
+			// 
+			this->day_select_right->FormattingEnabled = true;
+			this->day_select_right->Items->AddRange(gcnew cli::array< System::Object^  >(2) {L"Weekday", L"Weekend"});
+			this->day_select_right->Location = System::Drawing::Point(1079, 10);
+			this->day_select_right->Name = L"day_select_right";
+			this->day_select_right->Size = System::Drawing::Size(121, 20);
+			this->day_select_right->TabIndex = 26;
+			this->day_select_right->Text = L"Weekday";
+			this->day_select_right->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::day_select_right_SelectedIndexChanged);
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1916, 1054);
+			this->Controls->Add(this->day_select_right);
 			this->Controls->Add(this->RightViewClear);
 			this->Controls->Add(this->pictureBox1);
 			this->Controls->Add(this->view_select_right);
@@ -434,13 +392,9 @@ namespace OpenGL_on_a_Windows_Form
 			this->Controls->Add(this->view_left_label);
 			this->Controls->Add(this->view_select_left);
 			this->Controls->Add(this->comboBox1);
-			this->Controls->Add(this->tourism_out);
-			this->Controls->Add(this->tourism_in);
 			this->Controls->Add(this->file_directory);
 			this->Controls->Add(this->load_csv);
 			this->Controls->Add(this->cluster_label);
-			this->Controls->Add(this->work_school_out);
-			this->Controls->Add(this->work_school_in);
 			this->Controls->Add(this->feature_selection_label);
 			this->Controls->Add(this->residential_out);
 			this->Controls->Add(this->residential_in);
@@ -497,12 +451,12 @@ namespace OpenGL_on_a_Windows_Form
 
 				 //read_csv.test_image();///////////////////////////////////
 
-				preprocessing_data.Initial_selection_flag(this->residential_in->Checked,
-														  this->residential_out->Checked,
-														  this->work_school_in->Checked,
-														  this->work_school_out->Checked,
-														  this->tourism_in->Checked,
-														  this->tourism_out->Checked);
+				//preprocessing_data.Initial_selection_flag(this->residential_in->Checked,
+				//										  this->residential_out->Checked,
+				//										  this->work_school_in->Checked,
+				//										  this->work_school_out->Checked,
+				//										  this->tourism_in->Checked,
+				//										  this->tourism_out->Checked);
 				 
 				//preprocessing_data.select_station.clear();
 
@@ -517,7 +471,16 @@ namespace OpenGL_on_a_Windows_Form
 
 				this->pictureBox1->Image = Image::FromFile("MRT_map2.jpg");
 				
-
+				if(preprocessing_data.day_select_right_indx == 0)
+				{
+					preprocessing_data.comboBox_indx = 1;
+					comboBox1->SelectedIndex = 1;
+				}
+				else if(preprocessing_data.day_select_right_indx == 1)
+				{
+					preprocessing_data.comboBox_indx = 2;
+					comboBox1->SelectedIndex = 2;
+				}
 				preprocessing_data.start3(read_csv.day_amount,read_csv.hour_amount,trackBar1->Value);
 
 				preprocessing_data.start_flag = true;
@@ -816,6 +779,14 @@ namespace OpenGL_on_a_Windows_Form
 				 preprocessing_data.comboBox_indx = selectedIndex;
 				 //System::Windows::Forms::MessageBox::Show("Selected Item Text: " + selectedItem + "\n" + "Index: " + selectedIndex.ToString());
 			 }
+
+	private: System::Void day_select_right_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
+				 int selectedIndex = day_select_right->SelectedIndex;
+				 Object^ selectedItem = day_select_right->SelectedItem;				
+
+				 preprocessing_data.day_select_right_indx = selectedIndex;
+			 }
+
 private: System::Void view_select_left_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
 				 int selectedIndex = view_select_left->SelectedIndex;
 				 Object^ selectedItem = view_select_left->SelectedItem;
@@ -835,11 +806,23 @@ private: System::Void pictureBox1_Click(System::Object^  sender, System::EventAr
 					//TP->SetToolTip(textBox1, "Please input your name.");
 		 }
 
+private: System::Void panel1_MouseMove(System::Object^  sender, System::EventArgs^  e) {
+					ToolTip^ TP = gcnew ToolTip();
+					TP->ShowAlways = true;
+					System::String^ name= gcnew System::String( rawData->show_name );
+					//System::Windows::Forms::MessageBox::Show( name + " " );
+					TP->SetToolTip(panel1, name);
+		 }
+
 private: System::Void panel1_MouseHover(System::Object^  sender, System::EventArgs^  e) {
 					//ToolTip^ TP = gcnew ToolTip();
 					//TP->ShowAlways = true;
-					//TP->SetToolTip(panel1, "Please input your name.");
+					//System::String^ name= gcnew System::String( rawData->show_name );
+					////System::Windows::Forms::MessageBox::Show( name + " " );
+					//TP->SetToolTip(panel1, name);
 		 }
+
+
 };
 }
 

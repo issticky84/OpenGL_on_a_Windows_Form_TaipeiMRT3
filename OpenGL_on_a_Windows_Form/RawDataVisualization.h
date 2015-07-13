@@ -14,7 +14,7 @@ namespace OpenGLForm{
 			void  RawDataMouseDoubleClick( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e);
 			System::Void clear();
 			System::Void clear_view();
-
+			char* show_name;
 	private:
 			System::Void FindPatternByTable2(int x,int y);
 			vector3 Unprojection(vector2 _2Dpos);
@@ -22,7 +22,7 @@ namespace OpenGLForm{
 			System::Void DrawTime_FTGL(int index,int x, int y);
 			System::Void DrawText_FTGL(int,int,int,float);
 			System::Void DrawText_FTGL_withColor(int,int,int,float, float,float,float);
-			System::Void DrawCircle(int,int,float,float,float,float);
+			//System::Void DrawCircle(int,int,float,float,float,float);
 			System::Void time_string();
 			System::Void DrawTitle_FTGL(int t,int x, int y);
 
@@ -37,8 +37,9 @@ namespace OpenGLForm{
 			int line_idx;
 			System::Void FindPointInRect();
 			System::Void FindStation(int x,int y);
-			System::Void DrawRect(int x, int y, int h, int w, vector<float>);
+			//System::Void DrawRect(int x, int y, int h, int w, vector<float>);
 
 			int* dim_label;
+			Panel ^ parentPanel;
 	};
 }

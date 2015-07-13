@@ -59,6 +59,8 @@ namespace OpenGLForm{
 			bool InitGL(GLvoid);
 			GLvoid ReSizeGLScene(GLsizei width, GLsizei height);
 			System::Void DrawRectWithOpenGL(RECTANGLE* pRect,vector<float>  draw_color);
+			System::Void DrawRect(int x, int y, int h, int w, vector<float>);
+			System::Void DrawCircle(int,int,float,float,float,float);
 			System::Void SwapOpenGLBuffers(System::Void);
 			System::Void wglmakecur();
 			double round(double);

@@ -39,6 +39,7 @@ Preprocessing_Data::Preprocessing_Data()
 	read_lab_csv();
 
 	comboBox_indx = 0;
+	day_select_right_indx = 0;
 	view_select_left_index = 0;
 	view_select_right_index = 1;
 
@@ -185,14 +186,22 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 					//enter_total.at<float>(day,0) += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
 					//out_total.at<float>(day,0) += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ];
 				}
+
+				dim_data_enter_avg.at<float>(day,u) /= select_station.size();
+				dim_data_out_avg.at<float>(day,u) /= select_station.size();
 			}
 
 			day++;
 		}
 	}
 	
+	enter_total /= select_station.size();
+	out_total /= select_station.size();
 	enter_total /= day_amount;
 	out_total /= day_amount;
+	enter_total_avg = enter_total;
+	out_total_avg = out_total;
+
 	/*
 	for(int i=0;i<month_vec.size();i++)
 	{
@@ -230,8 +239,8 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 		{
 			if(enter_total!=0 && out_total!=0)
 			{
-				dim_data_enter_avg.at<float>(d,u) /= enter_total;
-				dim_data_out_avg.at<float>(d,u) /= out_total;
+				dim_data_enter_avg.at<float>(d,u) /= enter_total_avg;
+				dim_data_out_avg.at<float>(d,u) /= out_total_avg;
 			}
 			//if(enter_total.at<float>(d,0)!=0 && out_total.at<float>(d,0)!=0)
 			//{
@@ -329,7 +338,7 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	}
 	*/
 	output_mat_as_csv_file_float("model_original.csv",model);
-	normalize(model,model,0,1,NORM_MINMAX);
+	//normalize(model,model,0,1,NORM_MINMAX);
 
 	data_dim = select_station.size();
 
@@ -349,34 +358,34 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	//}
 
 	
-	for(int i=0;i<month_vec.size();i++)
-	{
-		for(int j=0;j<month_vec[i].day_vec.size();j++)
-		{
-			month_vec[i].day_vec[j].river_table_current = Mat::zeros(23,select_station.size(),CV_32F);
-			month_vec[i].day_vec[j].river_table_next = Mat::zeros(23,select_station.size(),CV_32F);
-			for(int u=0;u<24;u++)
-			{
-				t = 0;
-				float accum_current = 0.0;
-				float accum_next = 0.0;
-				for(int s=0;s<select_station.size();s++)
-				{
-					//month_vec[i].day_vec[j].hour_vec[u].data[t++] = month_vec[i].day_vec[j].hour_vec[u].enter[ select_station[s] ];
-					//month_vec[i].day_vec[j].hour_vec[u].data[t++] = month_vec[i].day_vec[j].hour_vec[u].out[ select_station[s] ];			
+	//for(int i=0;i<month_vec.size();i++)
+	//{
+	//	for(int j=0;j<month_vec[i].day_vec.size();j++)
+	//	{
+	//		month_vec[i].day_vec[j].river_table_current = Mat::zeros(23,select_station.size(),CV_32F);
+	//		month_vec[i].day_vec[j].river_table_next = Mat::zeros(23,select_station.size(),CV_32F);
+	//		for(int u=0;u<24;u++)
+	//		{
+	//			t = 0;
+	//			float accum_current = 0.0;
+	//			float accum_next = 0.0;
+	//			for(int s=0;s<select_station.size();s++)
+	//			{
+	//				//month_vec[i].day_vec[j].hour_vec[u].data[t++] = month_vec[i].day_vec[j].hour_vec[u].enter[ select_station[s] ];
+	//				//month_vec[i].day_vec[j].hour_vec[u].data[t++] = month_vec[i].day_vec[j].hour_vec[u].out[ select_station[s] ];			
 
-					accum_current += month_vec[i].day_vec[j].hour_vec[u].enter[ select_station[s] ];
-					accum_next += month_vec[i].day_vec[j].hour_vec[u+1].enter[ select_station[s] ];
+	//				accum_current += month_vec[i].day_vec[j].hour_vec[u].enter[ select_station[s] ];
+	//				accum_next += month_vec[i].day_vec[j].hour_vec[u+1].enter[ select_station[s] ];
 
-					if(u!=23)
-					{
-						month_vec[i].day_vec[j].river_table_current.at<float>(u,s) = accum_current;
-						month_vec[i].day_vec[j].river_table_next.at<float>(u,s) = accum_next;
-					}
-				}
-			}
-		}
-	}
+	//				if(u!=23)
+	//				{
+	//					month_vec[i].day_vec[j].river_table_current.at<float>(u,s) = accum_current;
+	//					month_vec[i].day_vec[j].river_table_next.at<float>(u,s) = accum_next;
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 
 
 	output_mat_as_csv_file_float("model.csv",model);
@@ -431,6 +440,15 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	output_mat_as_csv_file_float("rgb_mat_sort.csv",rgb_mat3);
 	output_mat_as_csv_file_float("cluster_center_sort.csv",cluster_centers);
 	output_mat_as_csv_file_int("cluster_tag_sort.csv",cluster_tag);
+	//==================Cluster center raw===================//
+	cluster_center_raw = cluster_centers.clone();
+	for(int i=0;i<cluster_centers.rows;i++)
+	{
+		cluster_center_raw.at<float>(i,0) = cluster_centers.at<float>(i,0) * enter_total_avg;
+		cluster_center_raw.at<float>(i,1) = cluster_centers.at<float>(i,1) * out_total_avg;
+	}
+	output_mat_as_csv_file_float("cluster_center_raw.csv",cluster_center_raw);
+	//System::Windows::Forms::MessageBox::Show( enter_total_avg + " " +  out_total_avg);
 	//=======================voting=================//
 	voting_for_data(day_amount,k,cluster_tag);
 	output_mat_as_csv_file_int("histogram.csv",histogram);
@@ -5122,7 +5140,7 @@ void Preprocessing_Data::Position_by_histogram(Mat& histo_position, Mat cluster_
 			//vote_dist += sqrt( histo_vec[i].histo.at<int>(0,j)/600.0 * histo_vec[i+1].histo.at<int>(0,j)/600.0 );
 		}
 		//vote_dist = -log( MAX(vote_dist,0.0000001) );
-		dist.at<double>(0,i) = pow(vote_dist,2);
+		dist.at<double>(0,i) = pow(vote_dist,3);
 	}
 	//output_mat_as_csv_file_double("vote_dist.csv",dist.t());
 	
@@ -5135,7 +5153,7 @@ void Preprocessing_Data::Position_by_histogram(Mat& histo_position, Mat cluster_
 		histo_position_sort.at<double>(i+1,0) = accumulate_dist;
 	}
 
-	normalize(histo_position_sort.col(0),histo_position_sort.col(0),1,5000,NORM_MINMAX); 
+	normalize(histo_position_sort.col(0),histo_position_sort.col(0),1,7000,NORM_MINMAX); 
 	//cout << endl << dist << endl << endl;
 	//cout << endl << histo_position << endl;
 

@@ -11,6 +11,7 @@ namespace OpenGLForm{
 			parentPanel->MouseMove += gcnew System::Windows::Forms::MouseEventHandler( this, &RawDataVisualization::RawDataMouseMove );	
 			parentPanel->MouseUp += gcnew System::Windows::Forms::MouseEventHandler( this, &RawDataVisualization::RawDataMouseUp );	
 			parentPanel->MouseDoubleClick += gcnew System::Windows::Forms::MouseEventHandler( this, &RawDataVisualization::RawDataMouseDoubleClick );	 
+			this->parentPanel = parentPanel;
 			time_string();
 			//Initialize mouse handler variable
 			scale_x[1] = 0.5; scale_y[1] = 0.5; scale_z[1] = 0.0;
@@ -169,115 +170,116 @@ namespace OpenGLForm{
 								35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
 								24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94,9};	
 
-			DrawTitle_FTGL(0,50,50); //draw text "weekday"
-			DrawTitle_FTGL(1,50,500);//draw text "weekend"
-			for(int i=0; i<preprocessing_data.dim ;i++)
-			{	
-				int dim_num = dim_index[i];
+			if(preprocessing_data.day_select_right_indx == 0)
+			{
+				DrawTitle_FTGL(0,50,50); //draw text "weekday"
+				for(int i=0; i<preprocessing_data.dim ;i++)
+				{	
+					int dim_num = dim_index[i];
 
-				vector<float> color(3);
+					vector<float> color(3);
 				
-				if(dim_label[dim_num]==4)
-				{
-					color[0] = preprocessing_data.station_color_mat_weekday.at<float>(i,0);
-					color[1] = preprocessing_data.station_color_mat_weekday.at<float>(i,1);
-					color[2] = preprocessing_data.station_color_mat_weekday.at<float>(i,2);
-				}
-				else if(!preprocessing_data.select_station.empty() )
-				{
-					color[0] = 0.3;
-					color[1] = 0.3;
-					color[2] = 0.3;
-				}
-				else
-				{
-					color[0] = preprocessing_data.station_color_mat_weekday.at<float>(i,0);
-					color[1] = preprocessing_data.station_color_mat_weekday.at<float>(i,1);
-					color[2] = preprocessing_data.station_color_mat_weekday.at<float>(i,2);			
-				}
-				
-
-				DrawCircle(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 70 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1), 4.0, color[0], color[1], color[2]);
-				/*
-				glPointSize( 8.0 );
-
-				glPushMatrix();
-				glBegin( GL_POINTS );
-				
-				if(dim_label[dim_num]==4)
-				{
-					glColor3f(preprocessing_data.station_color_mat_weekday.at<float>(i,0), 
-					          preprocessing_data.station_color_mat_weekday.at<float>(i,1),
-							  preprocessing_data.station_color_mat_weekday.at<float>(i,2));
-				}
-					//glColor3f( 0.8f, 0.0, 0.0f );
-				else if(!preprocessing_data.select_station.empty() )
-				{
-					glColor3f( 0.3f, 0.3, 0.3f );
-				}
-				else
-				{
-					glColor3f(preprocessing_data.station_color_mat_weekday.at<float>(i,0), 
-					          preprocessing_data.station_color_mat_weekday.at<float>(i,1),
-							  preprocessing_data.station_color_mat_weekday.at<float>(i,2));				
-				}
-
-
-				glVertex2f(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 70 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1) );
-				glEnd();
-				glPopMatrix();
-				*/
-				//DrawCircle(preprocessing_data.position_on_2D.at<double>(day,0),preprocessing_data.position_on_2D.at<double>(day,1), 2.0, 1, 0, 0);
-				//DrawCircle(preprocessing_data.position_on_2D.at<double>(day,0),preprocessing_data.position_on_2D.at<double>(day,1), 2.0, (rand() % 11)/10.0, (rand() % 11)/10.0, (rand() % 11)/10.0);
-				//DrawCircle(preprocessing_data.position_on_2D.at<double>(i,0),preprocessing_data.position_on_2D.at<double>(i,1), 2.0, preprocessing_data.station_color_mat_weekday.at<float>(i,0), 
-				//																													  preprocessing_data.station_color_mat_weekday.at<float>(i,1), 
-				//																													  preprocessing_data.station_color_mat_weekday.at<float>(i,2));
-			}	
-
-			for(int i=0; i<preprocessing_data.dim ;i++)
-			{	
-				int dim_num = dim_index[i];
-				
-				vector<float> color(3);
-
-				//glPointSize( 8.0 );
-
-				//glPushMatrix();
-				//glBegin( GL_POINTS );
-				
-				if(dim_label[dim_num]==4)
-				{
-					color[0] = preprocessing_data.station_color_mat_weekend.at<float>(i,0);
-					color[1] = preprocessing_data.station_color_mat_weekend.at<float>(i,1);
-					color[2] = preprocessing_data.station_color_mat_weekend.at<float>(i,2);
-					//glColor3f(preprocessing_data.station_color_mat_weekend.at<float>(i,0), 
-					//          preprocessing_data.station_color_mat_weekend.at<float>(i,1),
-					//		  preprocessing_data.station_color_mat_weekend.at<float>(i,2));
-				}
-					//glColor3f( 0.8f, 0.0, 0.0f );
-				else if(!preprocessing_data.select_station.empty() )
-				{
-					color[0] = 0.3;
-					color[1] = 0.3;
-					color[2] = 0.3;
-				}
-				else
-				{
-					color[0] = preprocessing_data.station_color_mat_weekend.at<float>(i,0);
-					color[1] = preprocessing_data.station_color_mat_weekend.at<float>(i,1);
-					color[2] = preprocessing_data.station_color_mat_weekend.at<float>(i,2);			
-				}
+					if(dim_label[dim_num]==4)
+					{
+						color[0] = preprocessing_data.station_color_mat_weekday.at<float>(i,0);
+						color[1] = preprocessing_data.station_color_mat_weekday.at<float>(i,1);
+						color[2] = preprocessing_data.station_color_mat_weekday.at<float>(i,2);
+					}
+					else if(!preprocessing_data.select_station.empty() )
+					{
+						color[0] = 0.3;
+						color[1] = 0.3;
+						color[2] = 0.3;
+					}
+					else
+					{
+						color[0] = preprocessing_data.station_color_mat_weekday.at<float>(i,0);
+						color[1] = preprocessing_data.station_color_mat_weekday.at<float>(i,1);
+						color[2] = preprocessing_data.station_color_mat_weekday.at<float>(i,2);			
+					}
 				
 
-				//glVertex2f(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 550 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1) );
-				
-				//glEnd();
-				//glPopMatrix();
+					DrawCircle(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 70 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1), 4.0, color[0], color[1], color[2]);
+					/*
+					glPointSize( 8.0 );
 
-				DrawCircle(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0),550 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1), 4.0, color[0], color[1], color[2]);
-				//DrawCircle(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0),550 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1), 4.0, 1, 0, 0);
-				//DrawCircle(preprocessing_data.position_on_2D.at<double>(day,0),preprocessing_data.position_on_2D.at<double>(day,1), 2.0, (rand() % 11)/10.0, (rand() % 11)/10.0, (rand() % 11)/10.0);
-			}	
+					glPushMatrix();
+					glBegin( GL_POINTS );
+				
+					if(dim_label[dim_num]==4)
+					{
+						glColor3f(preprocessing_data.station_color_mat_weekday.at<float>(i,0), 
+								  preprocessing_data.station_color_mat_weekday.at<float>(i,1),
+								  preprocessing_data.station_color_mat_weekday.at<float>(i,2));
+					}
+						//glColor3f( 0.8f, 0.0, 0.0f );
+					else if(!preprocessing_data.select_station.empty() )
+					{
+						glColor3f( 0.3f, 0.3, 0.3f );
+					}
+					else
+					{
+						glColor3f(preprocessing_data.station_color_mat_weekday.at<float>(i,0), 
+								  preprocessing_data.station_color_mat_weekday.at<float>(i,1),
+								  preprocessing_data.station_color_mat_weekday.at<float>(i,2));				
+					}
+
+
+					glVertex2f(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 70 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1) );
+					glEnd();
+					glPopMatrix();
+					*/
+					//DrawCircle(preprocessing_data.position_on_2D.at<double>(day,0),preprocessing_data.position_on_2D.at<double>(day,1), 2.0, 1, 0, 0);
+					//DrawCircle(preprocessing_data.position_on_2D.at<double>(day,0),preprocessing_data.position_on_2D.at<double>(day,1), 2.0, (rand() % 11)/10.0, (rand() % 11)/10.0, (rand() % 11)/10.0);
+					//DrawCircle(preprocessing_data.position_on_2D.at<double>(i,0),preprocessing_data.position_on_2D.at<double>(i,1), 2.0, preprocessing_data.station_color_mat_weekday.at<float>(i,0), 
+					//																													  preprocessing_data.station_color_mat_weekday.at<float>(i,1), 
+					//																													  preprocessing_data.station_color_mat_weekday.at<float>(i,2));
+				}	
+			}
+			else if(preprocessing_data.day_select_right_indx == 1)
+			{
+				DrawTitle_FTGL(1,50,50);//draw text "weekend"
+				for(int i=0; i<preprocessing_data.dim ;i++)
+				{	
+					int dim_num = dim_index[i];
+				
+					vector<float> color(3);
+
+					//glPointSize( 8.0 );
+
+					//glPushMatrix();
+					//glBegin( GL_POINTS );
+				
+					if(dim_label[dim_num]==4)
+					{
+						color[0] = preprocessing_data.station_color_mat_weekend.at<float>(i,0);
+						color[1] = preprocessing_data.station_color_mat_weekend.at<float>(i,1);
+						color[2] = preprocessing_data.station_color_mat_weekend.at<float>(i,2);
+					}
+						//glColor3f( 0.8f, 0.0, 0.0f );
+					else if(!preprocessing_data.select_station.empty() )
+					{
+						color[0] = 0.3;
+						color[1] = 0.3;
+						color[2] = 0.3;
+					}
+					else
+					{
+						color[0] = preprocessing_data.station_color_mat_weekend.at<float>(i,0);
+						color[1] = preprocessing_data.station_color_mat_weekend.at<float>(i,1);
+						color[2] = preprocessing_data.station_color_mat_weekend.at<float>(i,2);			
+					}
+				
+
+					//glVertex2f(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 550 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1) );
+				
+					//glEnd();
+					//glPopMatrix();
+
+					DrawCircle(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 70 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1), 4.0, color[0], color[1], color[2]);
+					//DrawCircle(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0),550 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1), 4.0, 1, 0, 0);
+				}	
+			}
 	}
 
 	System::Void RawDataVisualization::Render(int rawdata_width,int rawdata_height){
@@ -349,18 +351,6 @@ namespace OpenGLForm{
 
 			SwapOpenGLBuffers();
 			
-	}
-
-	System::Void RawDataVisualization::DrawRect(int x, int y, int h, int w, vector<float> draw_color)
-	{
-		RECTANGLE *rect;
-		rect = new RECTANGLE();
-		rect->h = h;
-		rect->w = w;
-		rect->x = x;
-		rect->y = y;
-		DrawRectWithOpenGL(rect,draw_color);
-		delete rect;		
 	}
 		 
 	System::Void RawDataVisualization::FindPointInRect()
@@ -451,7 +441,17 @@ namespace OpenGLForm{
 				System::String^ name= gcnew System::String( station_name[ dim_index[day] ]);
 				System::Windows::Forms::MessageBox::Show( name + " " );
 				
-
+				//show_name = new char[150];
+				//strcpy(show_name,station_name[ dim_index[day]]);
+				/*
+				ToolTip^ TP = gcnew ToolTip();
+				TP->ShowAlways = true;
+				TP->ReshowDelay = 500;
+				//System::Windows::Forms::MessageBox::Show( name + " " );
+				TP->SetToolTip(parentPanel, name);
+				TP->AutoPopDelay = 5000;
+				delete TP;
+				*/
 				//System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
 
 				//dim_label[ dim_index[day] ] = 4;
@@ -483,8 +483,8 @@ namespace OpenGLForm{
 			x += move_x[1];
 			y += move_y[1];
 
-			//if( abs(pos_3D.x-x) <= 1.0 && abs(pos_3D.y-y) <= 1.0 )
-			if( (pos_3D.x-x) <= 2.3 && (pos_3D.x-x) >=0 &&  (pos_3D.y-y) <= 2.3 && (pos_3D.y-y) >=0 )
+			if( abs(pos_3D.x-x) + abs(pos_3D.y-y) <= 4.0 )
+			//if( (pos_3D.x-x) <= 2.3 && (pos_3D.x-x) >=0 &&  (pos_3D.y-y) <= 2.3 && (pos_3D.y-y) >=0 )
 			{
 				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
 								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
@@ -593,26 +593,6 @@ namespace OpenGLForm{
 		
 	}
 
-	System::Void RawDataVisualization::DrawCircle(int x, int y, float radius, float r, float g, float b)
-	{
-		int i;
-		int triangleAmount = 30; //# of triangles used to draw circle
-	
-		//GLfloat radius = 0.8f; //radius
-		GLfloat twicePi = 2.0f * 3.14;
-	
-		glBegin(GL_TRIANGLE_FAN);
-			glColor3f(r,g,b);
-			glVertex2f(x, y); // center of circle
-			for(i = 0; i <= triangleAmount;i++)
-			{ 
-				glVertex2f(
-					x + (radius * cos(i *  twicePi / triangleAmount)), 
-					y + (radius * sin(i * twicePi / triangleAmount))
-				);
-			}
-		glEnd();		
-	}
 
 	System::Void RawDataVisualization::DrawTime_FTGL(int index,int x, int y)
 	{
@@ -721,6 +701,9 @@ namespace OpenGLForm{
 			
 	}
 	System::Void RawDataVisualization::RawDataMouseMove( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e ){
+			//FindStation(e->X,e->Y);
+
+
 			if (e->Button == System::Windows::Forms::MouseButtons::Left)
 			{		
 					vector2 Move(e->X - last_X[1] , e->Y - last_Y[1]);
@@ -782,7 +765,7 @@ namespace OpenGLForm{
 
 		glPushMatrix();
 
-		float font_size = 40*(scale_factor[2]+0.4+scale_x[2]);
+		float font_size = 20*(scale_factor[1]+0.4+scale_x[1]);
 		font.FaceSize(font_size);
 		glColor3f(1.0, 1.0, 1.0);
 		glRasterPos2f(x , y + font.LineHeight());
