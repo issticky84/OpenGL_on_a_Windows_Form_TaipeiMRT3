@@ -15,6 +15,7 @@ namespace OpenGLForm{
 			System::Void clear();
 			System::Void clear_view();
 			char* show_name;
+			int* dim_label;
 	private:
 			System::Void FindPatternByTable2(int x,int y);
 			vector3 Unprojection(vector2 _2Dpos);
@@ -39,7 +40,7 @@ namespace OpenGLForm{
 			System::Void FindStation(int x,int y);
 			//System::Void DrawRect(int x, int y, int h, int w, vector<float>);
 
-			int* dim_label;
+			//int* dim_label;
 			Panel ^ parentPanel;
 	};
 }

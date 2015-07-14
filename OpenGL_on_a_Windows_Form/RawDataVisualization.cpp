@@ -418,7 +418,7 @@ namespace OpenGLForm{
 								   93,92,86,27,65,61,58,57,56,33,
 								   85,71,68,94,9};
 
-				char* station_name[] = {"","","","","","","","松山機場","中山國中","南京東路","忠孝復興",
+				char* station_name[] = {"","","","","","","","松山機場","中山國中","南京東路","忠孝復興(文湖線)",
 										   "大安","科技大樓","六張犁","麟光","辛亥","萬芳醫院","萬芳社區","木柵","動物園","",
 				                           "大直","劍南路","西湖","港墘","文德","內湖","大湖公園","葫洲","東湖","南港軟體園區",
 				                           "南港展覽館(文湖線)","小碧潭","新店","新店區公所","七張","大坪林","景美","萬隆","公館","台電大樓",
@@ -426,7 +426,7 @@ namespace OpenGLForm{
 				                           "台北車站(板南線)","台北車站(淡水線)","中山","雙連","民權西路(淡水線)","圓山","劍潭","士林","芝山","明德",
 										   "石牌","唭哩岸","奇岩","北投","新北投","復興崗","忠義","關渡","竹圍","紅樹林",
 										   "淡水","","","","","","永寧","土城","海山","亞東醫院",
-										   "府中","板橋","新埔","江子翠","龍山寺","西門","","善導寺","忠孝新生(板南線)","忠孝復興",
+										   "府中","板橋","新埔","江子翠","龍山寺","西門","","善導寺","忠孝新生(板南線)","忠孝復興(板南線)",
 										   "忠孝敦化","國父紀念館","市政府","永春","後山埤","昆陽","南港","南港展覽館(板南線)","","",
 										   "","","","","","","","","","",
 										   "","","","","","","","","","",
@@ -469,21 +469,22 @@ namespace OpenGLForm{
 		vector2 pos_2D(x,y);
 		vector3 pos_3D = Unprojection(pos_2D);//screen to 3D coordinate
 		///////////bug///////////
-		pos_3D.x *= (scale_factor[1] + scale_x[1]);
-		pos_3D.y *= (scale_factor[1] + scale_y[1]);
-		pos_3D.x += move_x[1];
-		pos_3D.y += move_y[1];	
+		//pos_3D.x *= (scale_factor[1] + scale_x[1]);
+		//pos_3D.y *= (scale_factor[1] + scale_y[1]);
+		//pos_3D.x += move_x[1];
+		//pos_3D.y += move_y[1];	
 		//System::Windows::Forms::MessageBox::Show( pos_3D.x.ToString() + " " + pos_3D.y.ToString());	
 		for(int day=0; day<preprocessing_data.dim ;day++)
 		{
 			int x = 80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0);
 			int y = 70 + 1.2*preprocessing_data.position_on_2D.at<double>(day,1);
-			x *= (scale_factor[1] + scale_x[1]);
-			y *= (scale_factor[1] + scale_y[1]);
-			x += move_x[1];
-			y += move_y[1];
+			//x *= (scale_factor[1] + scale_x[1]);
+			//y *= (scale_factor[1] + scale_y[1]);
+			//x += move_x[1];
+			//y += move_y[1];
 
-			if( abs(pos_3D.x-x) + abs(pos_3D.y-y) <= 4.0 )
+			if( sqrt( (pos_3D.x-x)*(pos_3D.x-x) + (pos_3D.y-y)*(pos_3D.y-y) ) <= 4.0 )
+			//if( abs(pos_3D.x-x) + abs(pos_3D.y-y) <= 4.0 )
 			//if( (pos_3D.x-x) <= 2.3 && (pos_3D.x-x) >=0 &&  (pos_3D.y-y) <= 2.3 && (pos_3D.y-y) >=0 )
 			{
 				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,

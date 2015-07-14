@@ -85,10 +85,10 @@ namespace OpenGL_on_a_Windows_Form
 
 	private: System::Windows::Forms::TextBox^  textBox1;
 	private: System::Boolean waiting_flag;
-	private: System::Windows::Forms::CheckBox^  residential_in;
-	private: System::Windows::Forms::CheckBox^  residential_out;
 
-	private: System::Windows::Forms::Label^  feature_selection_label;
+
+
+
 
 
 	private: System::Windows::Forms::Label^  cluster_label;
@@ -129,9 +129,6 @@ namespace OpenGL_on_a_Windows_Form
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->trackBar1 = (gcnew System::Windows::Forms::TrackBar());
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
-			this->feature_selection_label = (gcnew System::Windows::Forms::Label());
-			this->residential_in = (gcnew System::Windows::Forms::CheckBox());
-			this->residential_out = (gcnew System::Windows::Forms::CheckBox());
 			this->cluster_label = (gcnew System::Windows::Forms::Label());
 			this->load_csv = (gcnew System::Windows::Forms::Button());
 			this->file_directory = (gcnew System::Windows::Forms::Label());
@@ -167,9 +164,9 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// panel2
 			// 
-			this->panel2->Location = System::Drawing::Point(1504, 165);
+			this->panel2->Location = System::Drawing::Point(1504, 125);
 			this->panel2->Name = L"panel2";
-			this->panel2->Size = System::Drawing::Size(400, 237);
+			this->panel2->Size = System::Drawing::Size(400, 324);
 			this->panel2->TabIndex = 1;
 			this->panel2->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::panel2_Paint);
 			this->panel2->MouseEnter += gcnew System::EventHandler(this, &Form1::panel2_MouseEnter);
@@ -187,9 +184,9 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// start
 			// 
-			this->start->Location = System::Drawing::Point(1770, 14);
+			this->start->Location = System::Drawing::Point(1804, 14);
 			this->start->Name = L"start";
-			this->start->Size = System::Drawing::Size(134, 67);
+			this->start->Size = System::Drawing::Size(100, 67);
 			this->start->TabIndex = 4;
 			this->start->Text = L"Start";
 			this->start->UseVisualStyleBackColor = true;
@@ -197,7 +194,7 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// button2
 			// 
-			this->button2->Location = System::Drawing::Point(1504, 38);
+			this->button2->Location = System::Drawing::Point(1502, 36);
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(71, 38);
 			this->button2->TabIndex = 5;
@@ -208,7 +205,7 @@ namespace OpenGL_on_a_Windows_Form
 			// trackBar1
 			// 
 			this->trackBar1->LargeChange = 1;
-			this->trackBar1->Location = System::Drawing::Point(1569, 114);
+			this->trackBar1->Location = System::Drawing::Point(1579, 52);
 			this->trackBar1->Maximum = 50;
 			this->trackBar1->Name = L"trackBar1";
 			this->trackBar1->Size = System::Drawing::Size(196, 45);
@@ -218,51 +215,16 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// textBox1
 			// 
-			this->textBox1->Location = System::Drawing::Point(1760, 114);
+			this->textBox1->Location = System::Drawing::Point(1770, 52);
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(24, 22);
 			this->textBox1->TabIndex = 8;
 			this->textBox1->Text = L"4";
 			// 
-			// feature_selection_label
-			// 
-			this->feature_selection_label->AutoSize = true;
-			this->feature_selection_label->Location = System::Drawing::Point(1593, 14);
-			this->feature_selection_label->Name = L"feature_selection_label";
-			this->feature_selection_label->Size = System::Drawing::Size(84, 12);
-			this->feature_selection_label->TabIndex = 11;
-			this->feature_selection_label->Text = L"Feature Selection";
-			// 
-			// residential_in
-			// 
-			this->residential_in->AutoSize = true;
-			this->residential_in->Checked = true;
-			this->residential_in->CheckState = System::Windows::Forms::CheckState::Checked;
-			this->residential_in->Location = System::Drawing::Point(1595, 38);
-			this->residential_in->Name = L"residential_in";
-			this->residential_in->Size = System::Drawing::Size(96, 16);
-			this->residential_in->TabIndex = 9;
-			this->residential_in->Text = L"Redisential (In)";
-			this->residential_in->UseVisualStyleBackColor = true;
-			this->residential_in->CheckedChanged += gcnew System::EventHandler(this, &Form1::residential_in_CheckedChanged);
-			// 
-			// residential_out
-			// 
-			this->residential_out->AutoSize = true;
-			this->residential_out->Checked = true;
-			this->residential_out->CheckState = System::Windows::Forms::CheckState::Checked;
-			this->residential_out->Location = System::Drawing::Point(1595, 60);
-			this->residential_out->Name = L"residential_out";
-			this->residential_out->Size = System::Drawing::Size(103, 16);
-			this->residential_out->TabIndex = 10;
-			this->residential_out->Text = L"Redisential (Out)";
-			this->residential_out->UseVisualStyleBackColor = true;
-			this->residential_out->CheckedChanged += gcnew System::EventHandler(this, &Form1::residential_out_CheckedChanged);
-			// 
 			// cluster_label
 			// 
 			this->cluster_label->AutoSize = true;
-			this->cluster_label->Location = System::Drawing::Point(1576, 89);
+			this->cluster_label->Location = System::Drawing::Point(1604, 18);
 			this->cluster_label->Name = L"cluster_label";
 			this->cluster_label->Size = System::Drawing::Size(129, 12);
 			this->cluster_label->TabIndex = 14;
@@ -270,7 +232,7 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// load_csv
 			// 
-			this->load_csv->Location = System::Drawing::Point(1802, 104);
+			this->load_csv->Location = System::Drawing::Point(1804, 87);
 			this->load_csv->Name = L"load_csv";
 			this->load_csv->Size = System::Drawing::Size(102, 32);
 			this->load_csv->TabIndex = 16;
@@ -351,16 +313,17 @@ namespace OpenGL_on_a_Windows_Form
 			// 
 			// pictureBox1
 			// 
-			this->pictureBox1->Location = System::Drawing::Point(1504, 408);
+			this->pictureBox1->Location = System::Drawing::Point(1504, 455);
 			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(400, 634);
+			this->pictureBox1->Size = System::Drawing::Size(400, 587);
 			this->pictureBox1->TabIndex = 0;
 			this->pictureBox1->TabStop = false;
 			this->pictureBox1->Click += gcnew System::EventHandler(this, &Form1::pictureBox1_Click);
+			this->pictureBox1->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::pictureBox1_MouseClick);
 			// 
 			// RightViewClear
 			// 
-			this->RightViewClear->Location = System::Drawing::Point(1304, 8);
+			this->RightViewClear->Location = System::Drawing::Point(753, 7);
 			this->RightViewClear->Name = L"RightViewClear";
 			this->RightViewClear->Size = System::Drawing::Size(75, 23);
 			this->RightViewClear->TabIndex = 25;
@@ -395,9 +358,6 @@ namespace OpenGL_on_a_Windows_Form
 			this->Controls->Add(this->file_directory);
 			this->Controls->Add(this->load_csv);
 			this->Controls->Add(this->cluster_label);
-			this->Controls->Add(this->feature_selection_label);
-			this->Controls->Add(this->residential_out);
-			this->Controls->Add(this->residential_in);
 			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->trackBar1);
 			this->Controls->Add(this->button2);
@@ -800,10 +760,12 @@ private: System::Void view_select_right_SelectedIndexChanged(System::Object^  se
 				 preprocessing_data.view_select_right_index = selectedIndex;
 		 }
 private: System::Void pictureBox1_Click(System::Object^  sender, System::EventArgs^  e) {
+				//System::Windows::Forms::MessageBox::Show( (this->pictureBox1->MousePosition.X - this->pictureBox1->Location.X) + " " + (this->pictureBox1->MousePosition.Y - this->pictureBox1->Location.Y) );
+
 				//this->pictureBox1->Image = Image::FromFile("MRT_map2.jpg");
-					//ToolTip^ TP = gcnew ToolTip();
-					//TP->ShowAlways = true;
-					//TP->SetToolTip(textBox1, "Please input your name.");
+				//ToolTip^ TP = gcnew ToolTip();
+				//TP->ShowAlways = true;
+				//TP->SetToolTip(textBox1, "Please input your name.");
 		 }
 
 private: System::Void panel1_MouseMove(System::Object^  sender, System::EventArgs^  e) {
@@ -823,6 +785,21 @@ private: System::Void panel1_MouseHover(System::Object^  sender, System::EventAr
 		 }
 
 
+private: System::Void pictureBox1_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+					//System::Windows::Forms::MessageBox::Show( e->Location.X + " " + e->Location.Y );
+					vector<int> station_num_vec = preprocessing_data.Find_MRT_station(e->Location.X, e->Location.Y);
+					if(! station_num_vec.empty() )
+					{
+						for(int i=0;i<station_num_vec.size();i++)
+						{
+							//System::Windows::Forms::MessageBox::Show( "Station: " + station_num_vec[i] );
+							rawData->dim_label[ station_num_vec[i] ] = 4;
+							if ( !preprocessing_data.check_duplicated_station( station_num_vec[i]) )
+								preprocessing_data.select_station.push_back( station_num_vec[i] );
+						}
+					}
+			 
+		 }
 };
 }
 

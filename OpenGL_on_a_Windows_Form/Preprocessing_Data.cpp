@@ -104,6 +104,35 @@ void Preprocessing_Data::Initial_selection_flag(bool f1, bool f2, bool f3, bool 
 	if(f6==true) data_dim++;
 }
 
+vector<int> Preprocessing_Data::Find_MRT_station(int x, int y)
+{
+	int dim_index[] = {31,98,30,23,90,10,12,129,55,54,
+					    53,52,51,50,42,132,91,89,133,88,
+						29,28,26,25,21,13,14,15,17,18,
+						70,69,66,64,63,62,60,59,43,38,
+						37,35,34,32,174,175,176,177,178,128,
+						45,46,47,48,96,95,85,84,83,81,
+						79,78,77,22,7,19,24,8,11,16,
+						41,40,39,36,130,97,82,80,42,131,
+						93,92,86,27,65,61,58,57,56,33,
+						85,71,68,94,9};
+	int dim = sizeof(dim_index)/sizeof(dim_index[0]);
+	vector<int> station_num;
+	for(int i=0;i<dim;i++)
+	{
+		int dim_num = dim_index[i];
+		int posx = MRT_position[ dim_num ][0];
+		int posy = MRT_position[ dim_num][1];		
+		if( sqrt( (posx-x)*(posx-x) + (posy-y)*(posy-y) ) < 6.0)
+		{
+			//return dim_num;
+			station_num.push_back(dim_num);
+		}
+	}
+
+	return station_num;
+}
+
 void Preprocessing_Data::circle_MRT_station()
 {
 	Mat image;
@@ -180,7 +209,7 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 					int dim_num = select_station[s];
 					dim_data_enter_avg.at<float>(day,u) += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
 					dim_data_out_avg.at<float>(day,u) += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ];
-
+						
 					enter_total += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
 					out_total += month_vec[i].day_vec[j].hour_vec[u].out[ dim_num ];
 					//enter_total.at<float>(day,0) += month_vec[i].day_vec[j].hour_vec[u].enter[ dim_num ];
@@ -357,37 +386,6 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	//	}
 	//}
 
-	
-	//for(int i=0;i<month_vec.size();i++)
-	//{
-	//	for(int j=0;j<month_vec[i].day_vec.size();j++)
-	//	{
-	//		month_vec[i].day_vec[j].river_table_current = Mat::zeros(23,select_station.size(),CV_32F);
-	//		month_vec[i].day_vec[j].river_table_next = Mat::zeros(23,select_station.size(),CV_32F);
-	//		for(int u=0;u<24;u++)
-	//		{
-	//			t = 0;
-	//			float accum_current = 0.0;
-	//			float accum_next = 0.0;
-	//			for(int s=0;s<select_station.size();s++)
-	//			{
-	//				//month_vec[i].day_vec[j].hour_vec[u].data[t++] = month_vec[i].day_vec[j].hour_vec[u].enter[ select_station[s] ];
-	//				//month_vec[i].day_vec[j].hour_vec[u].data[t++] = month_vec[i].day_vec[j].hour_vec[u].out[ select_station[s] ];			
-
-	//				accum_current += month_vec[i].day_vec[j].hour_vec[u].enter[ select_station[s] ];
-	//				accum_next += month_vec[i].day_vec[j].hour_vec[u+1].enter[ select_station[s] ];
-
-	//				if(u!=23)
-	//				{
-	//					month_vec[i].day_vec[j].river_table_current.at<float>(u,s) = accum_current;
-	//					month_vec[i].day_vec[j].river_table_next.at<float>(u,s) = accum_next;
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-
-
 	output_mat_as_csv_file_float("model.csv",model);
 
 	//==============K means with cuda============================//
@@ -547,9 +545,16 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 	hour_amount = hour_amount_read;
 	
 
-	int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
-					   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
-					   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94,9};
+	int dim_index[] = {31,98,30,23,90,10,12,129,55,54,
+					   53,52,51,50,42,132,91,89,133,88,
+					   29,28,26,25,21,13,14,15,17,18,
+					   70,69,66,64,63,62,60,59,43,38,
+					   37,35,34,32,174,175,176,177,178,128,
+					   45,46,47,48,96,95,85,84,83,81,
+					   79,78,77,22,7,19,24,8,11,16,
+					   41,40,39,36,130,97,82,80,42,131,
+					   93,92,86,27,65,61,58,57,56,33,
+					   85,71,68,94,9};
 	dim = sizeof(dim_index)/sizeof(dim_index[0]);
 
 	
@@ -800,12 +805,12 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 	output_mat_as_csv_file_float("station_color_mat_weekend.csv",station_color_mat_weekend);
 	*/
 	Mat station_weekday_cov = read_station_cov("station_weekday_cov.csv");
-	normalize(station_weekday_cov.col(0),station_weekday_cov.col(0),0,10,NORM_MINMAX); 
+	normalize(station_weekday_cov.col(0),station_weekday_cov.col(0),0,1,NORM_MINMAX); 
 	station_color_mat_weekday = lab_alignment_new_dim1(station_weekday_cov).clone();
 	output_mat_as_csv_file_float("station_color_mat_weekday.csv",station_color_mat_weekday);
 
 	Mat station_weekend_cov = read_station_cov("station_weekend_cov.csv");
-	normalize(station_weekend_cov.col(0),station_weekend_cov.col(0),0,10,NORM_MINMAX); 
+	normalize(station_weekend_cov.col(0),station_weekend_cov.col(0),0,1,NORM_MINMAX); 
 	station_color_mat_weekend = lab_alignment_new_dim1(station_weekend_cov).clone();
 	output_mat_as_csv_file_float("station_color_mat_weekend.csv",station_color_mat_weekend);
 }
@@ -5229,4 +5234,6 @@ Mat Preprocessing_Data::read_station_cov(char* file_name)
 		cov_mat.push_back( cov );
 	}
 	return cov_mat;
+
+	fclose(file);
 }
