@@ -321,31 +321,10 @@ namespace OpenGLForm{
 			{
 				stationView();
 
-				glPushMatrix();
-
-				glColor3f( 1.0f, 1.0, 1.0f );
-
-				glBegin(GL_LINES);
-				glVertex2d(temp_line->x1,temp_line->y1 ); 
-				glVertex2d(temp_line->x2,temp_line->y1 ); 
-				glEnd();
-
-				glBegin(GL_LINES);
-				glVertex2d(temp_line->x1,temp_line->y1 ); 
-				glVertex2d(temp_line->x1,temp_line->y2 ); 
-				glEnd();
-
-				glBegin(GL_LINES);
-				glVertex2d(temp_line->x1,temp_line->y2 ); 
-				glVertex2d(temp_line->x2,temp_line->y2 ); 
-				glEnd();
-
-				glBegin(GL_LINES);
-				glVertex2d(temp_line->x2,temp_line->y1 ); 
-				glVertex2d(temp_line->x2,temp_line->y2 ); 
-				glEnd();
-
-				glPopMatrix();
+				DrawLine(1.5, temp_line->x1, temp_line->y1, temp_line->x2, temp_line->y1);
+				DrawLine(1.5, temp_line->x1, temp_line->y1, temp_line->x1, temp_line->y2);
+				DrawLine(1.5, temp_line->x1, temp_line->y2, temp_line->x2, temp_line->y2);
+				DrawLine(1.5, temp_line->x2, temp_line->y1, temp_line->x2, temp_line->y2);
 	
 			}
 

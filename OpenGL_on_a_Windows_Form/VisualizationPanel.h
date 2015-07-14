@@ -61,6 +61,8 @@ namespace OpenGLForm{
 			System::Void DrawRectWithOpenGL(RECTANGLE* pRect,vector<float>  draw_color);
 			System::Void DrawRect(int x, int y, int h, int w, vector<float>);
 			System::Void DrawCircle(int,int,float,float,float,float);
+			System::Void DrawLine(float,float,float,float,float);
+			System::Void drawHallowCircle(GLfloat , GLfloat , GLfloat, float, float, float);
 			System::Void SwapOpenGLBuffers(System::Void);
 			System::Void wglmakecur();
 			double round(double);

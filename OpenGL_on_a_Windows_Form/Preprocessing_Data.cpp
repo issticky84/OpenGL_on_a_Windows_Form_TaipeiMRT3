@@ -447,6 +447,46 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	}
 	output_mat_as_csv_file_float("cluster_center_raw.csv",cluster_center_raw);
 	//System::Windows::Forms::MessageBox::Show( enter_total_avg + " " +  out_total_avg);
+	//===================Transfer function color=================//
+	float max_x, min_x, max_y, min_y;
+	max_x = max_y = -100;
+	min_x = min_y = 100;
+	for(int i=0;i<cluster_center_raw.rows;i++)
+	{
+		int cx = cluster_center_raw.at<float>(i,0);
+		int cy = cluster_center_raw.at<float>(i,1);
+		if(cx >= max_x) max_x = cx;
+		if(cy >= max_y) max_y = cy;
+		if(cx <= min_x) min_x = cx;
+		if(cy <= min_y) min_y = cy;
+	}
+
+	sample_unit = 200;
+	sample_num_x = (max_x - min_x)/sample_unit + 2;
+	sample_num_y = (max_y - min_y)/sample_unit + 2;
+	sample_color = Mat::zeros(sample_num_x*sample_num_y ,3 ,CV_32F);
+	Mat sample_point = Mat::zeros(sample_num_x*sample_num_y ,2 ,CV_32F);
+	Mat cmat = Mat::zeros(sample_num_x*sample_num_y, 2 ,CV_32F);
+	t = 0;
+	for(int i=0;i<sample_num_x;i++)
+	{
+		for(int j=0;j<sample_num_y;j++)
+		{
+			int px = i*sample_unit;
+			int py = j*sample_unit;
+			sample_point.at<float>(t,0) = px;
+			sample_point.at<float>(t,1) = py;
+			float cx = (float)px / enter_total_avg;
+			float cy = (float)py / out_total_avg;
+			cmat.at<float>(t,0) = cx;
+			cmat.at<float>(t,1) = cy;
+			t++;
+		}
+	}
+	output_mat_as_csv_file_float("sample_point.csv",sample_point);
+	output_mat_as_csv_file_float("cmat.csv",cmat);
+	sample_color = lab_alignment_new_dim2(cmat).clone();
+	output_mat_as_csv_file_float("sample_color.csv",sample_color);
 	//=======================voting=================//
 	voting_for_data(day_amount,k,cluster_tag);
 	output_mat_as_csv_file_int("histogram.csv",histogram);
@@ -2212,6 +2252,7 @@ Mat Preprocessing_Data::lab_alignment_new_dim2(Mat cluster_center)
 			}
 		}
 	}
+
 
 	move_vector.clear();
 

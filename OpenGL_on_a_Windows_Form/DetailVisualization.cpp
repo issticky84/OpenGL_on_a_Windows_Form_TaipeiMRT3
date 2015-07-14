@@ -32,8 +32,6 @@ namespace OpenGLForm{
 
 			glTranslatef(0.0+move_x[2],0.0+move_y[2],0.0+move_z[2]);
 			glScalef(scale_factor[2]+scale_x[2],scale_factor[2]+scale_y[2],scale_factor[2]+scale_z[2]);
-			vector<float> color;
-			color.resize(3);
 
 
 			vector<float> draw_color(3);
@@ -45,16 +43,16 @@ namespace OpenGLForm{
 			//=====================畫網格====================//
 			//30格代表1000的值=>值*3/100=格的位置
 			//30格代表500的值=>值*3/50=格的位置
+			
 			float x_position = 120;
 			float y_position = 420;
-			//vector<float> draw_color(3);
-			//draw_color[0] = 0.8; draw_color[1] = 1.0; draw_color[2] = 1.0;
 			float value = 0.0;
 			for(int i=0;i<=390;i+=30)
 			{
 				DrawText_FTGL(value, x_position + i, y_position + 10, 1.0, 1.0, 1.0);
 				value += 0.5;
-				DrawRect(x_position, y_position - i, 2.0, 390.0, draw_color);
+				//DrawRect(x_position, y_position - i, 2.0, 390.0, draw_color);
+				//DrawLine(1.0, x_position + i, y_position, x_position + i, y_position - 390);
 			}
 
 			x_position = 120;
@@ -64,12 +62,36 @@ namespace OpenGLForm{
 			{
 				if(value>0.001) DrawText_FTGL(value, x_position-20, y_position + i, 1.0, 1.0, 1.0);
 				value -= 0.5;
-				DrawRect(x_position + i, y_position, 390.0, 2.0, draw_color);
+				//DrawLine(1.0, x_position, y_position + i, x_position + 390, y_position + i);
+				//DrawRect(x_position + i, y_position, 390.0, 2.0, draw_color);
 			}
+			
 			//=============================================//
+			if(preprocessing_data.view_select_right_index==2)
+			{
+				int t = 0;
+				for(int i=0;i<preprocessing_data.sample_num_x;i++)
+				{
+					for(int j=0;j<preprocessing_data.sample_num_y;j++)
+					{
+						int px = i*preprocessing_data.sample_unit;
+						int py = j*preprocessing_data.sample_unit;
+						draw_color[0] = preprocessing_data.sample_color.at<float>(t,0); 
+						draw_color[1] = preprocessing_data.sample_color.at<float>(t,1); 
+						draw_color[2] = preprocessing_data.sample_color.at<float>(t,2);
+						DrawRect(120.0 + px*(3.0/50.0), 420.0 - py*(3.0/50.0), preprocessing_data.sample_unit*(3.0/50.0), preprocessing_data.sample_unit*(3.0/50.0), draw_color);
+						//DrawCircle(120 + px*(3.0/50.0), 420.0 - py*(3.0/50.0), 4.0, 
+						//	   preprocessing_data.sample_color.at<float>(t,0), preprocessing_data.sample_color.at<float>(t,1), preprocessing_data.sample_color.at<float>(t,2));
+						t++;
+					}
+				}
+			}
+			////////////
 			for(int i=0;i<preprocessing_data.cluster_center_raw.rows;i++)
 			{
-				DrawCircle(120.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*(3.0/50.0), 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*(3.0/50.0), 4.0, 
+				//DrawCircle(120.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*(3.0/50.0), 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*(3.0/50.0), 4.0, 
+				//		   preprocessing_data.rgb_mat3.at<float>(i,0), preprocessing_data.rgb_mat3.at<float>(i,1), preprocessing_data.rgb_mat3.at<float>(i,2));
+				drawHallowCircle(120.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*(3.0/50.0), 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*(3.0/50.0), 4.0, 
 						   preprocessing_data.rgb_mat3.at<float>(i,0), preprocessing_data.rgb_mat3.at<float>(i,1), preprocessing_data.rgb_mat3.at<float>(i,2));
 			}
 

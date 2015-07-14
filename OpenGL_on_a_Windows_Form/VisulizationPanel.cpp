@@ -196,6 +196,39 @@ namespace OpenGLForm{
 		glPopMatrix();
 	}
 
+	System::Void VisualizationPanel::drawHallowCircle(GLfloat x, GLfloat y, GLfloat r, float R, float G, float B) {
+		static const double inc = 3.14 / 12.0;
+		static const double max = 2 * 3.14;
+
+		glEnable(GL_LINE_SMOOTH);
+		glPushMatrix();
+
+		//glColor3f( R, G, B );
+		glColor3f( 0.0, 0.0, 0.0 );
+		glBegin(GL_LINE_LOOP);
+		for(double d = 0; d < max; d += inc) {
+			glVertex2f(cos(d) * r + x, sin(d) * r + y);
+		}
+		glEnd();
+		glPopMatrix();
+	}
+
+	System::Void VisualizationPanel::DrawLine(float line_width, float x1, float y1, float x2, float y2)
+	{
+		glLineWidth(line_width);
+
+		glPushMatrix();
+
+		glColor3f( 1.0f, 1.0, 1.0f );
+
+		glBegin(GL_LINES);
+		glVertex2d(x1, y1 ); 
+		glVertex2d(x2, y2 ); 
+		glEnd();
+
+		glPopMatrix();
+	}
+
 	System::Void VisualizationPanel::SwapOpenGLBuffers(System::Void){
 		SwapBuffers(m_hDC);		
 	}

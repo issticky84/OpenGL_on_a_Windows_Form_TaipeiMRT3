@@ -155,6 +155,8 @@ public:
 	Mat cluster_center_raw;
 
 	vector<int> Find_MRT_station(int x, int y);
+	int sample_unit, sample_num_x, sample_num_y;
+	Mat sample_color;
 
 };
 
