@@ -689,8 +689,8 @@ namespace OpenGLForm{
 					vector2 Move(e->X - last_X[1] , e->Y - last_Y[1]);
 					if (Move.length() < 500.0f)
 					{
-						move_x[1] = Move.x;
-						move_y[1] = Move.y;
+						move_x[1] += 0.3*Move.x;
+						move_y[1] += 0.3*Move.y;
 					}
 					
 			}	

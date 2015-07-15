@@ -462,8 +462,8 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	}
 
 	sample_unit = 200;
-	sample_num_x = (max_x - min_x)/sample_unit + 2;
-	sample_num_y = (max_y - min_y)/sample_unit + 2;
+	sample_num_x = (max_x - min_x)/sample_unit + 3;
+	sample_num_y = (max_y - min_y)/sample_unit + 3;
 	sample_color = Mat::zeros(sample_num_x*sample_num_y ,3 ,CV_32F);
 	Mat sample_point = Mat::zeros(sample_num_x*sample_num_y ,2 ,CV_32F);
 	Mat cmat = Mat::zeros(sample_num_x*sample_num_y, 2 ,CV_32F);
