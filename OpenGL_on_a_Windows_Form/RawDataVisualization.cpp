@@ -326,6 +326,22 @@ namespace OpenGLForm{
 				DrawLine(1.5, temp_line->x1, temp_line->y2, temp_line->x2, temp_line->y2);
 				DrawLine(1.5, temp_line->x2, temp_line->y1, temp_line->x2, temp_line->y2);
 	
+				//=================Variance Color Bar================//
+				float x_position = 200;
+				float y_position = 600;
+				float width = 10.0;
+				DrawTitle_FTGL(2, x_position-100, y_position);//draw text "Variance"
+				DrawTitle_FTGL(3, x_position, y_position+30);//draw text "Small"
+				for(int i=0;i<preprocessing_data.cov_color_bar.rows;i++)
+				{
+					vector<float> draw_color(3);
+					draw_color[0] = preprocessing_data.cov_color_bar.at<float>(i,0);
+					draw_color[1] = preprocessing_data.cov_color_bar.at<float>(i,1);
+					draw_color[2] = preprocessing_data.cov_color_bar.at<float>(i,2);
+					DrawRect(x_position, y_position, 20.0, width, draw_color);
+					x_position += width;
+				}
+				DrawTitle_FTGL(4, x_position, y_position+30);//draw text "Large"
 			}
 
 			SwapOpenGLBuffers();
@@ -470,11 +486,6 @@ namespace OpenGLForm{
 								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
 								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94,9};
 				
-				//if(dim_index[day]>=7 && dim_index[day] <= 180) 
-				//{
-					//System::String^ name= gcnew System::String( station_name[ dim_index[day] ]);
-					//System::Windows::Forms::MessageBox::Show( name + " " );
-				//}
 
 				//System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
 
@@ -713,21 +724,10 @@ namespace OpenGLForm{
 			{
 				temp_line->x2 = e->X;
 				temp_line->y2 = e->Y;
-				//line_draw = 0; // stop drawing drag line
 
 				FindPointInRect();
 			}
 
-			//if (e->Button == System::Windows::Forms::MouseButtons::Middle && drag)
-			//{
-			//	drag = 0;
-			//	ROI->h = e->X - rect_x;
-			//	ROI->w = e->X - rect_y;
-			//	ROI->x = rect_x;
-			//	ROI->y = rect_y;
-			//	System::Windows::Forms::MessageBox::Show(ROI->x + " " + ROI->y + " " + e->X + " " +  e->Y );
-			//	draw_roi = true;
-			//}
 	}
 
 	System::Void RawDataVisualization::RawDataMouseDoubleClick( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e ){
@@ -742,6 +742,9 @@ namespace OpenGLForm{
 	{
 		strcpy(title[0],"Weekday");
 		strcpy(title[1],"Weekend");
+		strcpy(title[2],"Variance");
+		strcpy(title[3],"Small");
+		strcpy(title[4],"Large");
 
 		glPushMatrix();
 

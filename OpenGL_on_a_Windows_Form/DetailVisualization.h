@@ -9,6 +9,10 @@ namespace OpenGLForm{
 		public:
 			DetailVisualization(Form ^ parentForm,Panel ^ parentPanel, GLsizei iWidth, GLsizei iHeight,ReadCSV read_csv_ref,Preprocessing_Data preprocessing_data_ref);
 			virtual System::Void Render(int,int) override;
+			void  DetailMouseDown( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e);
+			void  DetailMouseWheel( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e);
+			void  DetailMouseMove( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e);
+			void  DetailMouseUp( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e);
 			System::Void clear();
 	private:
 			System::Void DrawText_FTGL(float n,int x, int y, int, int ,int);

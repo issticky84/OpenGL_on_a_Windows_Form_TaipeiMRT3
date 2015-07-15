@@ -3,6 +3,10 @@
 
 namespace OpenGLForm{
 	DetailVisualization::DetailVisualization(Form ^ parentForm,Panel ^ parentPanel, GLsizei iWidth, GLsizei iHeight,ReadCSV read_csv_ref,Preprocessing_Data preprocessing_data_ref):VisualizationPanel(parentForm,parentPanel,iWidth,iHeight,read_csv_ref,preprocessing_data_ref){
+			parentPanel->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &DetailVisualization::DetailMouseDown);
+			parentPanel->MouseWheel += gcnew System::Windows::Forms::MouseEventHandler( this, &DetailVisualization::DetailMouseWheel );
+			parentPanel->MouseMove += gcnew System::Windows::Forms::MouseEventHandler( this, &DetailVisualization::DetailMouseMove );	
+			parentPanel->MouseUp += gcnew System::Windows::Forms::MouseEventHandler( this, &DetailVisualization::DetailMouseUp );				
 			title_string();
 			//Initialize mouse handler variable
 			scale_x[2] = 0.0; scale_y[2] = 0.0; scale_z[2] = 0.0;
@@ -12,6 +16,7 @@ namespace OpenGLForm{
 			//Initialize window size
 			windowWidth[2] = iWidth; 
 			windowHeight[2] = iHeight;	
+
 	}
 	System::Void DetailVisualization::Render(int detail_width,int detial_height){
 			wglmakecur();
@@ -31,17 +36,18 @@ namespace OpenGLForm{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear the screen and depth buffer
 
 			
+			/*
 			//若是colormap太小就拉近一點
 			if(preprocessing_data.sample_num_x*preprocessing_data.sample_num_y<300)
 			{
 				scale_factor[2] = 1.0;
-				move_y[2] = -200;			
+				move_y[2] = -180;			
 			}
 			else
 			{
 				scale_factor[2] = 0.6;
 				move_y[2] = 0;
-			}
+			}*/
 
 
 			glTranslatef(0.0+move_x[2],0.0+move_y[2],0.0+move_z[2]);
@@ -107,8 +113,8 @@ namespace OpenGLForm{
 				////////////
 				for(int i=0;i<preprocessing_data.cluster_center_raw.rows;i++)
 				{
-					//DrawCircle(120.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*(3.0/50.0), 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*(3.0/50.0), 4.0, 
-					//		   preprocessing_data.rgb_mat3.at<float>(i,0), preprocessing_data.rgb_mat3.at<float>(i,1), preprocessing_data.rgb_mat3.at<float>(i,2));
+					DrawCircle(120.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord, 4.0, 
+							   preprocessing_data.rgb_mat3.at<float>(i,0), preprocessing_data.rgb_mat3.at<float>(i,1), preprocessing_data.rgb_mat3.at<float>(i,2));
 					drawHallowCircle(120.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord, 4.0, 
 							   preprocessing_data.rgb_mat3.at<float>(i,0), preprocessing_data.rgb_mat3.at<float>(i,1), preprocessing_data.rgb_mat3.at<float>(i,2));
 					DrawTitle_FTGL(2, 125.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 415.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord ); //(
@@ -212,6 +218,56 @@ namespace OpenGLForm{
 				glVertex3f(x2,y2,0.0);
 			glEnd();
 			glPopMatrix();	
+		}
+
+		System::Void DetailVisualization::DetailMouseDown( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e ){
+				last_X[2] = e->X;
+				last_Y[2] = e->Y;
+
+				if (e->Button == System::Windows::Forms::MouseButtons::Right)
+				{
+
+				}
+
+		}
+
+		System::Void DetailVisualization::DetailMouseWheel( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e ){	
+		
+				if (e->Delta < 0){
+					scale_x[2]+=scale_size[2];
+					scale_y[2]+=scale_size[2];
+					scale_z[2]+=scale_size[2];
+				}
+				else{
+					scale_x[2]-=scale_size[2];
+					scale_y[2]-=scale_size[2];
+					scale_z[2]-=scale_size[2];		
+				}
+		
+			
+		}
+
+		System::Void DetailVisualization::DetailMouseMove( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e ){
+				//FindStation(e->X,e->Y);
+
+
+				if (e->Button == System::Windows::Forms::MouseButtons::Left)
+				{		
+						vector2 Move(e->X - last_X[2] , e->Y - last_Y[2]);
+						//if (Move.length() < 500.0f)
+						//{
+							move_x[2] += 0.3*Move.x;
+							move_y[2] += 0.3*Move.y;
+						//}
+					
+				}	
+
+		}
+
+		System::Void DetailVisualization::DetailMouseUp( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e ){
+				last_X[2] = e->X;
+				last_Y[2] = e->Y;
+
 		}
 
 		System::Void DetailVisualization::clear()

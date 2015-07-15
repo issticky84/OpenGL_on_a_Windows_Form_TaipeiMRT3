@@ -538,40 +538,40 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	position = histo_position.clone();
 	//======================raw data 3D color by lab alignment===================//
 	
-	clock_t begin10 = clock();
-	Mat raw_data_lab;
-	if(model.cols>=3) raw_data_3D = lab_alignment(model,30).clone();
-	else if(model.cols==2) raw_data_3D = lab_alignment_dim2(model,30).clone();
-	else if(model.cols==1) raw_data_3D = lab_alignment_dim1(model,30).clone();	
-	clock_t end10 = clock();
-	printf("lab alignment for raw data 3 dim elapsed time: %f\n",double(end10 - begin10) / CLOCKS_PER_SEC);	
-	output_mat_as_csv_file_float("raw_data_3D.csv",raw_data_3D);
+	//clock_t begin10 = clock();
+	//Mat raw_data_lab;
+	//if(model.cols>=3) raw_data_3D = lab_alignment(model,30).clone();
+	//else if(model.cols==2) raw_data_3D = lab_alignment_dim2(model,30).clone();
+	//else if(model.cols==1) raw_data_3D = lab_alignment_dim1(model,30).clone();	
+	//clock_t end10 = clock();
+	//printf("lab alignment for raw data 3 dim elapsed time: %f\n",double(end10 - begin10) / CLOCKS_PER_SEC);	
+	//output_mat_as_csv_file_float("raw_data_3D.csv",raw_data_3D);
 	
 	//raw_data_3D_array = new Mat[day_amount];
-	for(int i=0;i<day_amount;i++)
-	{
-		raw_data_3D_array[i] = Mat::zeros(24,3,CV_32F);
-	}
+	//for(int i=0;i<day_amount;i++)
+	//{
+	//	raw_data_3D_array[i] = Mat::zeros(24,3,CV_32F);
+	//}
 
-	t = 0;
-	int d = 0;
-	for(int i=0;i<month_vec.size();i++)
-	{
-		for(int j=0;j<month_vec[i].day_vec.size();j++)
-		{
-			for(int u=0;u<month_vec[i].day_vec[j].hour_vec.size();u++)
-			{
-				month_vec[i].day_vec[j].hour_vec[u].cluster_tag = cluster_tag.at<int>(t,0);
+	//t = 0;
+	//int d = 0;
+	//for(int i=0;i<month_vec.size();i++)
+	//{
+	//	for(int j=0;j<month_vec[i].day_vec.size();j++)
+	//	{
+	//		for(int u=0;u<month_vec[i].day_vec[j].hour_vec.size();u++)
+	//		{
+	//			month_vec[i].day_vec[j].hour_vec[u].cluster_tag = cluster_tag.at<int>(t,0);
 
-				for(int v=0;v<3;v++)
-				{
-					raw_data_3D_array[d].at<float>(u,v) = raw_data_3D.at<float>(t,v); 	
-				}
-				t++;
-			}
-			d++;
-		}
-	}
+	//			for(int v=0;v<3;v++)
+	//			{
+	//				raw_data_3D_array[d].at<float>(u,v) = raw_data_3D.at<float>(t,v); 	
+	//			}
+	//			t++;
+	//		}
+	//		d++;
+	//	}
+	//}
 	
 
 	model.release();
@@ -853,6 +853,14 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 	normalize(station_weekend_cov.col(0),station_weekend_cov.col(0),0,1,NORM_MINMAX); 
 	station_color_mat_weekend = lab_alignment_new_dim1(station_weekend_cov).clone();
 	output_mat_as_csv_file_float("station_color_mat_weekend.csv",station_color_mat_weekend);
+	
+	Mat cov_bar;
+	for(float i=0;i<=1;i+=0.05)
+	{
+		cov_bar.push_back(i);		
+	}
+	cov_color_bar = lab_alignment_new_dim1(cov_bar).clone();
+	output_mat_as_csv_file_float("cov_color_bar.csv",cov_color_bar);
 }
 
 bool Preprocessing_Data::check_duplicated_station(int index)
