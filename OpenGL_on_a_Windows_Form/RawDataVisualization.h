@@ -16,6 +16,7 @@ namespace OpenGLForm{
 			System::Void clear_view();
 			char* show_name;
 			int* dim_label;
+			float test;
 	private:
 			System::Void FindPatternByTable2(int x,int y);
 			vector3 Unprojection(vector2 _2Dpos);
@@ -26,9 +27,11 @@ namespace OpenGLForm{
 			//System::Void DrawCircle(int,int,float,float,float,float);
 			System::Void time_string();
 			System::Void DrawTitle_FTGL(int t,int x, int y);
+			System::Void DrawTitle_FTGL_vertically(int t,int x, int y);
 
 			System::Void themeriverView();
 			System::Void stationView();
+			System::Void DrawVarianceColorBar();
 			int drag, rect_x, rect_y;
 			RECTANGLE* ROI;
 			bool draw_roi;

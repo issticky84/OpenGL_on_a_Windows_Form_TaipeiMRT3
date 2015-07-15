@@ -200,9 +200,11 @@ namespace OpenGLForm{
 		static const double inc = 3.14 / 12.0;
 		static const double max = 2 * 3.14;
 
+		
 		glEnable(GL_LINE_SMOOTH);
 		glPushMatrix();
 
+		glLineWidth(1.0);
 		//glColor3f( R, G, B );
 		glColor3f( 0.0, 0.0, 0.0 );
 		glBegin(GL_LINE_LOOP);

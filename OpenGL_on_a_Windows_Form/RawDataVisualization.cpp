@@ -47,6 +47,8 @@ namespace OpenGLForm{
 			for(int i=0;i<work_school_num;i++)  dim_label[ work_school[i] ] = 3;
 
 			temp_line = new Line;
+
+			test = 0.0;
 	}
 
 	System::Void RawDataVisualization::themeriverView()
@@ -170,8 +172,8 @@ namespace OpenGLForm{
 								35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
 								24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94,9};	
 
-			if(preprocessing_data.day_select_right_indx == 0)
-			{
+			//if(preprocessing_data.day_select_right_indx == 0)
+			//{
 				DrawTitle_FTGL(0,50,50); //draw text "weekday"
 				for(int i=0; i<preprocessing_data.dim ;i++)
 				{	
@@ -235,10 +237,10 @@ namespace OpenGLForm{
 					//																													  preprocessing_data.station_color_mat_weekday.at<float>(i,1), 
 					//																													  preprocessing_data.station_color_mat_weekday.at<float>(i,2));
 				}	
-			}
-			else if(preprocessing_data.day_select_right_indx == 1)
-			{
-				DrawTitle_FTGL(1,50,50);//draw text "weekend"
+			//}
+			//else if(preprocessing_data.day_select_right_indx == 1)
+			//{
+				DrawTitle_FTGL(1,50,560);//draw text "weekend"
 				for(int i=0; i<preprocessing_data.dim ;i++)
 				{	
 					int dim_num = dim_index[i];
@@ -276,10 +278,9 @@ namespace OpenGLForm{
 					//glEnd();
 					//glPopMatrix();
 
-					DrawCircle(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 70 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1), 4.0, color[0], color[1], color[2]);
-					//DrawCircle(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0),550 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1), 4.0, 1, 0, 0);
+					DrawCircle(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 560 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1), 4.0, color[0], color[1], color[2]);
 				}	
-			}
+			//}
 	}
 
 	System::Void RawDataVisualization::Render(int rawdata_width,int rawdata_height){
@@ -326,28 +327,73 @@ namespace OpenGLForm{
 				DrawLine(1.5, temp_line->x1, temp_line->y2, temp_line->x2, temp_line->y2);
 				DrawLine(1.5, temp_line->x2, temp_line->y1, temp_line->x2, temp_line->y2);
 	
-				//=================Variance Color Bar================//
-				float x_position = 200;
-				float y_position = 600;
-				float width = 10.0;
-				DrawTitle_FTGL(2, x_position-100, y_position);//draw text "Variance"
-				DrawTitle_FTGL(3, x_position, y_position+30);//draw text "Small"
-				for(int i=0;i<preprocessing_data.cov_color_bar.rows;i++)
-				{
-					vector<float> draw_color(3);
-					draw_color[0] = preprocessing_data.cov_color_bar.at<float>(i,0);
-					draw_color[1] = preprocessing_data.cov_color_bar.at<float>(i,1);
-					draw_color[2] = preprocessing_data.cov_color_bar.at<float>(i,2);
-					DrawRect(x_position, y_position, 20.0, width, draw_color);
-					x_position += width;
-				}
-				DrawTitle_FTGL(4, x_position, y_position+30);//draw text "Large"
+				DrawVarianceColorBar();
 			}
 
 			SwapOpenGLBuffers();
 			
 	}
 		 
+	System::Void RawDataVisualization::DrawVarianceColorBar()
+	{
+		//=================Variance Color Bar================//
+		/*
+		float x_position = 200;
+		float y_position = 470;
+		float width = 10.0;
+		DrawTitle_FTGL(2, x_position-100, y_position-30);//draw text "Variance"
+		DrawTitle_FTGL(3, x_position, y_position+20);//draw text "Small"
+		for(int i=0;i<preprocessing_data.cov_color_bar_weekday.rows;i++)
+		{
+			vector<float> draw_color(3);
+			draw_color[0] = preprocessing_data.cov_color_bar_weekday.at<float>(i,0);
+			draw_color[1] = preprocessing_data.cov_color_bar_weekday.at<float>(i,1);
+			draw_color[2] = preprocessing_data.cov_color_bar_weekday.at<float>(i,2);
+			DrawRect(x_position, y_position, 15.0, width, draw_color);
+			x_position += width;
+		}
+		DrawTitle_FTGL(4, x_position, y_position+20);//draw text "Large"
+		///////////////////////////////////
+		x_position = 200;
+		y_position = 920;
+		DrawTitle_FTGL(5, x_position-100, y_position-30);//draw text "Variance"
+		DrawTitle_FTGL(3, x_position, y_position+20);//draw text "Small"
+		for(int i=0;i<preprocessing_data.cov_color_bar_weekday.rows;i++)
+		{
+			vector<float> draw_color(3);
+			draw_color[0] = preprocessing_data.cov_color_bar_weekend.at<float>(i,0);
+			draw_color[1] = preprocessing_data.cov_color_bar_weekend.at<float>(i,1);
+			draw_color[2] = preprocessing_data.cov_color_bar_weekend.at<float>(i,2);
+			DrawRect(x_position, y_position, 15.0, width, draw_color);
+			x_position += width;
+		}
+		DrawTitle_FTGL(4, x_position, y_position+20);//draw text "Large"	
+		*/
+		int t = 0;
+		float x_position = 600;
+		float y_position = 550;
+		DrawTitle_FTGL(4, x_position-50, y_position+10);//small
+		DrawTitle_FTGL(2, x_position+15, y_position+10);//weekday variance
+		DrawTitle_FTGL(3, x_position-140, y_position-50);//weekend variance
+		//DrawTitle_FTGL_vertically(3, x_position-30, y_position-50);//weekend variance
+		for(int i=0;i<sqrt(preprocessing_data.cov_color_bar.rows);i++)
+		{
+			x_position = 600;
+			for(int j=0;j<sqrt(preprocessing_data.cov_color_bar.rows);j++)
+			{
+				vector<float> draw_color(3);
+				draw_color[0] = preprocessing_data.cov_color_bar.at<float>(t,0);
+				draw_color[1] = preprocessing_data.cov_color_bar.at<float>(t,1);
+				draw_color[2] = preprocessing_data.cov_color_bar.at<float>(t,2);
+				t++;
+				DrawRect(x_position, y_position, 4.0, 4.0, draw_color);		
+				x_position += 4.0;
+			}
+			y_position -= 4.0;
+		}
+		DrawTitle_FTGL(5, x_position+10, y_position-30);//large
+	}
+
 	System::Void RawDataVisualization::FindPointInRect()
 	{
 		vector2 pos1(temp_line->x1,temp_line->y1);
@@ -361,6 +407,7 @@ namespace OpenGLForm{
 		pos2.x += move_x[1];
 		pos2.y += move_y[1];	
 
+		//Weekday
 		for(int day=0; day<preprocessing_data.dim ;day++)
 		{
 			int x = 80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0);
@@ -371,12 +418,32 @@ namespace OpenGLForm{
 								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
 								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94,9};
 
-				//System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
+				dim_label[ dim_index[day] ] = 4;
+
+				if ( !preprocessing_data.check_duplicated_station( dim_index[day]) )
+					preprocessing_data.select_station.push_back( dim_index[day] );		
+
+				preprocessing_data.comboBox_indx = 1;
+			}
+		}
+
+		//Weekend
+		for(int day=0; day<preprocessing_data.dim ;day++)
+		{
+			int x = 80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0);
+			int y = 560 + 1.2*preprocessing_data.position_on_2D.at<double>(day,1);
+			if(x >= pos1.x && x <= pos2.x && y >= pos1.y && y <= pos2.y)
+			{
+				int dim_index[] = {31,98,30,23,90,10,12,129,55,54,53,52,51,50,42,132,91,89,133,88,29,28,26,25,21,13,14,15,17,18,70,69,66,64,63,62,60,59,43,38,37,
+								   35,34,32,174,175,176,177,178,128,45,46,47,48,96,95,85,84,83,81,79,78,77,22,7,19,
+								   24,8,11,16,41,40,39,36,130,97,82,80,42,131,93,92,86,27,65,61,58,57,56,33,85,71,68,94,9};
 
 				dim_label[ dim_index[day] ] = 4;
 
 				if ( !preprocessing_data.check_duplicated_station( dim_index[day]) )
-					preprocessing_data.select_station.push_back( dim_index[day] );				
+					preprocessing_data.select_station.push_back( dim_index[day] );		
+
+				preprocessing_data.comboBox_indx = 2;
 			}
 		}
 	}
@@ -447,14 +514,6 @@ namespace OpenGLForm{
 				TP->AutoPopDelay = 5000;
 				delete TP;
 				*/
-				//System::Windows::Forms::MessageBox::Show( dim_index[day] + " ");
-
-				//dim_label[ dim_index[day] ] = 4;
-				//if(dim_label[ dim_index[day] ] != 4) dim_label[ dim_index[day] ] = 4;
-				//else if(dim_label[ dim_index[day] ] == 4) dim_label[ dim_index[day] ] = 1;
-
-				//if ( !preprocessing_data.check_duplicated_station( dim_index[day]) )
-				//	preprocessing_data.select_station.push_back( dim_index[day] );
 			}
 		}	
 	
@@ -742,13 +801,40 @@ namespace OpenGLForm{
 	{
 		strcpy(title[0],"Weekday");
 		strcpy(title[1],"Weekend");
-		strcpy(title[2],"Variance");
-		strcpy(title[3],"Small");
-		strcpy(title[4],"Large");
+		strcpy(title[2],"Weekday Variance");
+		strcpy(title[3],"Weekend Variance");
+		strcpy(title[4],"Small");
+		strcpy(title[5],"Large");
+		
 
 		glPushMatrix();
 
-		float font_size = 20*(scale_factor[1]+0.4+scale_x[1]);
+		float font_size = 16*(scale_factor[1]+0.4+scale_x[1]);
+		font.FaceSize(font_size);
+		glColor3f(1.0, 1.0, 1.0);
+		glRasterPos2f(x , y + font.LineHeight());
+		font.Render(title[t]);
+
+		glPopMatrix();			
+	}
+
+
+	System::Void RawDataVisualization::DrawTitle_FTGL_vertically(int t,int x, int y)
+	{
+		strcpy(title[0],"Weekday");
+		strcpy(title[1],"Weekend");
+		strcpy(title[2],"Weekday Variance");
+		strcpy(title[3],"Weekend Variance");
+		strcpy(title[4],"Small");
+		strcpy(title[5],"Large");
+		
+
+		glPushMatrix();
+
+		glRotatef(90, 0, 0, 1);
+		///test++;
+
+		float font_size = 16*(scale_factor[1]+0.4+scale_x[1]);
 		font.FaceSize(font_size);
 		glColor3f(1.0, 1.0, 1.0);
 		glRasterPos2f(x , y + font.LineHeight());

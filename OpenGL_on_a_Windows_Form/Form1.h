@@ -431,14 +431,14 @@ namespace OpenGL_on_a_Windows_Form
 
 				this->pictureBox1->Image = Image::FromFile("MRT_map2.jpg");
 				
-				if(preprocessing_data.day_select_right_indx == 0)
+				if(preprocessing_data.comboBox_indx == 1)
 				{
-					preprocessing_data.comboBox_indx = 1;
+					//preprocessing_data.comboBox_indx = 1;
 					comboBox1->SelectedIndex = 1;
 				}
-				else if(preprocessing_data.day_select_right_indx == 1)
+				else if(preprocessing_data.comboBox_indx == 2)
 				{
-					preprocessing_data.comboBox_indx = 2;
+					//preprocessing_data.comboBox_indx = 2;
 					comboBox1->SelectedIndex = 2;
 				}
 				preprocessing_data.start3(read_csv.day_amount,read_csv.hour_amount,trackBar1->Value);

@@ -73,11 +73,12 @@ namespace OpenGLForm{
 				float x_position = 120;
 				float y_position = 14*30;
 				float value = 0.0;
-				DrawTitle_FTGL(0, x_position + grid_x_num*30, y_position + 45);//enter
+				DrawTitle_FTGL(0, x_position + grid_x_num/3.0*30, y_position + 20);//enter
+				DrawText_FTGL(grid_x_num*500, x_position + grid_x_num*30 , y_position + 15, 1.0, 1.0, 1.0);
 				for(int i=0;i<=grid_x_num*30;i+=30)
 				{
-					DrawText_FTGL(value, x_position + i, y_position + 15, 1.0, 1.0, 1.0);
-					value += 0.5;
+					//DrawText_FTGL(value, x_position + i, y_position + 15, 1.0, 1.0, 1.0);
+					//value += 0.5;
 					//DrawRect(x_position, y_position - i, 2.0, 390.0, draw_color);
 					//DrawLine(1.0, x_position + i, y_position, x_position + i, y_position - 390);
 				}
@@ -85,11 +86,12 @@ namespace OpenGLForm{
 				x_position = 120;
 				y_position = 14*30;
 				value = 0.0;			
-				DrawTitle_FTGL(1, 10, y_position - grid_y_num*30); //out
+				DrawTitle_FTGL(1, x_position-40, y_position - grid_y_num*30/2.0); //out
+				DrawText_FTGL(grid_y_num*500, x_position - 25, y_position - grid_y_num*30 , 1.0, 1.0, 1.0);
 				for(int i=0;i<=grid_y_num*30;i+=30)
 				{
-					if(value>0.001) DrawText_FTGL(value, x_position - 25, y_position - i, 1.0, 1.0, 1.0);
-					value += 0.5;
+					//if(value>0.001) DrawText_FTGL(value, x_position - 25, y_position - i, 1.0, 1.0, 1.0);
+					//value += 0.5;
 					//DrawLine(1.0, x_position, y_position + i, x_position + 390, y_position + i);
 					//DrawRect(x_position + i, y_position, 390.0, 2.0, draw_color);
 				}
@@ -117,13 +119,13 @@ namespace OpenGLForm{
 							   preprocessing_data.rgb_mat3.at<float>(i,0), preprocessing_data.rgb_mat3.at<float>(i,1), preprocessing_data.rgb_mat3.at<float>(i,2));
 					drawHallowCircle(120.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord, 4.0, 
 							   preprocessing_data.rgb_mat3.at<float>(i,0), preprocessing_data.rgb_mat3.at<float>(i,1), preprocessing_data.rgb_mat3.at<float>(i,2));
-					DrawTitle_FTGL(2, 125.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 415.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord ); //(
-					DrawText_FTGL( round( preprocessing_data.cluster_center_raw.at<float>(i,0)/1000.0 ), 
-								  130.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord, 1.0, 1.0, 1.0);
-					DrawTitle_FTGL(3, 160.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 415.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord ); //,
-					DrawText_FTGL( round( preprocessing_data.cluster_center_raw.at<float>(i,1)/1000.0 ), 
-								  165.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord, 1.0, 1.0, 1.0);
-					DrawTitle_FTGL(4, 195.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 415.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord ); //)
+					//DrawTitle_FTGL(2, 125.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 415.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord ); //(
+					//DrawText_FTGL( round( preprocessing_data.cluster_center_raw.at<float>(i,0)/1000.0 ), 
+					//			  130.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord, 1.0, 1.0, 1.0);
+					//DrawTitle_FTGL(3, 160.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 415.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord ); //,
+					//DrawText_FTGL( round( preprocessing_data.cluster_center_raw.at<float>(i,1)/1000.0 ), 
+					//			  165.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord, 1.0, 1.0, 1.0);
+					//DrawTitle_FTGL(4, 195.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 415.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord ); //)
 				}
 			}
 
@@ -175,8 +177,8 @@ namespace OpenGLForm{
 
 		System::Void DetailVisualization::DrawTitle_FTGL(int t,int x, int y)
 		{
-			strcpy(title[0],"Enter (K)");
-			strcpy(title[1],"Out (K)");
+			strcpy(title[0],"Enter");
+			strcpy(title[1],"Out");
 			strcpy(title[2],"(");
 			strcpy(title[3],",");
 			strcpy(title[4],")");

@@ -410,7 +410,21 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	if(cluster_centers.cols>=3) rgb_mat3 = lab_alignment_new(cluster_centers,30).clone();
 	else if(cluster_centers.cols==1) rgb_mat3 = lab_alignment_dim1(cluster_centers,30).clone();
 	//else if(cluster_centers.cols==2) rgb_mat3 = lab_alignment_dim2(cluster_centers,30).clone();
-	else if(cluster_centers.cols==2) rgb_mat3 = lab_alignment_new_dim2(cluster_centers).clone();
+	else if(cluster_centers.cols==2)
+	{
+		//rgb_mat3 = lab_alignment_new_dim2(cluster_centers).clone();
+		Mat cluster_centers_copy = cluster_centers.clone();
+		normalize(cluster_centers_copy,cluster_centers_copy,-70,70,NORM_MINMAX);
+		Mat lab_mat = Mat::zeros(cluster_centers_copy.rows, 3, CV_32F);
+		for(int i=0;i<cluster_centers_copy.rows;i++)
+		{
+			lab_mat.at<float>(i,0) = 60;
+			lab_mat.at<float>(i,1) = cluster_centers_copy.at<float>(i,0);
+			lab_mat.at<float>(i,2) = cluster_centers_copy.at<float>(i,1);
+		}
+		lab = lab_mat.clone();
+		rgb_mat3 = LAB2RGB(lab_mat).clone();
+	}
 	clock_t end5 = clock();
 	printf("\nLAB alignment elapsed time: %f\n",double(end5 - begin5) / CLOCKS_PER_SEC);
 
@@ -431,7 +445,7 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	//	tsp_brute tsp;
 	//	tsp.tsp_path(lab,lab_color_sort_index);
 	//}
-	output_mat_as_csv_file_int("lab_color_sort_index.csv",lab_color_sort_index);
+	//output_mat_as_csv_file_int("lab_color_sort_index.csv",lab_color_sort_index);
 
 	rearrange_mat_by_sort_color_index(lab_color_sort_index,cluster_centers,cluster_tag,rgb_mat3);
 
@@ -485,7 +499,19 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	}
 	output_mat_as_csv_file_float("sample_point.csv",sample_point);
 	output_mat_as_csv_file_float("cmat.csv",cmat);
-	sample_color = lab_alignment_new_dim2(cmat).clone();
+
+	Mat cmat_copy = cmat.clone();
+	normalize(cmat_copy,cmat_copy,-70,70,NORM_MINMAX);
+	Mat lab_mat = Mat::zeros(cmat_copy.rows, 3, CV_32F);
+	for(int i=0;i<cmat_copy.rows;i++)
+	{
+		lab_mat.at<float>(i,0) = 60;
+		lab_mat.at<float>(i,1) = cmat_copy.at<float>(i,0);
+		lab_mat.at<float>(i,2) = cmat_copy.at<float>(i,1);
+	}
+	//lab = lab_mat.clone();
+	sample_color = LAB2RGB(lab_mat).clone();
+	//sample_color = lab_alignment_new_dim2(cmat).clone();
 	output_mat_as_csv_file_float("sample_color.csv",sample_color);
 	//=======================voting=================//
 	voting_for_data(day_amount,k,cluster_tag);
@@ -553,25 +579,25 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 	//	raw_data_3D_array[i] = Mat::zeros(24,3,CV_32F);
 	//}
 
-	//t = 0;
-	//int d = 0;
-	//for(int i=0;i<month_vec.size();i++)
-	//{
-	//	for(int j=0;j<month_vec[i].day_vec.size();j++)
-	//	{
-	//		for(int u=0;u<month_vec[i].day_vec[j].hour_vec.size();u++)
-	//		{
-	//			month_vec[i].day_vec[j].hour_vec[u].cluster_tag = cluster_tag.at<int>(t,0);
+	t = 0;
+	int d = 0;
+	for(int i=0;i<month_vec.size();i++)
+	{
+		for(int j=0;j<month_vec[i].day_vec.size();j++)
+		{
+			for(int u=0;u<month_vec[i].day_vec[j].hour_vec.size();u++)
+			{
+				month_vec[i].day_vec[j].hour_vec[u].cluster_tag = cluster_tag.at<int>(t,0);
 
-	//			for(int v=0;v<3;v++)
-	//			{
-	//				raw_data_3D_array[d].at<float>(u,v) = raw_data_3D.at<float>(t,v); 	
-	//			}
-	//			t++;
-	//		}
-	//		d++;
-	//	}
-	//}
+				//for(int v=0;v<3;v++)
+				//{
+				//	raw_data_3D_array[d].at<float>(u,v) = raw_data_3D.at<float>(t,v); 	
+				//}
+				t++;
+			}
+			//d++;
+		}
+	}
 	
 
 	model.release();
@@ -846,20 +872,74 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 	*/
 	Mat station_weekday_cov = read_station_cov("station_weekday_cov.csv");
 	normalize(station_weekday_cov.col(0),station_weekday_cov.col(0),0,1,NORM_MINMAX); 
-	station_color_mat_weekday = lab_alignment_new_dim1(station_weekday_cov).clone();
+	//station_color_mat_weekday = lab_alignment_new_dim1(station_weekday_cov).clone();
+	Mat station_weekday_cov_copy = station_weekday_cov.clone();
+	normalize(station_weekday_cov_copy,station_weekday_cov_copy,-70,70,NORM_MINMAX);
+	Mat lab_mat = Mat::zeros(station_weekday_cov_copy.rows, 3, CV_32F);
+	for(int i=0;i<station_weekday_cov_copy.rows;i++)
+	{
+		lab_mat.at<float>(i,0) = 60;
+		lab_mat.at<float>(i,1) = 10;
+		lab_mat.at<float>(i,2) = station_weekday_cov_copy.at<float>(i,0);
+	}	
+	station_color_mat_weekday = LAB2RGB(lab_mat).clone();
 	output_mat_as_csv_file_float("station_color_mat_weekday.csv",station_color_mat_weekday);
-
+	/////////////////////
 	Mat station_weekend_cov = read_station_cov("station_weekend_cov.csv");
 	normalize(station_weekend_cov.col(0),station_weekend_cov.col(0),0,1,NORM_MINMAX); 
-	station_color_mat_weekend = lab_alignment_new_dim1(station_weekend_cov).clone();
+	//station_color_mat_weekend = lab_alignment_new_dim1(station_weekend_cov).clone();
+	Mat station_weekend_cov_copy = station_weekend_cov.clone();
+	normalize(station_weekend_cov_copy,station_weekend_cov_copy,-70,70,NORM_MINMAX);
+	lab_mat = Mat::zeros(station_weekend_cov_copy.rows, 3, CV_32F);
+	for(int i=0;i<station_weekend_cov_copy.rows;i++)
+	{
+		lab_mat.at<float>(i,0) = 60;
+		lab_mat.at<float>(i,1) = station_weekend_cov_copy.at<float>(i,0);
+		lab_mat.at<float>(i,2) = 10;
+	}	
+	station_color_mat_weekend = LAB2RGB(lab_mat).clone();
 	output_mat_as_csv_file_float("station_color_mat_weekend.csv",station_color_mat_weekend);
 	
+	//covariance color bar
 	Mat cov_bar;
-	for(float i=0;i<=1;i+=0.05)
+	for(float i=-70;i<=70;i+=5.0)
 	{
 		cov_bar.push_back(i);		
 	}
-	cov_color_bar = lab_alignment_new_dim1(cov_bar).clone();
+	lab_mat = Mat::zeros(cov_bar.rows, 3, CV_32F);
+	for(int i=0;i<cov_bar.rows;i++)
+	{
+		lab_mat.at<float>(i,0) = 60;
+		lab_mat.at<float>(i,1) = 10;
+		lab_mat.at<float>(i,2) = cov_bar.at<float>(i,0);
+	}	
+	cov_color_bar_weekday = LAB2RGB(lab_mat).clone();
+	//cov_color_bar = lab_alignment_new_dim1(cov_bar).clone();
+	output_mat_as_csv_file_float("cov_color_bar_weekday.csv",cov_color_bar_weekday);
+
+	for(int i=0;i<cov_bar.rows;i++)
+	{
+		lab_mat.at<float>(i,0) = 60;
+		lab_mat.at<float>(i,1) = cov_bar.at<float>(i,0);
+		lab_mat.at<float>(i,2) = 10;
+	}	
+	cov_color_bar_weekend = LAB2RGB(lab_mat).clone();
+	//cov_color_bar = lab_alignment_new_dim1(cov_bar).clone();
+	output_mat_as_csv_file_float("cov_color_bar_weekend.csv",cov_color_bar_weekend);
+	//////////////////////////
+	lab_mat = Mat::zeros(cov_bar.rows*cov_bar.rows, 3, CV_32F);
+	t = 0;
+	for(int i=0;i<cov_bar.rows;i++)
+	{
+		for(int j=0;j<cov_bar.rows;j++)
+		{
+			lab_mat.at<float>(t,0) = 60;
+			lab_mat.at<float>(t,1) = cov_bar.at<float>(i,0);
+			lab_mat.at<float>(t,2) = cov_bar.at<float>(j,0);
+			t++;
+		}
+	}	
+	cov_color_bar = LAB2RGB(lab_mat).clone();
 	output_mat_as_csv_file_float("cov_color_bar.csv",cov_color_bar);
 }
 
@@ -2488,7 +2568,7 @@ bool Preprocessing_Data::lab_boundary_test(float p1,float p2,float p3)
 
 Mat Preprocessing_Data::LAB2RGB(Mat lab_mat)
 {
-	Mat rgb_mat2 = lab_mat;
+	Mat rgb_mat2 = lab_mat.clone();
 	for(int i=0;i<lab_mat.rows;i++)
 	{
 		Mat color(1, 1, CV_32FC3);
