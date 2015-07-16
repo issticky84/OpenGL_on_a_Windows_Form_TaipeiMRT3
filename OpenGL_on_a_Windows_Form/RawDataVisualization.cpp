@@ -174,7 +174,7 @@ namespace OpenGLForm{
 
 			//if(preprocessing_data.day_select_right_indx == 0)
 			//{
-				DrawTitle_FTGL(0,50,50); //draw text "weekday"
+				//DrawTitle_FTGL(0,50,50); //draw text "weekday"
 				for(int i=0; i<preprocessing_data.dim ;i++)
 				{	
 					int dim_num = dim_index[i];
@@ -183,9 +183,9 @@ namespace OpenGLForm{
 				
 					if(dim_label[dim_num]==4)
 					{
-						color[0] = preprocessing_data.station_color_mat_weekday.at<float>(i,0);
-						color[1] = preprocessing_data.station_color_mat_weekday.at<float>(i,1);
-						color[2] = preprocessing_data.station_color_mat_weekday.at<float>(i,2);
+						color[0] = preprocessing_data.station_color_mat.at<float>(i,0);
+						color[1] = preprocessing_data.station_color_mat.at<float>(i,1);
+						color[2] = preprocessing_data.station_color_mat.at<float>(i,2);
 					}
 					else if(!preprocessing_data.select_station.empty() )
 					{
@@ -195,9 +195,9 @@ namespace OpenGLForm{
 					}
 					else
 					{
-						color[0] = preprocessing_data.station_color_mat_weekday.at<float>(i,0);
-						color[1] = preprocessing_data.station_color_mat_weekday.at<float>(i,1);
-						color[2] = preprocessing_data.station_color_mat_weekday.at<float>(i,2);			
+						color[0] = preprocessing_data.station_color_mat.at<float>(i,0);
+						color[1] = preprocessing_data.station_color_mat.at<float>(i,1);
+						color[2] = preprocessing_data.station_color_mat.at<float>(i,2);			
 					}
 				
 
@@ -240,6 +240,7 @@ namespace OpenGLForm{
 			//}
 			//else if(preprocessing_data.day_select_right_indx == 1)
 			//{
+				/*
 				DrawTitle_FTGL(1,50,560);//draw text "weekend"
 				for(int i=0; i<preprocessing_data.dim ;i++)
 				{	
@@ -280,6 +281,7 @@ namespace OpenGLForm{
 
 					DrawCircle(80 + 1.5*preprocessing_data.position_on_2D.at<double>(i,0), 560 + 1.2*preprocessing_data.position_on_2D.at<double>(i,1), 4.0, color[0], color[1], color[2]);
 				}	
+				*/
 			//}
 	}
 
@@ -373,9 +375,9 @@ namespace OpenGLForm{
 		float x_position = 600;
 		float y_position = 550;
 		DrawTitle_FTGL(4, x_position-50, y_position+10);//small
-		DrawTitle_FTGL(2, x_position+15, y_position+10);//weekday variance
-		DrawTitle_FTGL(3, x_position-140, y_position-50);//weekend variance
-		//DrawTitle_FTGL_vertically(3, x_position-30, y_position-50);//weekend variance
+		DrawTitle_FTGL(3, x_position+15, y_position+10);//weekend variance
+		DrawTitle_FTGL(2, x_position-140, y_position-50);//weekday variance
+		//DrawTitle_FTGL_vertically(3, x_position-140, y_position-50);//weekend variance
 		for(int i=0;i<sqrt(preprocessing_data.cov_color_bar.rows);i++)
 		{
 			x_position = 600;
@@ -708,15 +710,18 @@ namespace OpenGLForm{
 			last_X[1] = e->X;
 			last_Y[1] = e->Y;
 
-			if (e->Button == System::Windows::Forms::MouseButtons::Right)
+			if(preprocessing_data.view_select_right_index==1)
 			{
-				FindPatternByTable2(e->X,e->Y);
-				/////////////////////////////////////
-				temp_line->x1 = e->X; // Line
-				temp_line->y1 = e->Y;
-				temp_line->x2 = e->X; // Line
-				temp_line->y2 = e->Y;
-				line_draw = 1; // start drawing drag line
+				if (e->Button == System::Windows::Forms::MouseButtons::Right)
+				{
+					FindPatternByTable2(e->X,e->Y);
+					/////////////////////////////////////
+					temp_line->x1 = e->X; // Line
+					temp_line->y1 = e->Y;
+					temp_line->x2 = e->X; // Line
+					temp_line->y2 = e->Y;
+					line_draw = 1; // start drawing drag line
+				}
 			}
 
 			else if(e->Button == System::Windows::Forms::MouseButtons::Middle)
@@ -754,24 +759,30 @@ namespace OpenGLForm{
 			//FindStation(e->X,e->Y);
 
 
+			
 			if (e->Button == System::Windows::Forms::MouseButtons::Left)
 			{		
 					vector2 Move(e->X - last_X[1] , e->Y - last_Y[1]);
-					if (Move.length() < 500.0f)
-					{
-						move_x[1] += 0.3*Move.x;
-						move_y[1] += 0.3*Move.y;
-					}
+					//if (Move.length() < 500.0f)
+					//{
+						//move_x[1] += 0.3*Move.x;
+						//move_y[1] += 0.3*Move.y;
+						move_x[1] = Move.x;
+						move_y[1] = Move.y;
+					//}
 					
 			}	
 
 			else if (e->Button == System::Windows::Forms::MouseButtons::Right)
 			{
-				if(line_draw)
+				if(preprocessing_data.view_select_right_index==1)
 				{
-					temp_line->x2 = e->X;
-					temp_line->y2 = e->Y;		
-				}				
+					if(line_draw)
+					{
+						temp_line->x2 = e->X;
+						temp_line->y2 = e->Y;		
+					}
+				}
 			}
 	}
 
@@ -781,10 +792,13 @@ namespace OpenGLForm{
 
 			if (e->Button == System::Windows::Forms::MouseButtons::Right)
 			{
-				temp_line->x2 = e->X;
-				temp_line->y2 = e->Y;
+				if(preprocessing_data.view_select_right_index==1)
+				{
+					temp_line->x2 = e->X;
+					temp_line->y2 = e->Y;
 
-				FindPointInRect();
+					FindPointInRect();
+				}
 			}
 
 	}
@@ -831,7 +845,7 @@ namespace OpenGLForm{
 
 		glPushMatrix();
 
-		glRotatef(90, 0, 0, 1);
+		glRotatef(test++, x, 0, 0);
 		///test++;
 
 		float font_size = 16*(scale_factor[1]+0.4+scale_x[1]);

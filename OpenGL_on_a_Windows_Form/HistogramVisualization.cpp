@@ -244,13 +244,13 @@ namespace OpenGLForm{
 							DrawHistogram(i,j,day,y_coord,end_position);
 						else if(preprocessing_data.comboBox_indx==1)
 						{
-							if(this_week>=1 && this_week<=5){
+							if(this_week>=1 && this_week<=5 && preprocessing_data.month_vec[i].day_vec[j].IsHoliday==false){
 								DrawHistogram(i,j,day,y_coord,end_position);
 							}
 						}
 						else if(preprocessing_data.comboBox_indx==2)
 						{
-							if(this_week==6 || this_week==7){
+							if(this_week==6 || this_week==7 || preprocessing_data.month_vec[i].day_vec[j].IsHoliday==true){
 								DrawHistogram(i,j,day,y_coord,end_position);
 							}
 						}

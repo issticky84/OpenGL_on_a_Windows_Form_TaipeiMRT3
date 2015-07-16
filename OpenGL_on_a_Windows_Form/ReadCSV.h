@@ -29,6 +29,7 @@ public:
 
 	void read_file_list(char*);
 	void read_holiday_event(char*);
+	void read_holiday_event2(char*);
 
 	void read_MRT_position(char*);
 	vector< vector<float> > MRT_position;

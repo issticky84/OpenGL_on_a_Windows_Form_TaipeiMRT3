@@ -91,6 +91,8 @@ void ReadCSV::read_file_all()
 	read_single_file2("201110");
 	read_single_file2("201111");
 	read_single_file2("201112");
+
+	read_holiday_event2("holiday_event.txt");
 }
 
 void ReadCSV::read_single_file2(char* file_name)
@@ -120,6 +122,38 @@ void ReadCSV::read_single_file2(char* file_name)
 		month_vec[month-1].day_vec[date-1].hour_vec[hour].enter[code] = enter;
 		month_vec[month-1].day_vec[date-1].hour_vec[hour].out[code] = out;
 		month_vec[month-1].this_month = month;
+		month_vec[month-1].day_vec[date-1].IsHoliday = false;
+	}
+
+	fclose(file);
+}
+
+void ReadCSV::read_holiday_event2(char* file_name)
+{
+	FILE* file = NULL;
+	file = fopen(file_name,"r");
+	if(!file)
+	{
+		cout << "Can't open config file!" << endl;
+		perror(file_name);
+		exit(1);
+	}
+
+	char line[LENGTH];
+	char *token;
+	fgets(line,LENGTH,file); //ignore title
+
+	int year, month, date;
+	char buff[100];
+	
+	while (!feof(file))
+	{
+		fscanf(file, "%d/%d/%d %s\n",&year,&month,&date,buff);
+		//cout << year << " " << month << " " << date << " " << buff << endl;
+		if(year==2011)
+		{
+			month_vec[month-1].day_vec[date-1].IsHoliday = true;
+		}
 	}
 
 	fclose(file);

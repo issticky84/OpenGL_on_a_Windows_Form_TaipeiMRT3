@@ -871,34 +871,37 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 	output_mat_as_csv_file_float("station_color_mat_weekend.csv",station_color_mat_weekend);
 	*/
 	Mat station_weekday_cov = read_station_cov("station_weekday_cov.csv");
-	normalize(station_weekday_cov.col(0),station_weekday_cov.col(0),0,1,NORM_MINMAX); 
+	Mat station_weekend_cov = read_station_cov("station_weekend_cov.csv");
+	//normalize(station_weekday_cov.col(0),station_weekday_cov.col(0),0,1,NORM_MINMAX); 
 	//station_color_mat_weekday = lab_alignment_new_dim1(station_weekday_cov).clone();
 	Mat station_weekday_cov_copy = station_weekday_cov.clone();
+	Mat station_weekend_cov_copy = station_weekend_cov.clone();
 	normalize(station_weekday_cov_copy,station_weekday_cov_copy,-70,70,NORM_MINMAX);
+	normalize(station_weekend_cov_copy,station_weekend_cov_copy,-70,70,NORM_MINMAX);
 	Mat lab_mat = Mat::zeros(station_weekday_cov_copy.rows, 3, CV_32F);
 	for(int i=0;i<station_weekday_cov_copy.rows;i++)
 	{
 		lab_mat.at<float>(i,0) = 60;
-		lab_mat.at<float>(i,1) = 10;
-		lab_mat.at<float>(i,2) = station_weekday_cov_copy.at<float>(i,0);
+		lab_mat.at<float>(i,1) = station_weekday_cov_copy.at<float>(i,0);
+		lab_mat.at<float>(i,2) = station_weekend_cov_copy.at<float>(i,0);
 	}	
-	station_color_mat_weekday = LAB2RGB(lab_mat).clone();
-	output_mat_as_csv_file_float("station_color_mat_weekday.csv",station_color_mat_weekday);
+	station_color_mat = LAB2RGB(lab_mat).clone();
+	output_mat_as_csv_file_float("station_color_mat.csv",station_color_mat);
 	/////////////////////
-	Mat station_weekend_cov = read_station_cov("station_weekend_cov.csv");
-	normalize(station_weekend_cov.col(0),station_weekend_cov.col(0),0,1,NORM_MINMAX); 
+	
+	//normalize(station_weekend_cov.col(0),station_weekend_cov.col(0),0,1,NORM_MINMAX); 
 	//station_color_mat_weekend = lab_alignment_new_dim1(station_weekend_cov).clone();
-	Mat station_weekend_cov_copy = station_weekend_cov.clone();
-	normalize(station_weekend_cov_copy,station_weekend_cov_copy,-70,70,NORM_MINMAX);
-	lab_mat = Mat::zeros(station_weekend_cov_copy.rows, 3, CV_32F);
-	for(int i=0;i<station_weekend_cov_copy.rows;i++)
-	{
-		lab_mat.at<float>(i,0) = 60;
-		lab_mat.at<float>(i,1) = station_weekend_cov_copy.at<float>(i,0);
-		lab_mat.at<float>(i,2) = 10;
-	}	
-	station_color_mat_weekend = LAB2RGB(lab_mat).clone();
-	output_mat_as_csv_file_float("station_color_mat_weekend.csv",station_color_mat_weekend);
+	//Mat station_weekend_cov_copy = station_weekend_cov.clone();
+	//normalize(station_weekend_cov_copy,station_weekend_cov_copy,-70,70,NORM_MINMAX);
+	//lab_mat = Mat::zeros(station_weekend_cov_copy.rows, 3, CV_32F);
+	//for(int i=0;i<station_weekend_cov_copy.rows;i++)
+	//{
+	//	lab_mat.at<float>(i,0) = 60;
+	//	lab_mat.at<float>(i,1) = station_weekend_cov_copy.at<float>(i,0);
+	//	lab_mat.at<float>(i,2) = 10;
+	//}	
+	//station_color_mat_weekend = LAB2RGB(lab_mat).clone();
+	//output_mat_as_csv_file_float("station_color_mat_weekend.csv",station_color_mat_weekend);
 	
 	//covariance color bar
 	Mat cov_bar;

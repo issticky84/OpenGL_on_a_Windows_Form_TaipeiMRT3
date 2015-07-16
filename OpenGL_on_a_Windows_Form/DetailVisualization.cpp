@@ -115,8 +115,8 @@ namespace OpenGLForm{
 				////////////
 				for(int i=0;i<preprocessing_data.cluster_center_raw.rows;i++)
 				{
-					DrawCircle(120.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord, 4.0, 
-							   preprocessing_data.rgb_mat3.at<float>(i,0), preprocessing_data.rgb_mat3.at<float>(i,1), preprocessing_data.rgb_mat3.at<float>(i,2));
+					//DrawCircle(120.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord, 4.0, 
+					//		   preprocessing_data.rgb_mat3.at<float>(i,0), preprocessing_data.rgb_mat3.at<float>(i,1), preprocessing_data.rgb_mat3.at<float>(i,2));
 					drawHallowCircle(120.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 420.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord, 4.0, 
 							   preprocessing_data.rgb_mat3.at<float>(i,0), preprocessing_data.rgb_mat3.at<float>(i,1), preprocessing_data.rgb_mat3.at<float>(i,2));
 					//DrawTitle_FTGL(2, 125.0 + preprocessing_data.cluster_center_raw.at<float>(i,0)*scale_of_coord, 415.0 - preprocessing_data.cluster_center_raw.at<float>(i,1)*scale_of_coord ); //(

@@ -25,8 +25,8 @@ namespace OpenGL_on_a_Windows_Form
 			ReadCSV read_csv;
 			//char file_name[200] = "file_list_MRT_rain.txt";
 			//char file_name[200] = "file_list_MRT.txt";
-			//read_csv.read_file_list(file_name);;
-			//read_csv.read_holiday_event("holiday_event.txt");
+			//read_csv.read_file_list(file_name);
+			read_csv.read_holiday_event("holiday_event.txt");
 			read_csv.read_file_all();
 			read_csv.read_MRT_position("MRT_position.txt");
 
