@@ -142,6 +142,8 @@ public:
 	bool start_flag;
 	bool check_duplicated_station(int);
 
+	int color_num;
+
 	Mat station_rgb;
 	Mat station_color_mat;
 	//Mat station_color_mat_weekday;

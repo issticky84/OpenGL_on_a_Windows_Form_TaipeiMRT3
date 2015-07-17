@@ -15,6 +15,7 @@ namespace OpenGLForm{
 			void  HistogramMouseUp( Object^ /*sender*/, System::Windows::Forms::MouseEventArgs^ e);
 			System::Void clear();
 			System::Void resize();
+			bool scale_flag_x, scale_flag_y;
 		private:
 			System::Void DrawHistogramVisualization(System::Void);
 			System::Void DrawTime_FTGL(int,int,int);

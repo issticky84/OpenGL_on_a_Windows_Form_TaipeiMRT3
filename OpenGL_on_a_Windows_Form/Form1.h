@@ -107,6 +107,9 @@ namespace OpenGL_on_a_Windows_Form
 	private: System::Windows::Forms::PictureBox^  pictureBox1;
 	private: System::Windows::Forms::Button^  RightViewClear;
 	private: System::Windows::Forms::ComboBox^  day_select_right;
+	private: System::Windows::Forms::Label^  scale_label;
+	private: System::Windows::Forms::CheckBox^  checkBox_X;
+	private: System::Windows::Forms::CheckBox^  checkBox_Y;
 
 
 
@@ -141,6 +144,9 @@ namespace OpenGL_on_a_Windows_Form
 			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 			this->RightViewClear = (gcnew System::Windows::Forms::Button());
 			this->day_select_right = (gcnew System::Windows::Forms::ComboBox());
+			this->scale_label = (gcnew System::Windows::Forms::Label());
+			this->checkBox_X = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox_Y = (gcnew System::Windows::Forms::CheckBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->trackBar1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
@@ -258,8 +264,8 @@ namespace OpenGL_on_a_Windows_Form
 			// comboBox1
 			// 
 			this->comboBox1->FormattingEnabled = true;
-			this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(4) {L"All", L"Weekday", L"Weekend", L"Holiday"});
-			this->comboBox1->Location = System::Drawing::Point(540, 10);
+			this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"All", L"Weekday", L"Weekend"});
+			this->comboBox1->Location = System::Drawing::Point(234, 9);
 			this->comboBox1->Name = L"comboBox1";
 			this->comboBox1->Size = System::Drawing::Size(121, 20);
 			this->comboBox1->TabIndex = 20;
@@ -271,7 +277,7 @@ namespace OpenGL_on_a_Windows_Form
 			this->view_select_left->Cursor = System::Windows::Forms::Cursors::Default;
 			this->view_select_left->FormattingEnabled = true;
 			this->view_select_left->Items->AddRange(gcnew cli::array< System::Object^  >(1) {L"Time"});
-			this->view_select_left->Location = System::Drawing::Point(240, 10);
+			this->view_select_left->Location = System::Drawing::Point(93, 8);
 			this->view_select_left->Name = L"view_select_left";
 			this->view_select_left->Size = System::Drawing::Size(121, 20);
 			this->view_select_left->TabIndex = 21;
@@ -283,7 +289,7 @@ namespace OpenGL_on_a_Windows_Form
 			this->view_left_label->AutoSize = true;
 			this->view_left_label->Font = (gcnew System::Drawing::Font(L"·s²Ó©úÅé", 11.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(136)));
-			this->view_left_label->Location = System::Drawing::Point(200, 11);
+			this->view_left_label->Location = System::Drawing::Point(53, 9);
 			this->view_left_label->Name = L"view_left_label";
 			this->view_left_label->Size = System::Drawing::Size(34, 15);
 			this->view_left_label->TabIndex = 22;
@@ -342,11 +348,49 @@ namespace OpenGL_on_a_Windows_Form
 			this->day_select_right->Text = L"Weekday";
 			this->day_select_right->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::day_select_right_SelectedIndexChanged);
 			// 
+			// scale_label
+			// 
+			this->scale_label->AutoSize = true;
+			this->scale_label->Location = System::Drawing::Point(450, 14);
+			this->scale_label->Name = L"scale_label";
+			this->scale_label->Size = System::Drawing::Size(32, 12);
+			this->scale_label->TabIndex = 27;
+			this->scale_label->Text = L"Scale ";
+			// 
+			// checkBox_X
+			// 
+			this->checkBox_X->AutoSize = true;
+			this->checkBox_X->Checked = true;
+			this->checkBox_X->CheckState = System::Windows::Forms::CheckState::Checked;
+			this->checkBox_X->Location = System::Drawing::Point(497, 13);
+			this->checkBox_X->Name = L"checkBox_X";
+			this->checkBox_X->Size = System::Drawing::Size(32, 16);
+			this->checkBox_X->TabIndex = 28;
+			this->checkBox_X->Text = L"X";
+			this->checkBox_X->UseVisualStyleBackColor = true;
+			this->checkBox_X->CheckedChanged += gcnew System::EventHandler(this, &Form1::checkBox_X_CheckedChanged);
+			// 
+			// checkBox_Y
+			// 
+			this->checkBox_Y->AutoSize = true;
+			this->checkBox_Y->Checked = true;
+			this->checkBox_Y->CheckState = System::Windows::Forms::CheckState::Checked;
+			this->checkBox_Y->Location = System::Drawing::Point(535, 13);
+			this->checkBox_Y->Name = L"checkBox_Y";
+			this->checkBox_Y->Size = System::Drawing::Size(32, 16);
+			this->checkBox_Y->TabIndex = 29;
+			this->checkBox_Y->Text = L"Y";
+			this->checkBox_Y->UseVisualStyleBackColor = true;
+			this->checkBox_Y->CheckedChanged += gcnew System::EventHandler(this, &Form1::checkBox_Y_CheckedChanged);
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1916, 1054);
+			this->Controls->Add(this->checkBox_Y);
+			this->Controls->Add(this->checkBox_X);
+			this->Controls->Add(this->scale_label);
 			this->Controls->Add(this->day_select_right);
 			this->Controls->Add(this->RightViewClear);
 			this->Controls->Add(this->pictureBox1);
@@ -398,6 +442,20 @@ namespace OpenGL_on_a_Windows_Form
 				 if(Move_3_21_flag==false && Move_12_horiz_flag==false && Move_12_vert_flag==false) 
 					 this->Cursor = System::Windows::Forms::Cursors::Default;
 
+				 if(!preprocessing_data.select_station.empty())
+				 {
+					delete this->pictureBox1->Image;
+					if( remove( "MRT_Map2.jpg" ) != 0 )
+						System::Windows::Forms::MessageBox::Show("Error deleting file");
+						//perror( "Error deleting file" );
+					//else
+					//	System::Windows::Forms::MessageBox::Show("File successfully deleted");
+
+					preprocessing_data.circle_MRT_station();
+
+					this->pictureBox1->Image = Image::FromFile("MRT_map2.jpg");				 
+				 }
+
 			 }
 
 	private: System::Void start_Click(System::Object^  sender, System::EventArgs^  e) 
@@ -441,6 +499,23 @@ namespace OpenGL_on_a_Windows_Form
 					//preprocessing_data.comboBox_indx = 2;
 					comboBox1->SelectedIndex = 2;
 				}
+
+				if(preprocessing_data.sample_num_x!=0 && preprocessing_data.sample_num_x*preprocessing_data.sample_num_y<400)
+				{
+					scale_factor[2] = 1.0;
+					move_y[2] = -180;			
+				}
+				else if(preprocessing_data.sample_num_x*preprocessing_data.sample_num_y>=1300)
+				{
+					scale_factor[2] = 0.6;
+					move_y[2] = -50;			
+				}
+				else
+				{
+					scale_factor[2] = 0.6;
+					move_y[2] = 30;
+				}
+
 				preprocessing_data.start3(read_csv.day_amount,read_csv.hour_amount,trackBar1->Value);
 
 				preprocessing_data.start_flag = true;
@@ -449,10 +524,14 @@ namespace OpenGL_on_a_Windows_Form
 				preprocessing_data.view_select_right_index = 2;
 			 }
 
-    private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) 
+    private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) //station view clear
 			 {
 				 rawData->clear();
 				 rawData->clear_view();
+
+				 //Reset the map to original
+				 delete this->pictureBox1->Image;
+				 this->pictureBox1->Image = Image::FromFile("MRT_map.jpg");
 
 				 view_select_right->SelectedIndex = 1;
 				 preprocessing_data.view_select_right_index = 1;
@@ -799,6 +878,26 @@ private: System::Void pictureBox1_MouseClick(System::Object^  sender, System::Wi
 						}
 					}
 			 
+		 }
+private: System::Void checkBox_X_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+			 if(checkBox_X->Checked == true)
+			 {
+				 histogram->scale_flag_x = true;
+			 }
+			 else if(checkBox_X->Checked == false)
+			 {
+				 histogram->scale_flag_x = false;
+			 }
+		 }
+private: System::Void checkBox_Y_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+			 if(checkBox_Y->Checked == true)
+			 {
+				 histogram->scale_flag_y = true;
+			 }
+			 else if(checkBox_Y->Checked == false)
+			 {
+				 histogram->scale_flag_y = false;
+			 }
 		 }
 };
 }

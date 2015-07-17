@@ -16,7 +16,7 @@ namespace OpenGLForm{
 			System::Void clear_view();
 			char* show_name;
 			int* dim_label;
-			float test;
+			//float test;
 	private:
 			System::Void FindPatternByTable2(int x,int y);
 			vector3 Unprojection(vector2 _2Dpos);
@@ -28,6 +28,7 @@ namespace OpenGLForm{
 			System::Void time_string();
 			System::Void DrawTitle_FTGL(int t,int x, int y);
 			System::Void DrawTitle_FTGL_vertically(int t,int x, int y);
+			System::Void DrawStationName(int, int, int, float);
 
 			System::Void themeriverView();
 			System::Void stationView();
@@ -45,5 +46,6 @@ namespace OpenGLForm{
 
 			//int* dim_label;
 			Panel ^ parentPanel;
+
 	};
 }

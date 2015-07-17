@@ -26,6 +26,7 @@ namespace OpenGLForm{
 	extern	vector<RECTANGLE*> recycle;
 	extern char quote[24][80];
 	extern char title[6][200];
+	extern wchar_t station_name[200][200];
 	extern char five_minutes[12][80];
 	extern vector<vector4> histogram_position_table;
 	extern vector<int> histogram_index;
@@ -38,11 +39,14 @@ namespace OpenGLForm{
 	extern float move_x[3],move_y[3],move_z[3];
 	extern int windowWidth[3],windowHeight[3];
 	extern FTPixmapFont font;
+	extern FTFont *font_new;
+	extern FTFont *font_english;
 	extern char* text;
 	extern double ModelViewMatrix2[16];
 	extern int select_histogram_index;
 	extern bool select_histogram_flag;
 	extern int counter;
+	extern float test;
 
 	public ref class VisualizationPanel: public NativeWindow{
 	public:
@@ -63,6 +67,8 @@ namespace OpenGLForm{
 			System::Void DrawCircle(int,int,float,float,float,float);
 			System::Void DrawLine(float,float,float,float,float);
 			System::Void drawHallowCircle(GLfloat , GLfloat , GLfloat, float, float, float);
+			int DrawTextOfStationName(int, int ,int ,int);
+			System::Void StationNameInitialization();
 			System::Void SwapOpenGLBuffers(System::Void);
 			System::Void wglmakecur();
 			double round(double);

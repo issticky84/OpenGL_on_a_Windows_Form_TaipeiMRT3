@@ -62,8 +62,8 @@ Preprocessing_Data::Preprocessing_Data()
 	color6[0] = 1.0;		color6[1] = 0.0;		color6[2] = 0.8;//紫紅
 	color7[0] = 0.4;		color7[1] = 1.0;		color7[2] = 0.0;//綠
 	
-	vector<float> color_list[] = {red,yellow,blue,violet,indigo,green,color2,color3,orange,color4,color5,gray,color6,color7};
-	int color_num = sizeof(color_list)/sizeof(color_list[0]);
+	vector<float> color_list[] = {red,yellow,blue,violet,indigo,green,color2,color3,orange,color4,color5,gray,color6,color7};//14
+	color_num = sizeof(color_list)/sizeof(color_list[0]);
 	int t = 0;
 	for(int i=0; i<color_num ; i++)
 	{
@@ -144,18 +144,21 @@ void Preprocessing_Data::circle_MRT_station()
 	}
 
 	//for(int i=0;i<select_station.size();i++)
-	int t = 0;
-	for(int i=select_station.size()-1;i>=0;i--)
+	//int t = color_num - 1;
+	//System::Windows::Forms::MessageBox::Show("t1 " + t + " ");
+	//for(int i=select_station.size()-1;i>=0;i--)
+	for(int i=0;i<select_station.size();i++)
 	{
 		int x = MRT_position[ select_station[i] ][0];
 		int y = MRT_position[ select_station[i] ][1];
-		int r = data_color[t][0]*255;
-		int g = data_color[t][1]*255;
-		int b = data_color[t][2]*255;
-		t++;
+		int r = data_color[i][0]*255;
+		int g = data_color[i][1]*255;
+		int b = data_color[i][2]*255;
+		//t--;
 		//System::Windows::Forms::MessageBox::Show( select_station[0] + " " + data_color[i][0] + " " + data_color[i][1] + " " + data_color[i][2]);	
 		circle(image, Point(x,y),6, Scalar( b, g, r ),CV_FILLED, 8, 0);
 	}
+	//System::Windows::Forms::MessageBox::Show("t2 " +  t + " ");
 	//System::Windows::Forms::MessageBox::Show( select_station[0] + " " + select_station[1] + " " + select_station[2]);	
 	
 	imwrite( "MRT_Map2.jpg", image );
@@ -475,7 +478,7 @@ void Preprocessing_Data::start3(int day_amount_read, int hour_amount_read, int k
 		if(cy <= min_y) min_y = cy;
 	}
 
-	sample_unit = 200;
+	sample_unit = 100;
 	sample_num_x = (max_x - min_x)/sample_unit + 3;
 	sample_num_y = (max_y - min_y)/sample_unit + 3;
 	sample_color = Mat::zeros(sample_num_x*sample_num_y ,3 ,CV_32F);
@@ -944,6 +947,10 @@ void Preprocessing_Data::start_on_2D(int hour_amount_read,int day_amount_read)
 	}	
 	cov_color_bar = LAB2RGB(lab_mat).clone();
 	output_mat_as_csv_file_float("cov_color_bar.csv",cov_color_bar);
+
+	//先初始化
+	sample_num_x = 0;
+	sample_num_y = 0;
 }
 
 bool Preprocessing_Data::check_duplicated_station(int index)

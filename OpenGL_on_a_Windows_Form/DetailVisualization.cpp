@@ -68,33 +68,34 @@ namespace OpenGLForm{
 				//30格代表500的值=>值*3/50=格的位置
 				//int max_grid_num = max(grid_x_num, grid_y_num);
 				//double grid_size = floor(390.0/max_grid_num);
-				double scale_of_coord = 30.0/500.0;
+				//double scale_of_coord = 30.0/500.0;
+				double scale_of_coord = 50.0/500.0;
 
 				float x_position = 120;
 				float y_position = 14*30;
 				float value = 0.0;
-				DrawTitle_FTGL(0, x_position + grid_x_num/3.0*30, y_position + 20);//enter
-				DrawText_FTGL(grid_x_num*500, x_position + grid_x_num*30 , y_position + 15, 1.0, 1.0, 1.0);
-				for(int i=0;i<=grid_x_num*30;i+=30)
-				{
+				DrawTitle_FTGL(0, x_position + grid_x_num/3.0*50, y_position + 20);//enter
+				DrawText_FTGL(grid_x_num*500, x_position + (grid_x_num-1)*50 , y_position + 25, 1.0, 1.0, 1.0);
+				//for(int i=0;i<=grid_x_num*30;i+=30)
+				//{
 					//DrawText_FTGL(value, x_position + i, y_position + 15, 1.0, 1.0, 1.0);
 					//value += 0.5;
 					//DrawRect(x_position, y_position - i, 2.0, 390.0, draw_color);
 					//DrawLine(1.0, x_position + i, y_position, x_position + i, y_position - 390);
-				}
+				//}
 
 				x_position = 120;
 				y_position = 14*30;
 				value = 0.0;			
-				DrawTitle_FTGL(1, x_position-40, y_position - grid_y_num*30/2.0); //out
-				DrawText_FTGL(grid_y_num*500, x_position - 25, y_position - grid_y_num*30 , 1.0, 1.0, 1.0);
-				for(int i=0;i<=grid_y_num*30;i+=30)
-				{
+				DrawTitle_FTGL(1, x_position-50, y_position - grid_y_num*50.0/2.0); //out
+				DrawText_FTGL(grid_y_num*500, x_position - 40, y_position - grid_y_num*50 + 30.0 , 1.0, 1.0, 1.0);
+				//for(int i=0;i<=grid_y_num*30;i+=30)
+				//{
 					//if(value>0.001) DrawText_FTGL(value, x_position - 25, y_position - i, 1.0, 1.0, 1.0);
 					//value += 0.5;
 					//DrawLine(1.0, x_position, y_position + i, x_position + 390, y_position + i);
 					//DrawRect(x_position + i, y_position, 390.0, 2.0, draw_color);
-				}
+				//}
 			
 				//=============================================//
 				int t = 0;

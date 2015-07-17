@@ -48,12 +48,11 @@ namespace OpenGLForm{
 
 			temp_line = new Line;
 
-			test = 0.0;
 	}
 
 	System::Void RawDataVisualization::themeriverView()
 	{
-			glTranslatef(35.0+move_x[1],100.0+move_y[1],0.0+move_z[1]);
+			glTranslatef(35.0+move_x[1],190.0+move_y[1],0.0+move_z[1]);
 			glScalef(scale_factor[1]+scale_x[1]+0.6, scale_factor[1]+scale_y[1]-0.480, scale_factor[1]+scale_z[1]);
 			glGetDoublev(GL_MODELVIEW_MATRIX, ModelViewMatrix2);//////////////
 
@@ -75,23 +74,23 @@ namespace OpenGLForm{
 					vector<float> draw_color(3);
 					draw_color[0] = 0.8; draw_color[1] = 1.0; draw_color[2] = 1.0;
 					DrawText_FTGL(1000,15,y_position-1000,10.0);
-					DrawRect(40, y_position-1000, 30.0, 630.0, draw_color);
+					DrawRect(40, y_position-1000, 50.0, 630.0, draw_color);
 					//畫折線圖的刻度:2000
 					DrawText_FTGL(2000,15,y_position-2000,10.0);
-					DrawRect(40, y_position-2000, 30.0, 630.0, draw_color);
+					DrawRect(40, y_position-2000, 50.0, 630.0, draw_color);
 					//畫折線圖的刻度:3000
 					DrawText_FTGL(3000,15,y_position-3000,10.0);
-					DrawRect(40, y_position-3000, 30.0, 630.0, draw_color);
+					DrawRect(40, y_position-3000, 50.0, 630.0, draw_color);
 					//畫折線圖的刻度:4000
 					DrawText_FTGL(4000,15,y_position-4000,10.0);
-					DrawRect(40, y_position-4000, 30.0, 630.0, draw_color);
+					DrawRect(40, y_position-4000, 50.0, 630.0, draw_color);
 					//畫折線圖的刻度:5000
 					DrawText_FTGL(5000,15,y_position-5000,10.0);
-					DrawRect(40, y_position-5000, 30.0, 630.0, draw_color);
+					DrawRect(40, y_position-5000, 50.0, 630.0, draw_color);
 
 					for(int i=5;i<=23;i++)
 					{
-						int color_index = 0;
+						//int color_index = preprocessing_data.color_num - 1;
 	
 						int tag = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].cluster_tag;
 
@@ -106,7 +105,8 @@ namespace OpenGLForm{
 						DrawText_FTGL_withColor(i,i*15-5,y_position+1000,12.0, 1.0, 1.0, 1.0);
 
 						//畫折線圖
-						for(int j=preprocessing_data.select_station.size()-1; j>=0 && i!=23 ;j--)
+						for(int j=0; j<preprocessing_data.select_station.size() && i!=23 ;j++)
+						//for(int j=preprocessing_data.select_station.size()-1; j>0 && i!=23 ;j--)
 						{
 							int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].enter[ preprocessing_data.select_station[j] ];
 							int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i+1].enter[ preprocessing_data.select_station[j] ];
@@ -115,17 +115,17 @@ namespace OpenGLForm{
 
 							glPushMatrix(); 
 							glBegin(GL_LINES); 
-							glColor3f(preprocessing_data.data_color[color_index][0],preprocessing_data.data_color[color_index][1],preprocessing_data.data_color[color_index][2]);  
+							glColor3f(preprocessing_data.data_color[j][0],preprocessing_data.data_color[j][1],preprocessing_data.data_color[j][2]);  
 								glVertex3f((i+1)*15,y_position-hour_data_next,0); 
 								glVertex3f(i*15,y_position-hour_data_current,0);						
 							glEnd();
 							glPopMatrix();
 
-							color_index++;
+							//color_index--;
 						}
 
 						//out
-						color_index = 0;
+						//color_index = preprocessing_data.color_num - 1;
 
 						draw_color[0] = preprocessing_data.rgb_mat3.at<float>(tag,0);
 						draw_color[1] = preprocessing_data.rgb_mat3.at<float>(tag,1);
@@ -133,7 +133,8 @@ namespace OpenGLForm{
 						DrawRect(300+i*15-5, y_position+1350, 650.0, 15.0, draw_color);
 						DrawText_FTGL_withColor(i,300+i*15-5,y_position+1000,12.0, 1.0, 1.0, 1.0);
 
-						for(int j=preprocessing_data.select_station.size()-1 ; j>=0 && i!=23 ;j--)
+						for(int j=0; j<preprocessing_data.select_station.size() && i!=23 ;j++)
+						//for(int j=preprocessing_data.select_station.size()-1 ; j>0 && i!=23 ;j--)
 						{
 							int hour_data_current = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i].out[ preprocessing_data.select_station[j] ];
 							int hour_data_next = preprocessing_data.month_vec[this_month].day_vec[this_day].hour_vec[i+1].out[ preprocessing_data.select_station[j] ];
@@ -142,13 +143,13 @@ namespace OpenGLForm{
 
 							glPushMatrix(); 
 							glBegin(GL_LINES); 
-							glColor3f(preprocessing_data.data_color[color_index][0],preprocessing_data.data_color[color_index][1],preprocessing_data.data_color[color_index][2]);  
+							glColor3f(preprocessing_data.data_color[j][0],preprocessing_data.data_color[j][1],preprocessing_data.data_color[j][2]);  
 								glVertex3f(300+(i+1)*15,y_position-hour_data_next,0); 
 								glVertex3f(300+i*15,y_position-hour_data_current,0);						
 							glEnd();
 							glPopMatrix();
 
-							color_index++;
+							//color_index--;
 						}
 					}
 
@@ -303,7 +304,7 @@ namespace OpenGLForm{
 		   glEnable (GL_BLEND);
 		   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		   glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-		   glLineWidth (1.5);
+		   //glLineWidth (1.5);
 		   /////////////////////////
 			glClearColor(0.0, 0.0, 0.0, 0.0);  //Set the cleared screen colour to black
 			glViewport(0, 0, windowWidth[1], windowHeight[1]);   //This sets up the viewport so that the coordinates (0, 0) are at the top left of the window		
@@ -318,7 +319,46 @@ namespace OpenGLForm{
 
 			if(preprocessing_data.view_select_right_index==2)
 			{
+
+				float x_position = 30;
+				float y_position = 30;
+				vector<float> color(3);
+				for(int i=0;i<preprocessing_data.select_station.size();i++)
+				{
+					color[0] = preprocessing_data.data_color[i][0];
+					color[1] = preprocessing_data.data_color[i][1];
+					color[2] = preprocessing_data.data_color[i][2];
+					DrawCircle(x_position-5, y_position, 3.0, color[0], color[1], color[2]);
+					int wchar_len = DrawTextOfStationName(preprocessing_data.select_station[i], x_position, y_position, 20);
+					//x_position += 150;
+					x_position += wchar_len*30;
+					if(x_position > 700)
+					{
+						y_position += 25;
+						x_position = 30;
+					}
+				}
+				/*
+				glPushMatrix();
+
+				font_new->FaceSize(20);
+				//glScalef(1.0+scale_x[1], 1.0+scale_y[1], 1.0);
+				glTranslatef(50, 50, 0);
+				//glRotatef(270, 0.0, 0.0, -1.0);
+				glRotatef(180, 1.0, 0.0, 0.0);
+				//glRotatef(test++, 1.0, 0.0, 0.0);
+				wchar_t strText[] = L"松山機場"; 
+				glColor3f(1.0, 1.0, 1.0);
+				font_new->Render(strText);
+				//font_new->Render(station_name[7]);
+
+				glPopMatrix();
+				*/
+
 				themeriverView();
+				//DrawTextOfStationName(8, 100, 100, 1.0);
+				//DrawStationName(7, 500, 500, 2.0);
+				//DrawTextOfStationName(7, 500, 500, 2.0);
 			}
 			else if(preprocessing_data.view_select_right_index==1)
 			{
@@ -376,8 +416,8 @@ namespace OpenGLForm{
 		float y_position = 550;
 		DrawTitle_FTGL(4, x_position-50, y_position+10);//small
 		DrawTitle_FTGL(3, x_position+15, y_position+10);//weekend variance
-		DrawTitle_FTGL(2, x_position-140, y_position-50);//weekday variance
-		//DrawTitle_FTGL_vertically(3, x_position-140, y_position-50);//weekend variance
+		//DrawTitle_FTGL(2, x_position-140, y_position-50);//weekday variance
+		DrawTitle_FTGL_vertically(2, x_position-15, y_position-10);//weekday variance
 		for(int i=0;i<sqrt(preprocessing_data.cov_color_bar.rows);i++)
 		{
 			x_position = 600;
@@ -426,10 +466,12 @@ namespace OpenGLForm{
 					preprocessing_data.select_station.push_back( dim_index[day] );		
 
 				preprocessing_data.comboBox_indx = 1;
+
 			}
 		}
 
 		//Weekend
+		/*
 		for(int day=0; day<preprocessing_data.dim ;day++)
 		{
 			int x = 80 + 1.5*preprocessing_data.position_on_2D.at<double>(day,0);
@@ -447,7 +489,7 @@ namespace OpenGLForm{
 
 				preprocessing_data.comboBox_indx = 2;
 			}
-		}
+		}*/
 	}
 
 	System::Void RawDataVisualization::FindStation(int x,int y){
@@ -645,6 +687,26 @@ namespace OpenGLForm{
 		
 	}
 
+	System::Void RawDataVisualization::DrawStationName(int n, int x, int y, float scale)
+	{
+		//wcscpy(station_name[0],L"Weekdend Variance");
+		
+		float font_size = 20.0*scale;
+		font_new->FaceSize(font_size);
+		glPushMatrix();
+
+		glScalef(1.0, -10.0, 1.0);
+		glTranslatef(x, y, 3);
+		//glRotatef(270, 0.0, 0.0, -1.0);
+		//glRotatef(180, 0.0, 1.0, 0.0);
+		//glRotatef(test++, 1.0, 0.0, 0.0);
+		wchar_t strText[] = L"快給我中文Please"; 
+		glColor3f(1.0, 1.0, 1.0);
+		font_new->Render(strText);
+		//font_new->Render(station_name[n]);
+
+		glPopMatrix();
+	}
 
 	System::Void RawDataVisualization::DrawTime_FTGL(int index,int x, int y)
 	{
@@ -743,6 +805,7 @@ namespace OpenGLForm{
 			
 		
 			if (e->Delta < 0){
+
 				scale_x[1]+=scale_size[1];
 				scale_y[1]+=scale_size[1];
 				scale_z[1]+=scale_size[1];
@@ -765,10 +828,10 @@ namespace OpenGLForm{
 					vector2 Move(e->X - last_X[1] , e->Y - last_Y[1]);
 					//if (Move.length() < 500.0f)
 					//{
-						//move_x[1] += 0.3*Move.x;
-						//move_y[1] += 0.3*Move.y;
-						move_x[1] = Move.x;
-						move_y[1] = Move.y;
+						move_x[1] += 0.3*Move.x;
+						move_y[1] += 0.3*Move.y;
+						//move_x[1] = Move.x;
+						//move_y[1] = Move.y;
 					//}
 					
 			}	
@@ -841,11 +904,27 @@ namespace OpenGLForm{
 		strcpy(title[3],"Weekend Variance");
 		strcpy(title[4],"Small");
 		strcpy(title[5],"Large");
+		//wcscpy(wchar_test[0],L"Weekdend Variance");
 		
-
+		float font_size = 16*(scale_factor[1]+0.4+scale_x[1]);
+		font_english->FaceSize(font_size);
 		glPushMatrix();
 
-		glRotatef(test++, x, 0, 0);
+		glTranslatef(x, y, 0);
+		glRotatef(270, 0.0, 0.0, -1.0);
+		glRotatef(180, 0.0, 1.0, 0.0);
+		//wchar_t strText[] = L"快給我中文Please"; 
+		glColor3f(1.0, 1.0, 1.0);
+		font_english->Render(title[t]);
+
+		glPopMatrix();
+		/*
+		glPushMatrix();
+
+		glTranslatef(x, y, 0);
+		glRotatef(test++, 0, 0, 1);
+		//glTranslatef(0, 5, 0);
+		glTranslatef(-x, -y, 0);
 		///test++;
 
 		float font_size = 16*(scale_factor[1]+0.4+scale_x[1]);
@@ -855,6 +934,7 @@ namespace OpenGLForm{
 		font.Render(title[t]);
 
 		glPopMatrix();			
+		*/
 	}
 
 	System::Void RawDataVisualization::time_string()
