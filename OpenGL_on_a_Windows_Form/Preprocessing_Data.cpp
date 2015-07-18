@@ -48,21 +48,21 @@ Preprocessing_Data::Preprocessing_Data()
 
 	vector<float> red(3),yellow(3),blue(3),violet(3),indigo(3),green(3),color2(3),color3(3),orange(3),color4(3),color5(3),gray(3),color6(3),color7(3);
 	red[0] = 0.9;		red[1] = 0.4;		red[2] = 0.4; //紅
-	yellow[0] = 1.0;	yellow[1] = 1.0;	yellow[2] = 0.1; //黃
 	blue[0] = 1.0;		blue[1] = 0.6;		blue[2] = 1.0; //紫
 	violet[0] = 0.6;	violet[1] = 0.6;	violet[2] = 0.0; //墨綠
 	indigo[0] = 1.0;	indigo[1] = 0.6;	indigo[2] = 0.0; //橘
 	green[0] = 0.2;		green[1] = 0.6;		green[2] = 1.0;  //藍
+	yellow[0] = 1.0;	yellow[1] = 1.0;	yellow[2] = 0.1; //黃
 	color2[0] = 0.6;		color2[1] = 0.6;		color2[2] = 1.0; //灰藍
+	color4[0] = 0.2;		color4[1] = 0.6;		color4[2] = 0.2; //深綠
+	color6[0] = 1.0;		color6[1] = 0.0;		color6[2] = 0.8;//紫紅
 	color3[0] = 0.0;		color3[1] = 0.2;		color3[2] = 0.6; //深藍
 	orange[0] = 0.6;		orange[1] = 0.0;		orange[2] = 0.6; //深紫
-	color4[0] = 0.2;		color4[1] = 0.6;		color4[2] = 0.2; //深綠
 	color5[0] = 0.4;		color5[1] = 1.0;		color5[2] = 0.8; //藍綠
 	gray[0] = 0.6;		gray[1] = 0.6;		gray[2] = 0.6;
-	color6[0] = 1.0;		color6[1] = 0.0;		color6[2] = 0.8;//紫紅
 	color7[0] = 0.4;		color7[1] = 1.0;		color7[2] = 0.0;//綠
 	
-	vector<float> color_list[] = {red,yellow,blue,violet,indigo,green,color2,color3,orange,color4,color5,gray,color6,color7};//14
+	vector<float> color_list[] = {red,blue,violet,indigo,green,yellow,color2,color4,color6,color3,orange,color5,gray,color7};//14
 	color_num = sizeof(color_list)/sizeof(color_list[0]);
 	int t = 0;
 	for(int i=0; i<color_num ; i++)
@@ -76,6 +76,7 @@ Preprocessing_Data::Preprocessing_Data()
 	}
 
 	start_flag = false;
+
 }
 
 void Preprocessing_Data::Initial_selection_flag(bool f1, bool f2, bool f3, bool f4, bool f5, bool f6)
@@ -133,6 +134,21 @@ vector<int> Preprocessing_Data::Find_MRT_station(int x, int y)
 	return station_num;
 }
 
+bool Preprocessing_Data::duplicate_position(int x, int y)
+{
+	for(int i=0;i<draw_circle_position.size();i++)
+	{
+		int sx = draw_circle_position[i][0];
+		int sy = draw_circle_position[i][1];
+		if(sx == x && sy == y)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void Preprocessing_Data::circle_MRT_station()
 {
 	Mat image;
@@ -145,7 +161,6 @@ void Preprocessing_Data::circle_MRT_station()
 
 	//for(int i=0;i<select_station.size();i++)
 	//int t = color_num - 1;
-	//System::Windows::Forms::MessageBox::Show("t1 " + t + " ");
 	//for(int i=select_station.size()-1;i>=0;i--)
 	for(int i=0;i<select_station.size();i++)
 	{
@@ -154,11 +169,29 @@ void Preprocessing_Data::circle_MRT_station()
 		int r = data_color[i][0]*255;
 		int g = data_color[i][1]*255;
 		int b = data_color[i][2]*255;
-		//t--;
-		//System::Windows::Forms::MessageBox::Show( select_station[0] + " " + data_color[i][0] + " " + data_color[i][1] + " " + data_color[i][2]);	
-		circle(image, Point(x,y),6, Scalar( b, g, r ),CV_FILLED, 8, 0);
+
+		//System::Windows::Forms::MessageBox::Show(x + " " + y);
+		//circle(image, Point(x,y),6, Scalar( b, g, r ),CV_FILLED, 8, 0);
+		//circle(image, Point(x,y),6, Scalar( b, g, r ),CV_FILLED, 8, 0);
+
+		if( duplicate_position(x, y) )
+		{
+			//System::Windows::Forms::MessageBox::Show("duplicate ");	
+			Point center(x,y);
+			ellipse(image, center, Size(6,6),0,0,180, Scalar(b, g, r), CV_FILLED, 8, 0);
+		}
+		else
+		{
+			//System::Windows::Forms::MessageBox::Show("push ");	
+			vector2 temp;
+			temp.x = x;
+			temp.y = y;
+			draw_circle_position.push_back( temp );
+			circle(image, Point(x,y),6, Scalar( b, g, r ),CV_FILLED, 8, 0);
+		}
 	}
-	//System::Windows::Forms::MessageBox::Show("t2 " +  t + " ");
+	draw_circle_position.clear();
+
 	//System::Windows::Forms::MessageBox::Show( select_station[0] + " " + select_station[1] + " " + select_station[2]);	
 	
 	imwrite( "MRT_Map2.jpg", image );

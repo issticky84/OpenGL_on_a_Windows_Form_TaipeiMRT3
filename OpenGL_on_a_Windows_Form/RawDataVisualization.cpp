@@ -331,7 +331,14 @@ namespace OpenGLForm{
 					DrawCircle(x_position-5, y_position, 3.0, color[0], color[1], color[2]);
 					int wchar_len = DrawTextOfStationName(preprocessing_data.select_station[i], x_position, y_position, 20);
 					//x_position += 150;
-					x_position += wchar_len*30;
+					if(wchar_len==7) //有括號的間距可以小一點(5個字+2括號)
+					{
+						x_position += (wchar_len-2)*30;
+					}
+					else
+					{
+						x_position += wchar_len*30;
+					}
 					if(x_position > 700)
 					{
 						y_position += 25;

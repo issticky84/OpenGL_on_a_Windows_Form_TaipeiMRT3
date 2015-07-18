@@ -84,6 +84,7 @@ private:
 	void TSP_group_connect(vector<group>,Mat&);
 	vector<group> tree_group;
 	Mat read_station_cov(char*);
+	bool duplicate_position(int, int);
 
 public:
 	Preprocessing_Data();
@@ -163,6 +164,8 @@ public:
 	
 	Mat cov_color_bar;
 	Mat cov_color_bar_weekday, cov_color_bar_weekend;
+
+	vector<vector2>draw_circle_position;
 
 };
 

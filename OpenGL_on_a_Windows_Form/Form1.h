@@ -442,11 +442,12 @@ namespace OpenGL_on_a_Windows_Form
 				 if(Move_3_21_flag==false && Move_12_horiz_flag==false && Move_12_vert_flag==false) 
 					 this->Cursor = System::Windows::Forms::Cursors::Default;
 
+				 
 				 if(!preprocessing_data.select_station.empty())
 				 {
 					delete this->pictureBox1->Image;
-					if( remove( "MRT_Map2.jpg" ) != 0 )
-						System::Windows::Forms::MessageBox::Show("Error deleting file");
+					//if( remove( "MRT_Map2.jpg" ) != 0 )
+					//	System::Windows::Forms::MessageBox::Show("Error deleting file");
 						//perror( "Error deleting file" );
 					//else
 					//	System::Windows::Forms::MessageBox::Show("File successfully deleted");
